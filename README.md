@@ -13,4 +13,8 @@ Sada extrémně rychlých nástrojů pro vývojáře a kreativce. Od manipulace 
 
 ## 🔒 Bezpečnost
 * **Ochrana API Klíčů:** Žádné klíče třetích stran (např. Gemini API) NEJSOU uloženy v klientském JavaScriptu. Všechna volání AI jdou skrze bezpečný PHP backend.
+<<<<<<< HEAD
 * **Rate Limiting:** Ochrana API proti zneužití a vyčerpání kvót.
+=======
+* **Rate Limiting:** Ochrana API proti zneužití a vyčerpání kvót.
+>>>>>>> 7a04c0ff92a33f6b01ec1c23a7a0c79c0352798c
