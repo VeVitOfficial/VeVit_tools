@@ -1603,496 +1603,590 @@ function initToolUI(toolId, container) {
 
     // --- ORGANIZE PDF ---
     else if (toolId === 'organize-pdf') {
-        container.innerHTML = `
-            <div class="text-center mb-10">
-                <p class="text-indigo-500 font-bold text-sm tracking-widest uppercase mb-2">PDF Tools / Organize PDF</p>
-                <h2 class="text-4xl font-extrabold text-white mb-3">Organize PDF</h2>
-                <p class="text-slate-400">Přeuspořádejte stránky, smažte nepotřebné nebo kombinujte více dokumentů.</p>
-            </div>
 
-            <div class="bg-card border border-border rounded-2xl p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h3 class="text-xl font-bold text-white">Vizuální organizátor</h3>
-                        <p class="text-slate-400 text-sm">Přetahujte stránky myší. Klikněte na ✕ pro smazání.</p>
-                    </div>
-                    <button id="btn-add-doc" class="bg-[#6366F1] hover:bg-[#4F46E5] text-white keep-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
-                        <i data-lucide="plus" class="w-4 h-4"></i> Přidat dokument
-                    </button>
-                    <input type="file" id="organize-upload" class="hidden" accept="application/pdf" multiple>
-                </div>
+      // === STAVOVÉ PROMĚNNÉ ===
+      let orgDocuments = [];
+      let orgSourceCounter = 0;
+      let orgDraggedData = null;
+      let orgDragOverTarget = null;
 
-                <div id="organize-docs-container" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center text-slate-500 col-span-full flex flex-col items-center justify-center min-h-[200px]">
-                        <i data-lucide="file-plus" class="w-12 h-12 mb-3 opacity-50"></i>
-                        <p>Klikněte na "Přidat dokument" pro začátek.</p>
-                    </div>
-                </div>
+      const SOURCE_COLORS = [
+        { bg: 'rgba(234,179,8,0.15)',  border: '#eab308', badge: 'bg-yellow-500',  text: 'text-yellow-300'  },
+        { bg: 'rgba(168,85,247,0.15)', border: '#a855f7', badge: 'bg-purple-500',  text: 'text-purple-300'  },
+        { bg: 'rgba(239,68,68,0.15)',  border: '#ef4444', badge: 'bg-red-500',     text: 'text-red-300'     },
+        { bg: 'rgba(59,130,246,0.15)', border: '#3b82f6', badge: 'bg-blue-500',    text: 'text-blue-300'    },
+        { bg: 'rgba(34,197,94,0.15)',  border: '#22c563', badge: 'bg-green-500',   text: 'text-green-300'   },
+      ];
 
-                <div class="flex gap-4 mt-6">
-                    <button id="btn-organize-merge" class="flex-1 bg-[#6366F1] hover:bg-[#4F46E5] text-white keep-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50" disabled>
-                        <i data-lucide="combine" class="w-5 h-5 inline mr-2"></i> Sloučit vše & Stáhnout
-                    </button>
-                    <button id="btn-organize-download-sep" class="bg-transparent border border-slate-700 hover:border-indigo-500 text-white font-bold py-4 px-6 rounded-xl transition-colors disabled:opacity-50" disabled>
-                        <i data-lucide="download" class="w-5 h-5 inline mr-2"></i> Stáhnout zvlášť
-                    </button>
-                </div>
-            </div>
+      // === HTML ===
+      container.innerHTML = `
+        <div class="text-center mb-8">
+          <p class="text-indigo-500 font-bold text-sm tracking-widest uppercase mb-2">PDF Tools / Organize PDF</p>
+          <h2 class="text-4xl font-extrabold text-white mb-3">Organize PDF</h2>
+          <p class="text-slate-400">Přeuspořádejte stránky drag & drop. Přetahujte i mezi různými dokumenty.</p>
+        </div>
+
+        <!-- Legenda barev -->
+        <div id="org-legend" class="hidden flex-wrap gap-2 mb-4 items-center">
+          <span class="text-slate-500 text-xs font-bold uppercase tracking-wider mr-2">Zdroje:</span>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="flex justify-between items-center mb-6">
+          <div class="flex items-center gap-2 text-slate-400 text-sm">
+            <i data-lucide="info" class="w-4 h-4"></i>
+            <span>Přetáhněte stránky pro změnu pořadí nebo přesun mezi dokumenty</span>
+          </div>
+          <button id="org-add-btn"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm text-white transition-colors"
+            style="background: #6366f1;">
+            <i data-lucide="plus" class="w-4 h-4"></i> Přidat dokument
+          </button>
+          <input type="file" id="org-file-input" class="hidden" accept="application/pdf" multiple>
+        </div>
+
+        <!-- Dokumenty grid -->
+        <div id="org-docs-grid"
+          class="grid gap-6 mb-6"
+          style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); max-width: 100%;">
+          <div id="org-placeholder"
+            class="col-span-full border-2 border-dashed border-slate-700 rounded-2xl p-16
+                   flex flex-col items-center justify-center text-slate-500 min-h-[200px]">
+            <i data-lucide="file-plus" class="w-12 h-12 mb-3 opacity-40"></i>
+            <p class="font-medium">Klikněte na "Přidat dokument"</p>
+          </div>
+        </div>
+
+        <!-- Akce -->
+        <div class="flex gap-4">
+          <button id="org-merge-btn"
+            class="flex-1 flex items-center justify-center gap-2 font-bold py-4 rounded-xl
+                   text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            style="background: #6366f1;" disabled>
+            <i data-lucide="combine" class="w-5 h-5"></i> Sloučit vše & Stáhnout
+          </button>
+          <button id="org-sep-btn"
+            class="flex items-center justify-center gap-2 px-6 font-bold py-4 rounded-xl
+                   border border-slate-700 hover:border-indigo-500 text-white transition-colors
+                   disabled:opacity-40 disabled:cursor-not-allowed"
+            disabled>
+            <i data-lucide="download" class="w-5 h-5"></i> Stáhnout zvlášť
+          </button>
+        </div>
+      `;
+
+      lucide.createIcons();
+
+      // === POMOCNÉ FUNKCE ===
+
+      function getColor(sourceIdx) {
+        return SOURCE_COLORS[sourceIdx % SOURCE_COLORS.length];
+      }
+
+      function updateLegend() {
+        const legend = document.getElementById('org-legend');
+        if (orgDocuments.length === 0) { legend.classList.add('hidden'); return; }
+        legend.classList.remove('hidden');
+        legend.style.display = 'flex';
+        legend.innerHTML = '<span class="text-slate-500 text-xs font-bold uppercase tracking-wider mr-2">Zdroje:</span>' +
+          orgDocuments.map(doc => {
+            const c = getColor(doc.sourceIdx);
+            return `<span class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-white"
+                          style="background:${c.bg}; border:1px solid ${c.border};">
+                      <span class="w-2 h-2 rounded-full" style="background:${c.border};"></span>
+                      ${escapeHTML(doc.name.replace('.pdf',''))}
+                    </span>`;
+          }).join('');
+      }
+
+      function updateButtons() {
+        const has = orgDocuments.length > 0;
+        document.getElementById('org-merge-btn').disabled = !has;
+        document.getElementById('org-sep-btn').disabled = !has;
+      }
+
+      // === RENDER DOKUMENTU ===
+
+      async function renderDocument(doc) {
+        const grid = document.getElementById('org-docs-grid');
+        const placeholder = document.getElementById('org-placeholder');
+        if (placeholder) placeholder.remove();
+
+        const c = getColor(doc.sourceIdx);
+
+        const colDiv = document.createElement('div');
+        colDiv.id = doc.id;
+        colDiv.className = 'rounded-2xl overflow-hidden';
+        colDiv.style.cssText = `border: 1.5px solid ${c.border}; background: #131826;`;
+        colDiv.innerHTML = `
+          <div class="flex items-center gap-3 px-4 py-3"
+               style="background: ${c.bg}; border-bottom: 1px solid ${c.border};">
+            <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:${c.border};"></span>
+            <span class="text-white font-bold text-sm truncate flex-grow">${escapeHTML(doc.name)}</span>
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full text-white" style="background:${c.border};">
+              <span class="page-count">${doc.pages.length}</span> stran
+            </span>
+            <button onclick="orgRemoveDoc('${doc.id}')"
+              class="text-slate-400 hover:text-red-400 transition-colors p-1 flex-shrink-0">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div id="${doc.id}-pages"
+               class="pages-container p-3 flex flex-wrap gap-2 min-h-[120px]"
+               data-doc-id="${doc.id}">
+          </div>
+        `;
+        grid.appendChild(colDiv);
+        lucide.createIcons();
+
+        // Render stránek
+        await renderPages(doc);
+        updateLegend();
+        updateButtons();
+      }
+
+      async function renderPages(doc) {
+        const container = document.getElementById(`${doc.id}-pages`);
+        if (!container) return;
+        container.innerHTML = '';
+
+        try {
+          // VŽDY vytvoř novou kopii pro pdfjsLib
+          const pdfData = new Uint8Array(doc.bytes);
+          const pdf = await pdfjsLib.getDocument({data: pdfData}).promise;
+
+          for (let i = 0; i < doc.pages.length; i++) {
+            const pageData = doc.pages[i];
+
+            // Pokud už máme imgSrc, neregeneruj
+            if (!pageData.imgSrc) {
+              const page = await pdf.getPage(pageData.pageIndex + 1);
+              const viewport = page.getViewport({scale: 0.35});
+              const canvas = document.createElement('canvas');
+              canvas.width = viewport.width;
+              canvas.height = viewport.height;
+              await page.render({
+                canvasContext: canvas.getContext('2d'),
+                viewport
+              }).promise;
+              pageData.imgSrc = canvas.toDataURL('image/jpeg', 0.7);
+            }
+
+            container.appendChild(createPageThumb(doc, i, pageData));
+          }
+
+          container.appendChild(createEndDropZone(doc.id));
+
+          // Aktualizuj počítadlo
+          const countEl = document.querySelector(`#${doc.id} .page-count`);
+          if (countEl) countEl.textContent = doc.pages.length;
+
+        } catch (err) {
+          container.innerHTML = `
+            <div class="text-red-400 text-xs p-4 col-span-full">
+                Chyba: ${escapeHTML(err.message)}
+            </div>`;
+        }
+      }
+
+      // === VYTVOŘENÍ STRÁNKY (THUMB) ===
+
+      function createPageThumb(doc, localIdx, pageData) {
+        const c = getColor(doc.sourceIdx);
+        const imgSrc = pageData.imgSrc;
+        const div = document.createElement('div');
+        div.className = 'page-thumb relative rounded-lg overflow-hidden cursor-grab select-none transition-all duration-150';
+        div.style.cssText = `width: 72px; border: 2px solid ${c.border}; background: ${c.bg};`;
+        div.draggable = true;
+        div.dataset.docId = doc.id;
+        div.dataset.localIdx = localIdx;
+        div.dataset.sourceIdx = doc.sourceIdx;
+        div.dataset.pageIndex = pageData.pageIndex;
+        div.dataset.imgSrc = imgSrc;
+
+        div.innerHTML = `
+          <img src="${imgSrc}" class="w-full h-auto block bg-white">
+          <div class="absolute top-0 left-0 right-0 flex justify-between items-start p-0.5">
+            <span class="text-[9px] font-bold px-1 py-0.5 rounded text-white"
+                  style="background: ${c.border};">
+              ${pageData.pageIndex + 1}
+            </span>
+            <button class="del-btn opacity-0 bg-red-500 hover:bg-red-600 text-white rounded w-4 h-4 text-[10px] font-bold flex items-center justify-center leading-none transition-opacity">
+              ×
+            </button>
+          </div>
         `;
 
-        const docsContainer = document.getElementById('organize-docs-container');
-        const uploadInput = document.getElementById('organize-upload');
+        // Hover → ukáž delete button
+        div.addEventListener('mouseenter', () => div.querySelector('.del-btn').style.opacity = '1');
+        div.addEventListener('mouseleave', () => div.querySelector('.del-btn').style.opacity = '0');
 
-        // Globální drag events pro posouvání preview
-        document.addEventListener('dragover', (e) => {
-            if(draggedPreview) {
-                draggedPreview.style.display = 'block';
-                draggedPreview.style.left = (e.clientX - 30) + 'px';
-                draggedPreview.style.top = (e.clientY - 40) + 'px';
-            }
+        // Delete
+        div.querySelector('.del-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          orgDeletePage(doc.id, localIdx);
         });
 
-        // Drag events pro page-thumb elementy
-        document.addEventListener('dragover', (e) => {
-            if(!draggedData) return;
-
-            const pageThumbs = document.querySelectorAll('.page-thumb');
-            pageThumbs.forEach(thumb => {
-                thumb.classList.remove('ring-2', 'ring-indigo-400');
-
-                const rect = thumb.getBoundingClientRect();
-                if(e.clientX >= rect.left && e.clientX <= rect.right &&
-                   e.clientY >= rect.top && e.clientY <= rect.bottom) {
-                    thumb.classList.add('ring-2', 'ring-indigo-400');
-                }
-            });
+        // === DRAG EVENTS ===
+        div.addEventListener('dragstart', (e) => {
+          orgDraggedData = {
+            docId: doc.id,
+            localIdx: localIdx,
+            sourceIdx: doc.sourceIdx,
+            pageIndex: pageData.pageIndex,
+            imgSrc: imgSrc
+          };
+          div.style.opacity = '0.3';
+          div.style.transform = 'scale(0.95)';
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', JSON.stringify(orgDraggedData));
         });
 
-        document.addEventListener('drop', () => {
-            if(draggedPreview) {
-                draggedPreview.remove();
-                draggedPreview = null;
-            }
+        div.addEventListener('dragend', () => {
+          div.style.opacity = '1';
+          div.style.transform = '';
+          orgDraggedData = null;
+          orgDragOverTarget = null;
+          // Odstranit všechny ghost placeholdery
+          document.querySelectorAll('.org-ghost').forEach(g => g.remove());
+          document.querySelectorAll('.page-thumb').forEach(t => {
+            t.style.outline = '';
+          });
         });
 
-        document.getElementById('btn-add-doc').addEventListener('click', () => uploadInput.click());
+        div.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!orgDraggedData) return;
+          if (orgDraggedData.docId === div.dataset.docId &&
+              orgDraggedData.localIdx === parseInt(div.dataset.localIdx)) return;
 
-        uploadInput.addEventListener('change', async (e) => {
-            const files = Array.from(e.target.files);
-            if(files.length === 0) return;
+          // Odstraň staré ghosts
+          document.querySelectorAll('.org-ghost').forEach(g => g.remove());
 
-            // Vymazat placeholder
-            const placeholder = docsContainer.querySelector('.border-dashed');
-            if(placeholder && placeholder.textContent.includes('Klikněte')) {
-                placeholder.remove();
-            }
+          const rect = div.getBoundingClientRect();
+          const insertBefore = e.clientX < rect.left + rect.width / 2;
 
-            for(let file of files) {
-                const bytes = await file.arrayBuffer();
-                // Vytvořit kopii ArrayBuffer, aby se nepoškodil při opakovaném použití
-                const bytesCopy = new Uint8Array(bytes).buffer;
-                const pdfDoc = await PDFLib.PDFDocument.load(bytesCopy);
-                const pageCount = pdfDoc.getPageCount();
-                const docId = 'doc_' + Date.now() + Math.random().toString(36).substr(2, 9);
-                const sourceIdx = sourceFileCounter++;
+          // Vytvoř ghost placeholder
+          const ghost = createGhostPlaceholder(orgDraggedData.imgSrc, orgDraggedData.sourceIdx);
+          if (insertBefore) {
+            div.parentNode.insertBefore(ghost, div);
+          } else {
+            div.parentNode.insertBefore(ghost, div.nextSibling);
+          }
 
-                const pages = [];
-                for(let i = 0; i < pageCount; i++) {
-                    pages.push({
-                        sourceFileIndex: sourceIdx,
-                        pageIndex: i
-                    });
-                }
-
-                documents.push({
-                    id: docId,
-                    name: file.name,
-                    bytes: new Uint8Array(bytesCopy), // Uložit jako Uint8Array pro bezpečné opakované použití
-                    pages: pages
-                });
-
-                renderDocumentColumn(docId, file.name, sourceIdx);
-                await renderThumbnails(docId, new Uint8Array(bytesCopy), sourceIdx);
-            }
-
-            document.getElementById('btn-organize-merge').disabled = false;
-            document.getElementById('btn-organize-download-sep').disabled = false;
-            lucide.createIcons();
+          orgDragOverTarget = {
+            docId: div.dataset.docId,
+            localIdx: parseInt(div.dataset.localIdx),
+            insertBefore
+          };
         });
 
-        function renderDocumentColumn(docId, name, sourceIdx) {
-            const col = document.createElement('div');
-            col.className = 'bg-[#1E293B] border border-slate-700 rounded-xl overflow-hidden';
-            col.id = docId;
-            col.innerHTML = `
-                <div class="p-4 border-b border-slate-700 flex items-center gap-3 bg-slate-800/50">
-                    <div class="w-8 h-8 rounded bg-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
-                        <i data-lucide="file-text" class="w-4 h-4"></i>
-                    </div>
-                    <div class="overflow-hidden flex-grow">
-                        <h4 class="text-white font-bold text-sm truncate">${escapeHTML(name)}</h4>
-                        <p class="text-slate-400 text-xs">Zdroj #${sourceIdx + 1} · <span class="page-count">0</span> stran</p>
-                    </div>
-                    <button onclick="removeDocColumn('${docId}')" class="text-slate-400 hover:text-red-400 transition-colors p-1">
-                        <i data-lucide="x" class="w-5 h-5"></i>
-                    </button>
-                </div>
-                <div class="pages-grid p-3 grid gap-2" id="${docId}-pages" data-doc-id="${docId}"></div>
-            `;
-            docsContainer.appendChild(col);
-            lucide.createIcons();
-        }
-
-        async function renderThumbnails(docId, bytes, sourceIdx) {
-            const container = document.getElementById(`${docId}-pages`);
-            container.innerHTML = '';
-
-            const doc = documents.find(d => d.id === docId);
-            if(!doc) return;
-
-            // Dynamická velikost gridu podle počtu stránek
-            const pageCount = doc.pages.length;
-            if(pageCount <= 4) {
-                container.className = 'pages-grid p-3 grid grid-cols-2 sm:grid-cols-4 gap-3';
-            } else if(pageCount <= 9) {
-                container.className = 'pages-grid p-3 grid grid-cols-3 sm:grid-cols-5 gap-2';
-            } else if(pageCount <= 20) {
-                container.className = 'pages-grid p-3 grid grid-cols-4 sm:grid-cols-6 gap-2';
-            } else {
-                container.className = 'pages-grid p-3 grid grid-cols-5 sm:grid-cols-8 gap-1';
-            }
-
-            try {
-                // Předat data jako ArrayBuffer pro pdfjsLib
-                const arrayBuffer = bytes instanceof Uint8Array ? bytes.buffer : bytes;
-                const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-
-                for(let i = 0; i < doc.pages.length; i++) {
-                    const pageData = doc.pages[i];
-                    const page = await pdf.getPage(pageData.pageIndex + 1);
-                    const viewport = page.getViewport({scale: 0.4});
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-
-                    await page.render({canvasContext: ctx, viewport: viewport}).promise;
-                    const imgSrc = canvas.toDataURL();
-
-                    const pageDiv = document.createElement('div');
-                    pageDiv.className = 'page-thumb relative group cursor-move border-2 border-slate-600 rounded overflow-hidden bg-white transition-all hover:border-indigo-400 hover:shadow-lg hover:shadow-indigo-500/20';
-                    pageDiv.draggable = true;
-                    pageDiv.dataset.docId = docId;
-                    pageDiv.dataset.index = i;
-                    pageDiv.dataset.sourceIdx = pageData.sourceFileIndex;
-                    pageDiv.dataset.imgSrc = imgSrc;
-
-                    pageDiv.innerHTML = `
-                        <img src="${imgSrc}" class="w-full h-auto block">
-                        <div class="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent p-1">
-                            <span class="bg-indigo-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${i + 1}</span>
-                        </div>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1">
-                            <span class="text-white/80 text-[8px]">zdroj #${pageData.sourceFileIndex + 1}</span>
-                        </div>
-                        <button class="delete-btn absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all text-xs shadow-lg">×</button>
-                    `;
-
-                    // Drag start
-                    pageDiv.addEventListener('dragstart', (e) => {
-                        draggedElement = pageDiv;
-                        draggedData = { docId, index: i };
-                        pageDiv.style.opacity = '0.4';
-                        pageDiv.style.transform = 'scale(0.95)';
-                        e.dataTransfer.effectAllowed = 'move';
-                        e.dataTransfer.setData('text/plain', JSON.stringify({docId, index: i, imgSrc}));
-
-                        // Vytvořit drag preview
-                        draggedPreview = document.createElement('div');
-                        draggedPreview.className = 'fixed pointer-events-none z-50 opacity-80';
-                        draggedPreview.style.cssText = 'width: 60px; height: 80px; border: 2px solid #6366f1; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 12px rgba(99,102,241,0.3);';
-                        draggedPreview.innerHTML = `<img src="${imgSrc}" class="w-full h-full object-cover">`;
-                        document.body.appendChild(draggedPreview);
-                    });
-
-                    // Drag end
-                    pageDiv.addEventListener('dragend', () => {
-                        if(draggedElement) {
-                            draggedElement.style.opacity = '1';
-                            draggedElement.style.transform = '';
-                        }
-                        draggedElement = null;
-                        draggedData = null;
-
-                        // Odstranit drag preview
-                        if(draggedPreview) {
-                            draggedPreview.remove();
-                            draggedPreview = null;
-                        }
-
-                        // Odstranit všechny drop indikátory
-                        document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
-                        document.querySelectorAll('.page-thumb').forEach(el => {
-                            el.classList.remove('ring-2', 'ring-indigo-400', 'ring-opacity-50');
-                        });
-                    });
-
-                    // Delete button
-                    pageDiv.querySelector('.delete-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        deletePage(docId, i);
-                    });
-
-                    // Drag over - zobrazit indikátor
-                    pageDiv.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-                        if(!draggedData) return;
-
-                        pageDiv.classList.add('ring-2', 'ring-indigo-400');
-
-                        // Odstranit existující drop indikátory
-                        document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
-
-                        const rect = pageDiv.getBoundingClientRect();
-                        const midY = rect.top + rect.height / 2;
-
-                        // Vytvořit drop indikátor
-                        const indicator = document.createElement('div');
-                        indicator.className = 'drop-indicator h-1 bg-indigo-500 rounded transition-all';
-
-                        if(e.clientY < midY) {
-                            // Vložit před
-                            pageDiv.parentNode.insertBefore(indicator, pageDiv);
-                        } else {
-                            // Vložit za
-                            pageDiv.parentNode.insertBefore(indicator, pageDiv.nextSibling);
-                        }
-                    });
-
-                    // Drag leave
-                    pageDiv.addEventListener('dragleave', () => {
-                        pageDiv.classList.remove('ring-2', 'ring-indigo-400');
-                    });
-
-                    // Drop
-                    pageDiv.addEventListener('drop', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        pageDiv.classList.remove('ring-2', 'ring-indigo-400');
-
-                        // Odstranit drop indikátory
-                        document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
-
-                        if(!draggedData) return;
-
-                        const rect = pageDiv.getBoundingClientRect();
-                        const midY = rect.top + rect.height / 2;
-                        const insertBefore = e.clientY < midY;
-
-                        // Stejný dokument - reorder
-                        if(draggedData.docId === docId) {
-                            const fromIdx = draggedData.index;
-                            const toIdx = i;
-
-                            if(fromIdx !== toIdx) {
-                                reorderPages(docId, fromIdx, toIdx, insertBefore);
-                            }
-                        }
-                        // Jiný dokument - přesun
-                        else {
-                            movePageBetweenDocs(draggedData.docId, draggedData.index, docId, i, insertBefore);
-                        }
-                    });
-
-                    container.appendChild(pageDiv);
-                }
-
-                // Přidat drop zónu na konec každého dokumentu
-                const dropZone = document.createElement('div');
-                dropZone.className = 'drop-zone h-16 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center text-slate-500 text-sm transition-all';
-                dropZone.innerHTML = '<i data-lucide="plus" class="w-4 h-4 mr-2"></i>Přetáhněte stránku sem';
-                dropZone.dataset.docId = docId;
-                dropZone.dataset.position = 'end';
-
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    if(!draggedData) return;
-                    dropZone.classList.add('border-indigo-400', 'bg-indigo-500/10', 'text-indigo-400');
-                });
-
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.classList.remove('border-indigo-400', 'bg-indigo-500/10', 'text-indigo-400');
-                });
-
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.remove('border-indigo-400', 'bg-indigo-500/10', 'text-indigo-400');
-
-                    if(!draggedData) return;
-
-                    const targetDoc = documents.find(d => d.id === docId);
-                    if(!targetDoc) return;
-
-                    // Přesun na konec dokumentu
-                    if(draggedData.docId === docId) {
-                        // Stejný dokument - přesun na konec
-                        const fromIdx = draggedData.index;
-                        const toIdx = targetDoc.pages.length - 1;
-                        if(fromIdx !== toIdx) {
-                            reorderPages(docId, fromIdx, toIdx, false);
-                        }
-                    } else {
-                        // Jiný dokument - přesun na konec
-                        movePageBetweenDocs(draggedData.docId, draggedData.index, docId, targetDoc.pages.length - 1, false);
-                    }
-                });
-
-                container.appendChild(dropZone);
-                lucide.createIcons();
-
-                // Aktualizovat počítadlo stránek
-                const docColumn = document.getElementById(docId);
-                if(docColumn) {
-                    const countSpan = docColumn.querySelector('.page-count');
-                    if(countSpan) countSpan.textContent = doc.pages.length;
-                }
-
-            } catch(err) {
-                container.innerHTML = `<div class="col-span-full text-center text-red-400 py-4">Chyba při načítání: ${err.message}</div>`;
-            }
-        }
-
-        function reorderPages(docId, fromIdx, toIdx, insertBefore) {
-            const doc = documents.find(d => d.id === docId);
-            if(!doc) return;
-
-            const [movedPage] = doc.pages.splice(fromIdx, 1);
-            const insertAt = insertBefore ? toIdx : toIdx + 1;
-            const adjustedIdx = fromIdx < toIdx ? insertAt - 1 : insertAt;
-            doc.pages.splice(adjustedIdx, 0, movedPage);
-
-            refreshDocument(docId);
-        }
-
-        function movePageBetweenDocs(fromDocId, fromIdx, toDocId, toIdx, insertBefore) {
-            const fromDoc = documents.find(d => d.id === fromDocId);
-            const toDoc = documents.find(d => d.id === toDocId);
-            if(!fromDoc || !toDoc) return;
-
-            const [movedPage] = fromDoc.pages.splice(fromIdx, 1);
-            const insertAt = insertBefore ? toIdx : toIdx + 1;
-            toDoc.pages.splice(insertAt, 0, movedPage);
-
-            refreshDocument(fromDocId);
-            refreshDocument(toDocId);
-        }
-
-        function deletePage(docId, idx) {
-            const doc = documents.find(d => d.id === docId);
-            if(!doc) return;
-
-            doc.pages.splice(idx, 1);
-
-            if(doc.pages.length === 0) {
-                removeDocColumn(docId);
-            } else {
-                refreshDocument(docId);
-            }
-        }
-
-        async function refreshDocument(docId) {
-            const doc = documents.find(d => d.id === docId);
-            if(!doc) return;
-
-            const col = document.getElementById(docId);
-            if(!col) return;
-
-            const container = col.querySelector('.pages-grid');
-            if(!container) return;
-
-            // Aktualizovat počítadlo
-            const countSpan = col.querySelector('.page-count');
-            if(countSpan) countSpan.textContent = doc.pages.length;
-
-            // Vytvořit novou kopii bytů pro renderThumbnails
-            const bytesCopy = new Uint8Array(doc.bytes);
-            await renderThumbnails(docId, bytesCopy, doc.pages[0]?.sourceFileIndex || 0);
-        }
-
-        window.removeDocColumn = (docId) => {
-            const col = document.getElementById(docId);
-            if(col) col.remove();
-
-            documents = documents.filter(d => d.id !== docId);
-
-            if(documents.length === 0) {
-                docsContainer.innerHTML = `
-                    <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center text-slate-500 col-span-full flex flex-col items-center justify-center min-h-[200px]">
-                        <i data-lucide="file-plus" class="w-12 h-12 mb-3 opacity-50"></i>
-                        <p>Klikněte na "Přidat dokument" pro začátek.</p>
-                    </div>
-                `;
-                lucide.createIcons();
-                document.getElementById('btn-organize-merge').disabled = true;
-                document.getElementById('btn-organize-download-sep').disabled = true;
-            }
-        };
-
-        // Merge all
-        document.getElementById('btn-organize-merge').addEventListener('click', async () => {
-            if(documents.length === 0) return;
-            showLoading('btn-organize-merge', 'Slučuji...');
-
-            try {
-                const mergedDoc = await PDFLib.PDFDocument.create();
-
-                for(const doc of documents) {
-                    const sourcePdf = await PDFLib.PDFDocument.load(doc.bytes);
-                    for(const pageData of doc.pages) {
-                        const [copiedPage] = await mergedDoc.copyPages(sourcePdf, [pageData.pageIndex]);
-                        mergedDoc.addPage(copiedPage);
-                    }
-                }
-
-                const mergedBytes = await mergedDoc.save();
-                downloadBlob(new Blob([mergedBytes], {type: 'application/pdf'}), 'merged.pdf');
-            } catch(e) {
-                alert('Chyba při slučování: ' + e.message);
-            }
-
-            hideLoading('btn-organize-merge');
+        div.addEventListener('dragleave', (e) => {
+          // Necháme ghost - odstraní se v dragend nebo drop
         });
 
-        // Download separately
-        document.getElementById('btn-organize-download-sep').addEventListener('click', async () => {
-            if(documents.length === 0) return;
-            showLoading('btn-organize-download-sep', 'Generuji...');
+        div.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!orgDraggedData || !orgDragOverTarget) return;
+          performDrop(orgDragOverTarget);
+        });
 
-            try {
-                const zip = new JSZip();
+        return div;
+      }
 
-                for(const doc of documents) {
-                    const sourcePdf = await PDFLib.PDFDocument.load(doc.bytes);
-                    const newDoc = await PDFLib.PDFDocument.create();
+      // === GHOST PLACEHOLDER ===
 
-                    for(const pageData of doc.pages) {
-                        const [copiedPage] = await newDoc.copyPages(sourcePdf, [pageData.pageIndex]);
-                        newDoc.addPage(copiedPage);
-                    }
+      function createGhostPlaceholder(imgSrc, sourceIdx) {
+        const c = getColor(sourceIdx);
+        const ghost = document.createElement('div');
+        ghost.className = 'org-ghost rounded-lg overflow-hidden pointer-events-none';
+        ghost.style.cssText = `
+          width: 72px;
+          border: 2px dashed ${c.border};
+          background: ${c.bg};
+          opacity: 0.6;
+          flex-shrink: 0;
+        `;
+        ghost.innerHTML = `<img src="${imgSrc}" class="w-full h-auto block opacity-50">`;
+        return ghost;
+      }
 
-                    const docBytes = await newDoc.save();
-                    zip.file(`${doc.name.replace('.pdf', '')}_organized.pdf`, docBytes);
-                }
+      // === DROP ZONE NA KONCI ===
 
-                const zipBlob = await zip.generateAsync({type: 'blob'});
-                downloadBlob(zipBlob, 'organized_documents.zip');
-            } catch(e) {
-                alert('Chyba: ' + e.message);
+      function createEndDropZone(docId) {
+        const zone = document.createElement('div');
+        zone.className = 'org-end-zone flex-shrink-0 rounded-lg border-2 border-dashed border-slate-700 flex items-center justify-center text-slate-600 text-xs transition-all cursor-default';
+        zone.style.cssText = 'width: 60px; min-height: 80px;';
+        zone.innerHTML = '<i data-lucide="plus" class="w-4 h-4"></i>';
+        lucide.createIcons();
+
+        zone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!orgDraggedData) return;
+          document.querySelectorAll('.org-ghost').forEach(g => g.remove());
+          zone.style.borderColor = getColor(orgDraggedData.sourceIdx).border;
+          zone.style.background = getColor(orgDraggedData.sourceIdx).bg;
+          const ghost = createGhostPlaceholder(orgDraggedData.imgSrc, orgDraggedData.sourceIdx);
+          zone.parentNode.insertBefore(ghost, zone);
+          orgDragOverTarget = { docId, localIdx: -1, insertBefore: false };
+        });
+
+        zone.addEventListener('dragleave', () => {
+          zone.style.borderColor = '';
+          zone.style.background = '';
+        });
+
+        zone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.style.borderColor = '';
+          zone.style.background = '';
+          if (!orgDraggedData || !orgDragOverTarget) return;
+          performDrop(orgDragOverTarget);
+        });
+
+        return zone;
+      }
+
+      // === PERFORM DROP ===
+
+      function performDrop(target) {
+          if (!orgDraggedData || !target) return;
+
+          // Ulož vše lokálně hned
+          const fromDocId    = orgDraggedData.docId;
+          const fromLocalIdx = orgDraggedData.localIdx;
+          const toDocId      = target.docId;
+          const toLocalIdx   = target.localIdx;   // -1 = append to end
+          const insertBefore = target.insertBefore;
+
+          // Reset okamžitě aby dragend neinterferoval
+          orgDraggedData = null;
+          orgDragOverTarget = null;
+          document.querySelectorAll('.org-ghost').forEach(g => g.remove());
+
+          const fromDoc = orgDocuments.find(d => d.id === fromDocId);
+          const toDoc   = orgDocuments.find(d => d.id === toDocId);
+          if (!fromDoc || !toDoc) return;
+
+          // Vyjmi stránku
+          const [movedPage] = fromDoc.pages.splice(fromLocalIdx, 1);
+          // Aktualizuj fileIndex přesunuté stránky
+          movedPage.fileIndex = orgDocuments.indexOf(toDoc);
+
+          if (toLocalIdx === -1) {
+              // Append to end
+              toDoc.pages.push(movedPage);
+          } else {
+              let insertAt;
+              if (fromDocId === toDocId) {
+                  // Stejný dokument — fromLocalIdx byl odebrán, indexy se posunuly
+                  if (insertBefore) {
+                      insertAt = fromLocalIdx < toLocalIdx
+                          ? toLocalIdx - 1
+                          : toLocalIdx;
+                  } else {
+                      insertAt = fromLocalIdx < toLocalIdx
+                          ? toLocalIdx      // -1 byl odebrán před tím
+                          : toLocalIdx + 1;
+                  }
+              } else {
+                  // Jiný dokument
+                  insertAt = insertBefore ? toLocalIdx : toLocalIdx + 1;
+              }
+              insertAt = Math.max(0, Math.min(insertAt, toDoc.pages.length));
+              toDoc.pages.splice(insertAt, 0, movedPage);
+          }
+
+          // Odstraň prázdné dokumenty (pouze pokud se přesouváme mezi různými)
+          if (fromDocId !== toDocId && fromDoc.pages.length === 0) {
+              orgDocuments = orgDocuments.filter(d => d.id !== fromDocId);
+              const col = document.getElementById(fromDocId);
+              if (col) col.remove();
+          }
+
+          // Re-render
+          const toRender = fromDocId === toDocId
+              ? [toDoc]
+              : [fromDoc, toDoc].filter(d => d.pages.length > 0);
+
+          toRender.forEach(d => renderPages(d));
+
+          if (orgDocuments.length === 0) {
+              const grid = document.getElementById('org-docs-grid');
+              if (grid) {
+                  grid.innerHTML = `
+                      <div id="org-placeholder"
+                           class="col-span-full border-2 border-dashed border-slate-700
+                                  rounded-2xl p-16 flex flex-col items-center justify-center
+                                  text-slate-500 min-h-[200px]">
+                          <i data-lucide="file-plus" class="w-12 h-12 mb-3 opacity-40"></i>
+                          <p class="font-medium">Klikněte na "Přidat dokument"</p>
+                      </div>
+                  `;
+                  lucide.createIcons();
+              }
+          }
+
+          updateButtons();
+          updateLegend();
+      }
+
+      // === DELETE PAGE ===
+
+      function orgDeletePage(docId, localIdx) {
+        const doc = orgDocuments.find(d => d.id === docId);
+        if (!doc) return;
+        doc.pages.splice(localIdx, 1);
+        if (doc.pages.length === 0) {
+          orgRemoveDoc(docId);
+        } else {
+          renderPages(doc);
+        }
+      }
+
+      window.orgRemoveDoc = (docId) => {
+        orgDocuments = orgDocuments.filter(d => d.id !== docId);
+        const col = document.getElementById(docId);
+        if (col) col.remove();
+        if (orgDocuments.length === 0) {
+          const grid = document.getElementById('org-docs-grid');
+          grid.innerHTML = `
+            <div id="org-placeholder" class="col-span-full border-2 border-dashed border-slate-700
+                 rounded-2xl p-16 flex flex-col items-center justify-center text-slate-500 min-h-[200px]">
+              <i data-lucide="file-plus" class="w-12 h-12 mb-3 opacity-40"></i>
+              <p>Klikněte na "Přidat dokument"</p>
+            </div>
+          `;
+          lucide.createIcons();
+        }
+        updateButtons();
+        updateLegend();
+      };
+
+      // === PŘIDÁNÍ DOKUMENTU ===
+
+      document.getElementById('org-add-btn').addEventListener('click', () => {
+        document.getElementById('org-file-input').click();
+      });
+
+      document.getElementById('org-file-input').addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+        e.target.value = '';
+
+        for (const file of files) {
+          if (file.type !== 'application/pdf') continue;
+
+          const sourceIdx = orgSourceCounter++;
+          const docId = 'org_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+
+          // VŽDY ukládej jako Uint8Array
+          const arrayBuffer = await file.arrayBuffer();
+          const uint8 = new Uint8Array(arrayBuffer);
+
+          // Načti PDF pro zjištění počtu stránek (použij kopii bufferu)
+          const tmpBuf = uint8.buffer.slice(0);
+          const pdfDoc = await PDFLib.PDFDocument.load(tmpBuf);
+          const pageCount = pdfDoc.getPageCount();
+
+          const doc = {
+            id: docId,
+            name: file.name,
+            bytes: uint8,           // Uint8Array
+            sourceIdx: sourceIdx,
+            pages: Array.from({length: pageCount}, (_, i) => ({
+              id: `${docId}-p${i}`,
+              fileIndex: orgDocuments.length,
+              sourceFileIndex: sourceIdx,
+              pageIndex: i,          // 0-based
+              imgSrc: null
+            }))
+          };
+
+          orgDocuments.push(doc);
+          await renderDocument(doc);
+        }
+      });
+
+      // === MERGE & DOWNLOAD ===
+
+      document.getElementById('org-merge-btn').addEventListener('click', async () => {
+        if (!orgDocuments.length) return;
+        showLoading('org-merge-btn', 'Slučuji...');
+        try {
+          const mergedDoc = await PDFLib.PDFDocument.create();
+
+          // Načti každý zdrojový soubor jednou (jako v assemblePdfFromPages)
+          const sourceMap = new Map();
+          for (const doc of orgDocuments) {
+            if (!sourceMap.has(doc.sourceIdx)) {
+              const buf = doc.bytes.buffer.slice(0);
+              const loaded = await PDFLib.PDFDocument.load(buf);
+              sourceMap.set(doc.sourceIdx, loaded);
+            }
+          }
+
+          // Iteruj přes všechny dokumenty a jejich stránky v pořadí
+          for (const doc of orgDocuments) {
+            const sourcePdf = sourceMap.get(doc.sourceIdx);
+            if (!sourcePdf) continue;
+            for (const pageData of doc.pages) {
+              const [copied] = await mergedDoc.copyPages(
+                sourcePdf,
+                [pageData.pageIndex]
+              );
+              mergedDoc.addPage(copied);
+            }
+          }
+
+          const mergedBytes = await mergedDoc.save();
+          downloadBlob(
+            new Blob([mergedBytes], {type: 'application/pdf'}),
+            'merged.pdf'
+          );
+        } catch (e) { alert('Chyba: ' + e.message); }
+        hideLoading('org-merge-btn');
+      });
+
+      document.getElementById('org-sep-btn').addEventListener('click', async () => {
+        if (!orgDocuments.length) return;
+        showLoading('org-sep-btn', 'Generuji...');
+        try {
+          const zip = new JSZip();
+
+          for (const doc of orgDocuments) {
+            const newDoc = await PDFLib.PDFDocument.create();
+
+            // Načti source jednou pro tento dokument
+            const buf = doc.bytes.buffer.slice(0);
+            const sourcePdf = await PDFLib.PDFDocument.load(buf);
+
+            for (const pageData of doc.pages) {
+              const [copied] = await newDoc.copyPages(
+                sourcePdf,
+                [pageData.pageIndex]
+              );
+              newDoc.addPage(copied);
             }
 
-            hideLoading('btn-organize-download-sep');
-        });
-    }
+            const docBytes = await newDoc.save();
+            zip.file(
+              doc.name.replace('.pdf', '') + '_organized.pdf',
+              docBytes
+            );
+          }
+
+          const zipBlob = await zip.generateAsync({type: 'blob'});
+          downloadBlob(zipBlob, 'organized.zip');
+        } catch (e) { alert('Chyba: ' + e.message); }
+        hideLoading('org-sep-btn');
+      });
+
+    } // konec organize-pdf bloku
 
     // --- AI VISION (Smart Image Analyzer) ---
     else if (toolId === 'ai-vision') {
