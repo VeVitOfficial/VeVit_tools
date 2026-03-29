@@ -1,11 +1,20 @@
 Options -Indexes
 RewriteEngine On
 
-# Block direct access to config_secret.php
+# Blokuj přímý přístup ke config_secret.php
 <Files "config_secret.php">
     Order Allow,Deny
     Deny from all
 </Files>
 
-# Everything else passes through normally
-# index.html is served automatically
+# Existující soubory a složky servíruj přímo
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# API endpointy — přepiš na PHP soubory
+RewriteRule ^api/(.+)$ api/$1.php [L]
+
+# Vše ostatní → index.html (SPA routing)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.html [L,QSA]

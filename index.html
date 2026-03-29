@@ -187,12 +187,65 @@
         /* Dropdown hover */
         .light-mode .hover\:bg-slate-800:hover { background-color: #f1f5f9; }
         .light-mode .hover\:bg-slate-700:hover { background-color: #e2e8f0; }
+
+        /* Drop zone for organize PDF */
+        .drop-zone {
+            min-height: 60px;
+        }
+        .drop-zone.active {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+        }
+        .drop-indicator {
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #818cf8);
+            border-radius: 2px;
+            margin: 4px 0;
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+        }
+        .page-thumb {
+            transition: all 0.15s ease;
+        }
+        .page-thumb.dragging {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        /* Breadcrumb styles */
+        #breadcrumb-nav button:hover {
+            color: #f8fafc !important;
+        }
+        #breadcrumb-bar {
+            transition: opacity 0.2s ease;
+            margin-top: 0 !important;
+        }
+        #breadcrumb-bar.hidden {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute !important;
+        }
+        #breadcrumb-bar:not(.hidden) {
+            opacity: 1;
+        }
+        .light-mode #breadcrumb-bar {
+            background: #f8fafc;
+        }
+        .light-mode #breadcrumb-nav button {
+            color: #64748b;
+        }
+        .light-mode #breadcrumb-nav button:hover {
+            color: #0f172a !important;
+        }
+        .light-mode #breadcrumb-nav span {
+            color: #0f172a;
+        }
     </style>
 </head>
 <body class="bg-dark text-slate-200 min-h-screen flex flex-col">
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 px-6 py-4 flex justify-between items-center backdrop-blur-md border-b nav-bg" style="border-color: var(--border-color);">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="showHome()">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('/')">
             <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
                 <i data-lucide="sparkles" class="text-white keep-white w-5 h-5"></i>
             </div>
@@ -217,6 +270,13 @@
             <div id="auth-container" class="ml-2"></div>
         </div>
     </nav>
+
+    <!-- Breadcrumb Bar -->
+    <div id="breadcrumb-bar" class="hidden sticky z-40 px-6 py-3" style="top: 60px; background: rgba(11,15,25,0.8); border-bottom: 1px solid #1E293B;">
+        <div class="max-w-6xl mx-auto">
+            <nav id="breadcrumb-nav" class="flex items-center gap-1 text-sm flex-wrap"></nav>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="flex-grow p-6 max-w-6xl mx-auto w-full flex flex-col" id="main-content">
@@ -247,7 +307,7 @@
                 <div class="relative flex items-center gap-3 flex-wrap justify-center mb-10">
                     <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
                         <div class="w-2 h-2 rounded-full bg-green-400"></div>
-                        20+ nástrojů
+                        30+ nástrojů
                     </div>
                     <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
                         <div class="w-2 h-2 rounded-full bg-blue-400"></div>
@@ -288,9 +348,6 @@
 
         <!-- Category View (e.g. PDF Tools Grid) -->
         <div id="category-view" class="hidden-section space-y-8 pb-12">
-            <button onclick="showHome()" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors font-medium text-sm">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> Zpět na Dashboard
-            </button>
             <div class="text-center py-8">
                 <h1 class="text-4xl font-bold text-white mb-4" id="category-title">PDF Nástroje</h1>
                 <p class="text-slate-400" id="category-desc">Kompletní sada nástrojů pro práci s PDF soubory.</p>
@@ -300,9 +357,6 @@
 
         <!-- Tool View -->
         <div id="tool-view" class="hidden-section pb-12 flex-grow flex flex-col">
-            <button onclick="showHome()" class="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors font-medium text-sm w-fit">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> Zpět na Dashboard
-            </button>
             <div id="tool-container" class="flex-grow flex flex-col"></div>
         </div>
     </main>

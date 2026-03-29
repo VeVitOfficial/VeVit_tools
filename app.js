@@ -1,4 +1,187 @@
 // ==========================================
+// 0. URL ROUTING (History API)
+// ==========================================
+
+// URL MAP: tool ID → URL slug
+const URL_MAP = {
+    // PDF Tools
+    'merge-pdf':        '/pdf-tools/merge-pdf',
+    'split-pdf':        '/pdf-tools/split-pdf',
+    'remove-pages':     '/pdf-tools/remove-pages',
+    'extract-pages':    '/pdf-tools/extract-pages',
+    'organize-pdf':     '/pdf-tools/organize-pdf',
+    'scan-to-pdf':      '/pdf-tools/scan-to-pdf',
+    'compress-pdf':     '/pdf-tools/compress-pdf',
+    'repair-pdf':       '/pdf-tools/repair-pdf',
+    'ocr-pdf':          '/pdf-tools/ocr-pdf',
+    'pdf-converter':    '/pdf-tools/pdf-converter',
+    'rotate-pdf':       '/pdf-tools/rotate-pdf',
+    'page-numbers':     '/pdf-tools/page-numbers',
+    'watermark-pdf':    '/pdf-tools/watermark-pdf',
+    'crop-pdf':         '/pdf-tools/crop-pdf',
+    'redact-pdf':       '/pdf-tools/redact-pdf',
+    'unlock-pdf':       '/pdf-tools/unlock-pdf',
+    'protect-pdf':      '/pdf-tools/protect-pdf',
+    'compare-pdf':      '/pdf-tools/compare-pdf',
+    'ai-summarize':     '/pdf-tools/ai-summarize',
+    'ai-translate-pdf': '/pdf-tools/ai-translate-pdf',
+    // Other Tools
+    'video-conv':       '/video-converter',
+    'audio-conv':       '/audio-converter',
+    'img-conv':         '/image-converter',
+    'resize-img':       '/resize-image',
+    'ai-vision':        '/ai-vision',
+    'ai-search':        '/ai-search',
+    'tts':              '/text-to-speech',
+    // Categories
+    'pdf-tools':        '/pdf-tools'
+};
+
+// Reverse map: URL slug → tool ID
+const SLUG_MAP = {};
+Object.entries(URL_MAP).forEach(([id, slug]) => {
+    SLUG_MAP[slug] = id;
+});
+
+function navigate(path, pushState = true) {
+    try {
+        if (pushState && window.history && window.history.pushState) {
+            window.history.pushState({ path }, '', path);
+        }
+    } catch (e) {
+        // History API may not work on file:// protocol
+    }
+    handleRoute(path);
+    updateCanonical(path);
+    window.scrollTo(0, 0);
+}
+
+function handleRoute(path) {
+    path = path || '/';
+    if (!path.startsWith('/')) path = '/' + path;
+
+    // Home
+    if (path === '/') {
+        _showHome();
+        return;
+    }
+
+    // PDF kategorie
+    if (path === '/pdf-tools') {
+        _showCategory('pdf-tools');
+        return;
+    }
+
+    // PDF nástroj
+    if (path.startsWith('/pdf-tools/')) {
+        const toolId = path.replace('/pdf-tools/', '');
+        if (toolId) {
+            _openTool(toolId);
+            return;
+        }
+    }
+
+    // Ostatní nástroje (přímý slug)
+    const toolId = SLUG_MAP[path];
+    if (toolId) {
+        _openTool(toolId);
+        return;
+    }
+
+    // 404 fallback → home
+    _showHome();
+}
+
+function updateCanonical(path) {
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'canonical';
+        document.head.appendChild(link);
+    }
+    link.href = 'https://services.vevit.fun' + path;
+}
+
+// ==========================================
+// BREADCRUMB NAVIGACE
+// ==========================================
+function renderBreadcrumb(parts) {
+    // parts = pole objektů: [{label, path}]
+    // Poslední část = aktuální stránka (neklikatelná)
+
+    const bar = document.getElementById('breadcrumb-bar');
+    const nav = document.getElementById('breadcrumb-nav');
+
+    if (!parts || parts.length === 0) {
+        bar.classList.add('hidden');
+        return;
+    }
+
+    bar.classList.remove('hidden');
+
+    nav.innerHTML = parts.map((part, index) => {
+        const isLast = index === parts.length - 1;
+        const isFirst = index === 0;
+
+        if (isLast) {
+            // Aktuální stránka — neklikatelná, zvýrazněná
+            return `<span class="font-semibold" style="color: #e2e8f0;">${escapeHTML(part.label)}</span>`;
+        }
+
+        // Klikatelná část
+        return `
+            <button onclick="navigate('${part.path}')"
+                    class="transition-colors hover:text-white flex items-center gap-1"
+                    style="color: #64748b;">
+                ${isFirst ? `<i data-lucide="home" class="w-3.5 h-3.5"></i>` : ''}
+                ${escapeHTML(part.label)}
+            </button>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 flex-shrink-0" style="color: #334155;"></i>
+        `;
+    }).join('');
+
+    lucide.createIcons();
+}
+
+function hideBreadcrumb() {
+    const bar = document.getElementById('breadcrumb-bar');
+    if (bar) {
+        bar.classList.add('hidden');
+    }
+}
+
+function copyToolLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        showToast('Odkaz zkopírován do schránky!', 'success');
+    }).catch(() => {
+        showToast('Kopírování selhalo', 'error');
+    });
+}
+
+function showToast(message, type = 'info') {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+
+    const colors = {
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        info: 'bg-blue-500'
+    };
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification fixed bottom-4 right-4 ${colors[type]} text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center gap-2`;
+    toast.innerHTML = `
+        <i data-lucide="${type === 'success' ? 'check' : type === 'error' ? 'x' : 'info'}" class="w-4 h-4"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(toast);
+    lucide.createIcons();
+
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// ==========================================
 // 0. BEZPEČNOSTNÍ FUNKCE (XSS OCHRANA)
 // ==========================================
 function escapeHTML(str) {
@@ -388,15 +571,41 @@ function handleItemClick(id, type) {
 }
 
 function showHome() {
-    document.getElementById('home-view').classList.remove('hidden-section');
-    document.getElementById('category-view').classList.add('hidden-section');
-    document.getElementById('tool-view').classList.add('hidden-section');
+    navigate('/');
 }
 
 function showCategory(categoryId) {
+    const slug = URL_MAP[categoryId] || '/' + categoryId;
+    navigate(slug);
+}
+
+function openTool(toolId) {
+    const slug = URL_MAP[toolId] || '/' + toolId;
+    navigate(slug);
+}
+
+// Interní funkce
+function _showHome() {
+    document.getElementById('home-view').classList.remove('hidden-section');
+    document.getElementById('category-view').classList.add('hidden-section');
+    document.getElementById('tool-view').classList.add('hidden-section');
+    document.title = 'VeVit Tools';
+    hideBreadcrumb();
+}
+
+function _showCategory(categoryId) {
     document.getElementById('home-view').classList.add('hidden-section');
     document.getElementById('category-view').classList.remove('hidden-section');
     document.getElementById('tool-view').classList.add('hidden-section');
+    document.title = 'PDF Nástroje — VeVit Tools';
+
+    // Breadcrumb navigace
+    if (categoryId === 'pdf-tools') {
+        renderBreadcrumb([
+            { label: 'Dashboard', path: '/' },
+            { label: 'PDF Nástroje', path: '/pdf-tools' }
+        ]);
+    }
 
     const grid = document.getElementById('category-tools-grid');
 
@@ -458,16 +667,40 @@ function showCategory(categoryId) {
     lucide.createIcons();
 }
 
-function openTool(toolId) {
+function _openTool(toolId) {
     document.getElementById('home-view').classList.add('hidden-section');
     document.getElementById('category-view').classList.add('hidden-section');
     document.getElementById('tool-view').classList.remove('hidden-section');
 
     const container = document.getElementById('tool-container');
-    container.innerHTML = ''; // Clear previous
+    container.innerHTML = '';
+
+    // Najdi tool info
+    const tool = [...mainItems, ...pdfTools].find(t => t.id === toolId);
+    const toolName = tool?.name || toolId;
+    const isPdfTool = pdfTools.some(t => t.id === toolId);
+
+    // Breadcrumb navigace
+    if (isPdfTool) {
+        renderBreadcrumb([
+            { label: 'Dashboard', path: '/' },
+            { label: 'PDF Nástroje', path: '/pdf-tools' },
+            { label: toolName, path: URL_MAP[toolId] || '/' + toolId }
+        ]);
+    } else {
+        renderBreadcrumb([
+            { label: 'Dashboard', path: '/' },
+            { label: toolName, path: URL_MAP[toolId] || '/' + toolId }
+        ]);
+    }
 
     initToolUI(toolId, container);
     lucide.createIcons();
+
+    // Nastav page title
+    if (tool) {
+        document.title = tool.name + ' — VeVit Tools';
+    }
 }
 
 // Custom Dropdown Komponenta
@@ -534,17 +767,17 @@ function initCustomSelects() {
     }
 }
 
-function createDropzone(id, accept, label, icon = 'upload') {
+function createDropzone(id, accept, label, icon = 'upload', single = false) {
     return `
         <div id="${id}" class="border-2 border-dashed border-slate-700 rounded-2xl p-10 text-center hover:border-indigo-500 hover:bg-slate-800/30 transition-all cursor-pointer flex flex-col items-center justify-center gap-4 bg-card-base h-full min-h-[300px]">
             <div class="w-16 h-16 rounded-full bg-slate-800/80 flex items-center justify-center text-slate-300 shadow-inner">
                 <i data-lucide="${icon}" class="w-8 h-8"></i>
             </div>
             <div>
-                <p class="text-lg font-bold text-white">Přetáhněte soubory sem</p>
+                <p class="text-lg font-bold text-white">Přetáhněte soubor sem</p>
                 <p class="text-sm text-slate-500 mt-1">${label}</p>
             </div>
-            <input type="file" id="${id}-input" class="hidden" accept="${accept}" multiple>
+            <input type="file" id="${id}-input" class="hidden" accept="${accept}"${single ? '' : ' multiple'}>
         </div>
     `;
 }
@@ -701,16 +934,29 @@ function initToolUI(toolId, container) {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="flex flex-col gap-4">
                     <div id="split-upload-area" class="h-full min-h-[300px]">
-                        ${createDropzone('split-dz', 'application/pdf', 'Nahrajte PDF soubor')}
+                        ${createDropzone('split-dz', 'application/pdf', 'Nahrajte PDF soubor', 'upload', true)}
                     </div>
-                    <div id="split-info-area" class="hidden h-full min-h-[200px] border border-purple-500/30 bg-purple-900/10 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
-                        <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 mb-4">
-                            <i data-lucide="check" class="w-8 h-8"></i>
+                    <div id="split-info-area" class="hidden border border-purple-500/30 bg-purple-900/10 rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Soubor načten</h3>
+                                <p id="split-filename" class="text-slate-400 text-sm truncate max-w-[200px]"></p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span id="split-pages-badge" class="bg-slate-800 text-slate-300 text-xs font-bold px-3 py-1 rounded-full"></span>
+                                <button onclick="resetSplit()" class="text-sm text-purple-400 hover:text-purple-300 underline">Změnit</button>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-1">Soubor načten</h3>
-                        <p id="split-filename" class="text-slate-400 text-sm mb-3 truncate max-w-full"></p>
-                        <span id="split-pages-badge" class="bg-slate-800 text-slate-300 text-xs font-bold px-3 py-1 rounded-full mb-4"></span>
-                        <button onclick="resetSplit()" class="text-sm text-purple-400 hover:text-purple-300 underline">Nahrát jiný soubor</button>
+
+                        <!-- Náhledy stránek s dělicími čarami -->
+                        <div class="mb-4">
+                            <p class="text-slate-300 text-sm mb-3">
+                                <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                                Klikněte na šedou čáru <strong>za stránkou</strong>, na které chcete dokument rozdělit.
+                            </p>
+                            <div id="split-thumbnails" class="max-h-[350px] overflow-y-auto p-2 bg-[#0B0F19] rounded-lg">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="bg-blue-900/20 border border-blue-900/50 rounded-xl p-4 flex gap-3 text-sm text-blue-200">
@@ -721,14 +967,14 @@ function initToolUI(toolId, container) {
 
                 <div class="bg-card border border-border rounded-2xl p-6 flex flex-col">
                     <h3 class="text-lg font-bold text-white mb-1">Body rozdělení</h3>
-                    <p class="text-slate-400 text-sm mb-4">Zadejte čísla stránek, kde se má dokument rozdělit.</p>
+                    <p class="text-slate-400 text-sm mb-4">Zadejte číslo stránky, <strong>za kterou</strong> se má dokument rozdělit.</p>
 
                     <div id="split-points-list" class="space-y-2 mb-4 max-h-[200px] overflow-y-auto">
-                        <!-- Split points will be added here -->
+                        <p class="text-slate-500 text-center py-4 text-sm">Zatím žádné body rozdělení</p>
                     </div>
 
                     <div class="flex gap-2 mb-4">
-                        <input type="number" id="split-new-point" placeholder="Číslo stránky" min="1" class="flex-grow bg-[#0B0F19] border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-purple-500 outline-none">
+                        <input type="number" id="split-new-point" placeholder="Číslo stránky (např. 3)" min="1" class="flex-grow bg-[#0B0F19] border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-purple-500 outline-none">
                         <button id="btn-add-split-point" class="bg-purple-500/20 text-purple-400 px-4 rounded-lg border border-purple-500/30 hover:bg-purple-500/30 transition-colors disabled:opacity-50">
                             <i data-lucide="plus" class="w-5 h-5"></i>
                         </button>
@@ -764,25 +1010,138 @@ function initToolUI(toolId, container) {
             splitPoints = [];
             document.getElementById('split-upload-area').classList.remove('hidden');
             document.getElementById('split-info-area').classList.add('hidden');
-            document.getElementById('split-points-list').innerHTML = '';
+            document.getElementById('split-points-list').innerHTML = '<p class="text-slate-500 text-center py-4 text-sm">Zatím žádné body rozdělení</p>';
+            document.getElementById('split-thumbnails').innerHTML = '';
             document.getElementById('btn-split-custom').disabled = true;
             document.getElementById('btn-split-burst').disabled = true;
         };
 
         function renderSplitPoints() {
             const list = document.getElementById('split-points-list');
-            list.innerHTML = splitPoints.map((point, idx) => `
-                <div class="flex items-center gap-3 bg-[#1E293B] border border-slate-700 rounded-lg p-3">
-                    <span class="text-purple-400 font-bold">${point}</span>
-                    <span class="text-slate-400 text-sm">strana</span>
-                    ${point.independentCopy ? '<span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded">Kopie</span>' : ''}
-                    <button onclick="removeSplitPoint(${idx})" class="ml-auto text-slate-400 hover:text-red-400">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `).join('');
+            if (splitPoints.length === 0) {
+                list.innerHTML = '<p class="text-slate-500 text-center py-4 text-sm">Zatím žádné body rozdělení</p>';
+            } else {
+                list.innerHTML = splitPoints.map((point, idx) => `
+                    <div class="flex items-center gap-3 bg-[#1E293B] border border-slate-700 rounded-lg p-3">
+                        <span class="text-purple-400 font-bold">${point.page}</span>
+                        <span class="text-slate-400 text-sm">strana</span>
+                        ${point.independentCopy ? '<span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded">Kopie</span>' : ''}
+                        <button onclick="removeSplitPoint(${idx})" class="ml-auto text-slate-400 hover:text-red-400">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
             lucide.createIcons();
             document.getElementById('btn-split-custom').disabled = splitPoints.length === 0;
+
+            // Aktualizovat zvýraznění dělicích čar
+            updateDividerHighlights();
+        }
+
+        function updateDividerHighlights() {
+            const dividers = document.querySelectorAll('.split-divider');
+            dividers.forEach(divider => {
+                const afterPage = parseInt(divider.dataset.afterPage);
+                const isSplitPoint = splitPoints.some(p => p.page === afterPage);
+                if (isSplitPoint) {
+                    divider.style.background = '#A855F7';
+                    divider.style.boxShadow = '0 0 8px rgba(168, 85, 247, 0.5)';
+                    divider.innerHTML = '<i data-lucide="scissors" class="w-3 h-3 text-white"></i>';
+                    divider.classList.add('flex', 'items-center', 'justify-center');
+                } else {
+                    divider.style.background = 'rgba(51, 65, 85, 0.3)';
+                    divider.style.boxShadow = 'none';
+                    divider.innerHTML = '';
+                }
+            });
+            lucide.createIcons();
+        }
+
+        async function renderSplitThumbnails() {
+            const container = document.getElementById('split-thumbnails');
+            container.innerHTML = '';
+
+            try {
+                const pdf = await pdfjsLib.getDocument({data: currentPdfBytes}).promise;
+
+                // Flex wrap container pro náhledy s čarami
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex flex-wrap items-stretch gap-0';
+
+                for (let i = 0; i < totalPages; i++) {
+                    const page = await pdf.getPage(i + 1);
+                    const viewport = page.getViewport({scale: 0.25});
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    await page.render({canvasContext: ctx, viewport: viewport}).promise;
+
+                    // Thumbnail item (náhled + volitelně dělicí čára vpravo)
+                    const item = document.createElement('div');
+                    item.className = 'flex items-stretch';
+                    item.style.width = 'calc(20% - 2px)'; // 5 položek na řádek s malou mezerou
+                    item.style.minWidth = '80px';
+
+                    // Thumbnail
+                    const thumb = document.createElement('div');
+                    thumb.className = 'split-thumb border border-slate-600 rounded overflow-hidden bg-white relative flex-shrink-0';
+                    thumb.style.width = 'calc(100% - 8px)'; // Místo pro dělicí čáru
+                    thumb.innerHTML = `
+                        <img src="${canvas.toDataURL()}" class="w-full h-auto block">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-[10px] font-bold py-0.5 text-center">
+                            ${i + 1}
+                        </div>
+                    `;
+                    item.appendChild(thumb);
+
+                    // Dělicí čára vpravo (vertikální) - ne za poslední stránkou
+                    if (i < totalPages - 1) {
+                        const divider = document.createElement('div');
+                        divider.className = 'split-divider w-2 cursor-pointer transition-all flex items-center justify-center self-stretch';
+                        divider.style.width = '8px';
+                        divider.style.background = 'rgba(51, 65, 85, 0.3)';
+                        divider.dataset.afterPage = i + 1;
+                        divider.title = `Rozdělit za stránkou ${i + 1}`;
+
+                        // Hover efekt
+                        divider.addEventListener('mouseenter', () => {
+                            if (!splitPoints.some(p => p.page === parseInt(divider.dataset.afterPage))) {
+                                divider.style.background = 'rgba(168, 85, 247, 0.5)';
+                            }
+                        });
+                        divider.addEventListener('mouseleave', () => {
+                            if (!splitPoints.some(p => p.page === parseInt(divider.dataset.afterPage))) {
+                                divider.style.background = 'rgba(51, 65, 85, 0.3)';
+                            }
+                        });
+
+                        divider.addEventListener('click', () => {
+                            const pageNum = parseInt(divider.dataset.afterPage);
+                            const existingIdx = splitPoints.findIndex(p => p.page === pageNum);
+
+                            if (existingIdx >= 0) {
+                                splitPoints.splice(existingIdx, 1);
+                            } else {
+                                splitPoints.push({ page: pageNum, independentCopy: false });
+                                splitPoints.sort((a, b) => a.page - b.page);
+                            }
+                            renderSplitPoints();
+                        });
+
+                        item.appendChild(divider);
+                    }
+
+                    wrapper.appendChild(item);
+                }
+
+                container.appendChild(wrapper);
+                renderSplitPoints();
+            } catch (err) {
+                container.innerHTML = `<div class="text-center text-red-400 py-4">Chyba při načítání: ${err.message}</div>`;
+            }
         }
 
         window.removeSplitPoint = (idx) => {
@@ -805,6 +1164,10 @@ function initToolUI(toolId, container) {
             document.getElementById('split-upload-area').classList.add('hidden');
             document.getElementById('split-info-area').classList.remove('hidden');
             document.getElementById('btn-split-burst').disabled = false;
+
+            // Render náhledů stránek
+            await renderSplitThumbnails();
+            lucide.createIcons();
         });
 
         document.getElementById('btn-add-split-point').addEventListener('click', () => {
@@ -1259,9 +1622,10 @@ function initToolUI(toolId, container) {
                     <input type="file" id="organize-upload" class="hidden" accept="application/pdf" multiple>
                 </div>
 
-                <div id="organize-docs-container" class="space-y-6">
-                    <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center text-slate-500">
-                        Klikněte na "Přidat dokument" pro začátek.
+                <div id="organize-docs-container" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center text-slate-500 col-span-full flex flex-col items-center justify-center min-h-[200px]">
+                        <i data-lucide="file-plus" class="w-12 h-12 mb-3 opacity-50"></i>
+                        <p>Klikněte na "Přidat dokument" pro začátek.</p>
                     </div>
                 </div>
 
@@ -1279,11 +1643,37 @@ function initToolUI(toolId, container) {
         const docsContainer = document.getElementById('organize-docs-container');
         const uploadInput = document.getElementById('organize-upload');
 
-        // Globální stav
-        let documents = [];
-        let draggedElement = null;
-        let draggedData = null;
-        let sourceFileCounter = 0;
+        // Globální drag events pro posouvání preview
+        document.addEventListener('dragover', (e) => {
+            if(draggedPreview) {
+                draggedPreview.style.display = 'block';
+                draggedPreview.style.left = (e.clientX - 30) + 'px';
+                draggedPreview.style.top = (e.clientY - 40) + 'px';
+            }
+        });
+
+        // Drag events pro page-thumb elementy
+        document.addEventListener('dragover', (e) => {
+            if(!draggedData) return;
+
+            const pageThumbs = document.querySelectorAll('.page-thumb');
+            pageThumbs.forEach(thumb => {
+                thumb.classList.remove('ring-2', 'ring-indigo-400');
+
+                const rect = thumb.getBoundingClientRect();
+                if(e.clientX >= rect.left && e.clientX <= rect.right &&
+                   e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                    thumb.classList.add('ring-2', 'ring-indigo-400');
+                }
+            });
+        });
+
+        document.addEventListener('drop', () => {
+            if(draggedPreview) {
+                draggedPreview.remove();
+                draggedPreview = null;
+            }
+        });
 
         document.getElementById('btn-add-doc').addEventListener('click', () => uploadInput.click());
 
@@ -1387,6 +1777,7 @@ function initToolUI(toolId, container) {
                     canvas.width = viewport.width;
 
                     await page.render({canvasContext: ctx, viewport: viewport}).promise;
+                    const imgSrc = canvas.toDataURL();
 
                     const pageDiv = document.createElement('div');
                     pageDiv.className = 'page-thumb relative group cursor-move border-2 border-slate-600 rounded overflow-hidden bg-white transition-all hover:border-indigo-400 hover:shadow-lg hover:shadow-indigo-500/20';
@@ -1394,9 +1785,10 @@ function initToolUI(toolId, container) {
                     pageDiv.dataset.docId = docId;
                     pageDiv.dataset.index = i;
                     pageDiv.dataset.sourceIdx = pageData.sourceFileIndex;
+                    pageDiv.dataset.imgSrc = imgSrc;
 
                     pageDiv.innerHTML = `
-                        <img src="${canvas.toDataURL()}" class="w-full h-auto block">
+                        <img src="${imgSrc}" class="w-full h-auto block">
                         <div class="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent p-1">
                             <span class="bg-indigo-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${i + 1}</span>
                         </div>
@@ -1410,51 +1802,86 @@ function initToolUI(toolId, container) {
                     pageDiv.addEventListener('dragstart', (e) => {
                         draggedElement = pageDiv;
                         draggedData = { docId, index: i };
-                        pageDiv.style.opacity = '0.5';
+                        pageDiv.style.opacity = '0.4';
+                        pageDiv.style.transform = 'scale(0.95)';
                         e.dataTransfer.effectAllowed = 'move';
-                        e.dataTransfer.setData('text/plain', JSON.stringify({docId, index: i}));
+                        e.dataTransfer.setData('text/plain', JSON.stringify({docId, index: i, imgSrc}));
+
+                        // Vytvořit drag preview
+                        draggedPreview = document.createElement('div');
+                        draggedPreview.className = 'fixed pointer-events-none z-50 opacity-80';
+                        draggedPreview.style.cssText = 'width: 60px; height: 80px; border: 2px solid #6366f1; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 12px rgba(99,102,241,0.3);';
+                        draggedPreview.innerHTML = `<img src="${imgSrc}" class="w-full h-full object-cover">`;
+                        document.body.appendChild(draggedPreview);
                     });
 
                     // Drag end
                     pageDiv.addEventListener('dragend', () => {
                         if(draggedElement) {
                             draggedElement.style.opacity = '1';
+                            draggedElement.style.transform = '';
                         }
                         draggedElement = null;
                         draggedData = null;
-                        // Odstranit všechny indikátory
+
+                        // Odstranit drag preview
+                        if(draggedPreview) {
+                            draggedPreview.remove();
+                            draggedPreview = null;
+                        }
+
+                        // Odstranit všechny drop indikátory
+                        document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
                         document.querySelectorAll('.page-thumb').forEach(el => {
-                            el.classList.remove('border-t-4', 'border-b-4', 'border-indigo-400');
+                            el.classList.remove('ring-2', 'ring-indigo-400', 'ring-opacity-50');
                         });
+                    });
+
+                    // Delete button
+                    pageDiv.querySelector('.delete-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deletePage(docId, i);
                     });
 
                     // Drag over - zobrazit indikátor
                     pageDiv.addEventListener('dragover', (e) => {
                         e.preventDefault();
-                        if(!draggedData || draggedData.docId !== docId) return;
+                        if(!draggedData) return;
+
+                        pageDiv.classList.add('ring-2', 'ring-indigo-400');
+
+                        // Odstranit existující drop indikátory
+                        document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
 
                         const rect = pageDiv.getBoundingClientRect();
                         const midY = rect.top + rect.height / 2;
 
-                        // Reset všech
-                        pageDiv.classList.remove('border-t-4', 'border-b-4');
+                        // Vytvořit drop indikátor
+                        const indicator = document.createElement('div');
+                        indicator.className = 'drop-indicator h-1 bg-indigo-500 rounded transition-all';
 
                         if(e.clientY < midY) {
-                            pageDiv.classList.add('border-t-4', 'border-indigo-400');
+                            // Vložit před
+                            pageDiv.parentNode.insertBefore(indicator, pageDiv);
                         } else {
-                            pageDiv.classList.add('border-b-4', 'border-indigo-400');
+                            // Vložit za
+                            pageDiv.parentNode.insertBefore(indicator, pageDiv.nextSibling);
                         }
                     });
 
                     // Drag leave
                     pageDiv.addEventListener('dragleave', () => {
-                        pageDiv.classList.remove('border-t-4', 'border-b-4');
+                        pageDiv.classList.remove('ring-2', 'ring-indigo-400');
                     });
 
                     // Drop
                     pageDiv.addEventListener('drop', (e) => {
                         e.preventDefault();
-                        pageDiv.classList.remove('border-t-4', 'border-b-4');
+                        e.stopPropagation();
+                        pageDiv.classList.remove('ring-2', 'ring-indigo-400');
+
+                        // Odstranit drop indikátory
+                        document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
 
                         if(!draggedData) return;
 
@@ -1477,14 +1904,51 @@ function initToolUI(toolId, container) {
                         }
                     });
 
-                    // Delete button
-                    pageDiv.querySelector('.delete-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        deletePage(docId, i);
-                    });
-
                     container.appendChild(pageDiv);
                 }
+
+                // Přidat drop zónu na konec každého dokumentu
+                const dropZone = document.createElement('div');
+                dropZone.className = 'drop-zone h-16 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center text-slate-500 text-sm transition-all';
+                dropZone.innerHTML = '<i data-lucide="plus" class="w-4 h-4 mr-2"></i>Přetáhněte stránku sem';
+                dropZone.dataset.docId = docId;
+                dropZone.dataset.position = 'end';
+
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if(!draggedData) return;
+                    dropZone.classList.add('border-indigo-400', 'bg-indigo-500/10', 'text-indigo-400');
+                });
+
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('border-indigo-400', 'bg-indigo-500/10', 'text-indigo-400');
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('border-indigo-400', 'bg-indigo-500/10', 'text-indigo-400');
+
+                    if(!draggedData) return;
+
+                    const targetDoc = documents.find(d => d.id === docId);
+                    if(!targetDoc) return;
+
+                    // Přesun na konec dokumentu
+                    if(draggedData.docId === docId) {
+                        // Stejný dokument - přesun na konec
+                        const fromIdx = draggedData.index;
+                        const toIdx = targetDoc.pages.length - 1;
+                        if(fromIdx !== toIdx) {
+                            reorderPages(docId, fromIdx, toIdx, false);
+                        }
+                    } else {
+                        // Jiný dokument - přesun na konec
+                        movePageBetweenDocs(draggedData.docId, draggedData.index, docId, targetDoc.pages.length - 1, false);
+                    }
+                });
+
+                container.appendChild(dropZone);
+                lucide.createIcons();
 
                 // Aktualizovat počítadlo stránek
                 const docColumn = document.getElementById(docId);
@@ -1563,10 +2027,12 @@ function initToolUI(toolId, container) {
 
             if(documents.length === 0) {
                 docsContainer.innerHTML = `
-                    <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center text-slate-500">
-                        Klikněte na "Přidat dokument" pro začátek.
+                    <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center text-slate-500 col-span-full flex flex-col items-center justify-center min-h-[200px]">
+                        <i data-lucide="file-plus" class="w-12 h-12 mb-3 opacity-50"></i>
+                        <p>Klikněte na "Přidat dokument" pro začátek.</p>
                     </div>
                 `;
+                lucide.createIcons();
                 document.getElementById('btn-organize-merge').disabled = true;
                 document.getElementById('btn-organize-download-sep').disabled = true;
             }
@@ -3492,6 +3958,20 @@ function initToolUI(toolId, container) {
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     renderHome();
+    initCustomSelects();
+
+    // Inicializuj router z aktuální URL
+    const currentPath = window.location.pathname;
+    if (currentPath && currentPath !== '/') {
+        handleRoute(currentPath);
+    }
+    // else: home je už zobrazeno přes renderHome()
+
+    // Poslouchej browser back/forward
+    window.addEventListener('popstate', (e) => {
+        const path = e.state?.path || window.location.pathname;
+        handleRoute(path);
+    });
 
     // Theme Switcher Logic
     const themeToggle = document.getElementById('theme-toggle');
