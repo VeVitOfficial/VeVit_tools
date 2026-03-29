@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeVit Tools</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- PDF-lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- JSZip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Tesseract.js for OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: 'var(--bg-dark)',
+                        card: 'var(--bg-card)',
+                        cardHover: 'var(--bg-card-hover)',
+                        border: 'var(--border-color)',
+                        pdf: '#6366F1',
+                        image: '#10B981',
+                        video: '#F97316',
+                        audio: '#EC4899',
+                        ai: '#EAB308'
+                    },
+                    fontFamily: {
+                        sans: ['Sora', 'sans-serif'],
+                    }
+                }
+            }
+        }
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="canonical" href="https://services.vevit.fun">
+    <style>
+        :root {
+            --bg-dark: #0B0F19;
+            --bg-card: #131826;
+            --bg-card-hover: #1A2035;
+            --border-color: #1E293B;
+        }
+        .light-mode {
+            --bg-dark: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+        }
+        .nav-bg { background: rgba(11,15,25,0.9); }
+        .light-mode .nav-bg { background: rgba(248,250,252,0.9); }
+
+        body { background-color: var(--bg-dark); color: #f8fafc; font-family: 'Sora', sans-serif; }
+        .light-mode { color: #0f172a; }
+
+        .hidden-section { display: none !important; }
+
+        /* Custom Dropdown */
+        .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
+        .custom-select { position: relative; display: flex; flex-direction: column; }
+        .custom-select__trigger { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 500; color: #f8fafc; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; }
+        .custom-select__trigger:hover { border-color: #6366f1; }
+        .custom-options { position: absolute; display: block; top: 100%; left: 0; right: 0; border: 1px solid var(--border-color); background: var(--bg-card); transition: all 0.2s; opacity: 0; visibility: hidden; pointer-events: none; z-index: 50; border-radius: 0.5rem; margin-top: 0.25rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); max-height: 200px; overflow-y: auto; }
+        .custom-select.open .custom-options { opacity: 1; visibility: visible; pointer-events: all; }
+        .custom-option { position: relative; display: block; padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 500; color: #94a3b8; cursor: pointer; transition: all 0.2s; }
+        .custom-option:hover { background-color: var(--border-color); color: #ffffff; }
+        .custom-option.selected { color: #ffffff; background-color: var(--border-color); }
+
+        .light-mode .custom-select__trigger { color: #0f172a; }
+        .light-mode .custom-option { color: #475569; }
+        .light-mode .custom-option:hover { color: #0f172a; }
+        .light-mode .custom-option.selected { color: #0f172a; }
+
+        /* Drag and drop zone */
+        .dz-active { border-color: #6366F1 !important; background-color: rgba(99, 102, 241, 0.1) !important; }
+
+        /* Range Slider */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #10B981; cursor: pointer; margin-top: -6px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        .light-mode ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
+        /* Tool card hover effect */
+        .tool-card { transition: all 0.3s ease; }
+        .tool-card:hover { transform: translateY(-2px); }
+
+        /* Card backgrounds */
+        .bg-card-base { background: #131826; }
+        .light-mode .bg-card-base { background: #ffffff; }
+
+        .bg-card-hover-base { background: #1A2035; }
+        .light-mode .bg-card-hover-base { background: #f1f5f9; }
+
+        .border-card { border-color: #1E293B; }
+        .light-mode .border-card { border-color: #e2e8f0; }
+
+        .border-card-hover { border-color: rgba(99,102,241,0.4); }
+
+        /* Hero section */
+        .hero-glow { background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%); }
+        .light-mode .hero-glow { background: radial-gradient(ellipse, rgba(99,102,241,0.08) 0%, transparent 70%); }
+
+        /* Search input */
+        .search-input { background: rgba(19,24,38,0.9); border: 1.5px solid rgba(99,102,241,0.3); }
+        .light-mode .search-input { background: rgba(255,255,255,0.9); border-color: rgba(99,102,241,0.3); }
+        .light-mode .search-input::placeholder { color: #64748b; }
+
+        /* Gradient text */
+        .gradient-creative {
+            background: linear-gradient(135deg, #a855f7, #6366f1, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-developers {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Stats pills */
+        .stats-pill { background: rgba(30,41,59,0.8); border-color: var(--border-color); }
+        .light-mode .stats-pill { background: rgba(241,245,249,0.9); border-color: #e2e8f0; }
+
+        /* Light Mode Overrides */
+        .light-mode .text-white:not(.keep-white) { color: #0f172a; }
+        .light-mode .text-slate-200 { color: #1e293b; }
+        .light-mode .text-slate-300 { color: #334155; }
+        .light-mode .text-slate-400 { color: #475569; }
+        .light-mode .text-slate-500 { color: #64748b; }
+        .light-mode .text-slate-600 { color: #475569; }
+        .light-mode .bg-\[\#0B0F19\] { background-color: #ffffff; }
+        .light-mode .bg-\[\#131826\] { background-color: #ffffff; }
+        .light-mode .bg-\[\#1E293B\] { background-color: #f1f5f9; }
+        .light-mode .bg-\[\#1A2035\] { background-color: #f8fafc; }
+        .light-mode .border-slate-700 { border-color: #e2e8f0; }
+        .light-mode .border-slate-800 { border-color: #cbd5e1; }
+        .light-mode .border-\[\#1E293B\] { border-color: #e2e8f0; }
+        .light-mode .bg-slate-800 { background-color: #e2e8f0; }
+        .light-mode .bg-slate-700 { background-color: #cbd5e1; }
+        .light-mode .bg-dark\/90 { background-color: rgba(248, 250, 252, 0.9); }
+
+        /* Search results */
+        .light-mode .search-results { background: #ffffff; border-color: #e2e8f0; }
+        .light-mode .hover\:bg-slate-700\/50:hover { background: rgba(203, 213, 225, 0.5); }
+
+        /* Tool cards in light mode */
+        .light-mode .tool-card-inner { background: #ffffff; border-color: #e2e8f0; }
+        .light-mode .tool-card-inner:hover { background: #f8fafc; border-color: rgba(99,102,241,0.4); }
+
+        /* Dropzone hover */
+        .light-mode .hover\:bg-slate-800\/30:hover { background: rgba(203, 213, 225, 0.3); }
+        .light-mode .border-dashed { border-color: #cbd5e1; }
+        .light-mode .bg-slate-800\/80 { background: rgba(203, 213, 225, 0.8); }
+        .light-mode .bg-slate-800\/50 { background: rgba(203, 213, 225, 0.5); }
+
+        /* Input and form elements - focus and hover states */
+        .light-mode .hover\:border-indigo-500:hover { border-color: #6366f1; }
+        .light-mode .focus\:border-purple-500:focus { border-color: #a855f7; }
+        .light-mode .focus\:border-green-500:focus { border-color: #22c55e; }
+        .light-mode .focus\:border-cyan-500:focus { border-color: #06b6d4; }
+        .light-mode .focus\:border-emerald-500:focus { border-color: #10b981; }
+        .light-mode .hover\:border-red-500:hover { border-color: #ef4444; }
+        .light-mode .hover\:border-cyan-500:hover { border-color: #06b6d4; }
+        .light-mode .hover\:border-green-500:hover { border-color: #22c55e; }
+        .light-mode .hover\:border-violet-500:hover { border-color: #8b5cf6; }
+
+        /* Dropdown hover */
+        .light-mode .hover\:bg-slate-800:hover { background-color: #f1f5f9; }
+        .light-mode .hover\:bg-slate-700:hover { background-color: #e2e8f0; }
+    </style>
+</head>
+<body class="bg-dark text-slate-200 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 px-6 py-4 flex justify-between items-center backdrop-blur-md border-b nav-bg" style="border-color: var(--border-color);">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showHome()">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
+                <i data-lucide="sparkles" class="text-white keep-white w-5 h-5"></i>
+            </div>
+            <span class="text-xl font-bold text-white tracking-tight">VeVit tools</span>
+        </div>
+        <div class="flex items-center gap-6 text-sm font-medium text-slate-300">
+            <div class="relative group">
+                <div class="flex items-center gap-1 cursor-pointer hover:text-white transition-colors">
+                    <i data-lucide="globe" class="w-4 h-4"></i> <span id="current-lang">CS</span>
+                </div>
+                <div class="absolute right-0 top-full mt-2 w-32 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                    <ul class="py-2 text-sm text-slate-300">
+                        <li class="px-4 py-2 hover:bg-slate-800 hover:text-white cursor-pointer" onclick="setLang('CS')">Čeština (CS)</li>
+                        <li class="px-4 py-2 hover:bg-slate-800 hover:text-white cursor-pointer" onclick="setLang('EN')">English (EN)</li>
+                        <li class="px-4 py-2 hover:bg-slate-800 hover:text-white cursor-pointer" onclick="setLang('ES')">Español (ES)</li>
+                        <li class="px-4 py-2 hover:bg-slate-800 hover:text-white cursor-pointer" onclick="setLang('DE')">Deutsch (DE)</li>
+                        <li class="px-4 py-2 hover:bg-slate-800 hover:text-white cursor-pointer" onclick="setLang('UK')">Українська (UK)</li>
+                    </ul>
+                </div>
+            </div>
+            <button id="theme-toggle" class="hover:text-white transition-colors"><i data-lucide="sun" class="w-5 h-5"></i></button>
+            <div id="auth-container" class="ml-2"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-6 max-w-6xl mx-auto w-full flex flex-col" id="main-content">
+
+        <!-- Home View -->
+        <div id="home-view" class="space-y-12 pb-12">
+
+            <!-- Hero Section -->
+            <div class="relative text-center py-20 flex flex-col items-center overflow-hidden">
+                <!-- Ambient glow pozadí -->
+                <div class="absolute inset-0 pointer-events-none">
+                    <div style="position:absolute; top:-100px; left:50%; transform:translateX(-50%); width:600px; height:400px; background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%); filter: blur(40px);"></div>
+                </div>
+
+                <!-- Nadpis -->
+                <h1 class="relative text-6xl md:text-8xl font-extrabold mb-6 text-white tracking-tight leading-none">
+                    Nástroje pro<br/>
+                    <span style="background: linear-gradient(135deg, #a855f7, #6366f1, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Kreativce</span>
+                    <span class="text-white"> & </span>
+                    <span style="background: linear-gradient(135deg, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Vývojáře.</span>
+                </h1>
+
+                <p class="relative text-slate-400 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+                    Výkonná sada nástrojů pro vaše soubory. Bezpečně zpracujte PDF, Video, Obrázky a Audio přímo ve svém prohlížeči.
+                </p>
+
+                <!-- Stats pills -->
+                <div class="relative flex items-center gap-3 flex-wrap justify-center mb-10">
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
+                        <div class="w-2 h-2 rounded-full bg-green-400"></div>
+                        20+ nástrojů
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
+                        <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                        100% zdarma
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
+                        <div class="w-2 h-2 rounded-full bg-purple-400"></div>
+                        Soukromé & bezpečné
+                    </div>
+                </div>
+
+                <!-- Search bar -->
+                <div class="relative w-full max-w-2xl">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                        <i data-lucide="search" class="w-5 h-5 text-slate-400"></i>
+                    </div>
+                    <input type="text" id="tool-search" autocomplete="off"
+                        placeholder="Hledat nástroj... (např. 'compress', 'rotate', 'watermark')"
+                        class="w-full py-4 pl-14 pr-6 rounded-2xl text-white text-base placeholder-slate-500 outline-none transition-all duration-200 search-input"
+                        onfocus="this.style.borderColor='rgba(99,102,241,0.7)'; this.style.boxShadow='0 0 0 4px rgba(99,102,241,0.1)'"
+                        onblur="this.style.borderColor='rgba(99,102,241,0.3)'; this.style.boxShadow='0 0 0 0 rgba(99,102,241,0)'">
+                    <div id="search-results" class="search-results hidden absolute top-full left-0 right-0 mt-2 rounded-2xl border overflow-hidden shadow-2xl z-50 bg-card-base border-card"></div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i> Nejoblíbenější nástroje
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="popular-tools-grid"></div>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold text-white mb-6">Všechny kategorie</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="categories-grid"></div>
+            </div>
+        </div>
+
+        <!-- Category View (e.g. PDF Tools Grid) -->
+        <div id="category-view" class="hidden-section space-y-8 pb-12">
+            <button onclick="showHome()" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors font-medium text-sm">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Zpět na Dashboard
+            </button>
+            <div class="text-center py-8">
+                <h1 class="text-4xl font-bold text-white mb-4" id="category-title">PDF Nástroje</h1>
+                <p class="text-slate-400" id="category-desc">Kompletní sada nástrojů pro práci s PDF soubory.</p>
+            </div>
+            <div id="category-tools-grid"></div>
+        </div>
+
+        <!-- Tool View -->
+        <div id="tool-view" class="hidden-section pb-12 flex-grow flex flex-col">
+            <button onclick="showHome()" class="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors font-medium text-sm w-fit">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Zpět na Dashboard
+            </button>
+            <div id="tool-container" class="flex-grow flex flex-col"></div>
+        </div>
+    </main>
+
+    <footer class="border-t mt-auto py-8" style="border-color: var(--border-color);">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+            <a href="https://vevit.fun" class="text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Zpět na VeVit.fun
+            </a>
+            <div class="flex items-center gap-2 text-slate-500">
+                <i data-lucide="shield-check" class="w-4 h-4" style="color:#22c55e;"></i>
+                <span>Vše zpracováno lokálně v prohlížeči</span>
+            </div>
+            <p class="text-slate-600">© 2026 VeVit tools.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to top button -->
+    <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        class="fixed bottom-6 right-6 w-11 h-11 rounded-full flex items-center justify-center z-50 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none"
+        style="background: linear-gradient(135deg, #6366f1, #a855f7); box-shadow: 0 8px 25px -5px rgba(99,102,241,0.5);">
+        <i data-lucide="arrow-up" class="w-5 h-5 text-white keep-white"></i>
+    </button>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scroll-top');
+            if (window.scrollY > 300) {
+                btn.style.opacity = '1';
+                btn.style.transform = 'translateY(0)';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                btn.style.opacity = '0';
+                btn.style.transform = 'translateY(16px)';
+                btn.style.pointerEvents = 'none';
+            }
+        });
+    </script>
+    <script src="./app.js"></script>
+</body>
+</html>

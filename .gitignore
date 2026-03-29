@@ -1,0 +1,10 @@
+# Secrets
+api/config_secret.php
+
+# Next.js artifacts (keep for reference during cleanup)
+.next/
+node_modules/
+
+# IDE and OS files
+.DS_Store
+*.log
