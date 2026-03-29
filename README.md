@@ -1,20 +1,16 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 🛠️ VeVit Tools
 
-# Run and deploy your AI Studio app
+Sada extrémně rychlých nástrojů pro vývojáře a kreativce. Od manipulace s PDF soubory až po chytré AI konvertory.
 
-This contains everything you need to run your app locally.
+## ✨ Funkce
+* **Lokální zpracování:** Nástroje jako PDF spojování nebo komprese obrázků probíhají přímo v prohlížeči uživatele pro 100% ochranu soukromí.
+* **AI Integrace:** Napojení na Gemini AI pro pokročilé úpravy a generování obsahu.
+* **Developer Utilities:** Generátory CSS stínů, Regex tester a formátování JSON.
 
-View your app in AI Studio: https://ai.studio/apps/f7add9f0-9db2-4b43-a507-970c4853fe8d
+## 🛠️ Technologie
+* **Frontend:** Vanilla JS (využití knihoven jako `pdf-lib` přes CDN).
+* **Backend:** PHP pro těžké serverové úlohy a skrytí API klíčů.
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🔒 Bezpečnost
+* **Ochrana API Klíčů:** Žádné klíče třetích stran (např. Gemini API) NEJSOU uloženy v klientském JavaScriptu. Všechna volání AI jdou skrze bezpečný PHP backend.
+* **Rate Limiting:** Ochrana API proti zneužití a vyčerpání kvót.
