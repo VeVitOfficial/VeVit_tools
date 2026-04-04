@@ -400,8 +400,8 @@ const translations = {
         'subtitle': 'Výkonná sada nástrojů pro vaše soubory. Bezpečně zpracujte PDF, Video, Obrázky a Audio přímo ve svém prohlížeči.',
         'popular': 'Nejoblíbenější nástroje',
         'all_tools': 'Všechny kategorie',
-        'stats_tools': '30+ nástrojů',
-        'stats_free': '100% zdarma',
+        'stats_tools': '60+ nástrojů',
+        'stats_free': '100%',
         'stats_private': 'Soukromé & bezpečné',
         'search_placeholder': "Hledat nástroj... (např. 'compress', 'rotate', 'watermark')",
         'footer_back': 'Zpět na VeVit.fun',
@@ -426,8 +426,8 @@ const translations = {
         'subtitle': 'Powerful toolset for your files. Safely process PDF, Video, Images and Audio right in your browser.',
         'popular': 'Most Popular Tools',
         'all_tools': 'All Categories',
-        'stats_tools': '30+ tools',
-        'stats_free': '100% free',
+        'stats_tools': '60+ tools',
+        'stats_free': '100%',
         'stats_private': 'Private & secure',
         'search_placeholder': "Search tool... (e.g. 'compress', 'rotate', 'watermark')",
         'footer_back': 'Back to VeVit.fun',
@@ -452,8 +452,8 @@ const translations = {
         'subtitle': 'Potente conjunto de herramientas para tus archivos. Procesa de forma segura PDF, Video, Imágenes y Audio directamente en tu navegador.',
         'popular': 'Herramientas Populares',
         'all_tools': 'Todas las Categorías',
-        'stats_tools': '30+ herramientas',
-        'stats_free': '100% gratis',
+        'stats_tools': '60+ herramientas',
+        'stats_free': '100%',
         'stats_private': 'Privado y seguro',
         'search_placeholder': "Buscar herramienta... (ej. 'compress', 'rotate', 'watermark')",
         'footer_back': 'Volver a VeVit.fun',
@@ -478,8 +478,8 @@ const translations = {
         'subtitle': 'Leistungsstarkes Toolset für Ihre Dateien. Verarbeiten Sie PDF, Video, Bilder und Audio sicher direkt in Ihrem Browser.',
         'popular': 'Beliebteste Werkzeuge',
         'all_tools': 'Alle Kategorien',
-        'stats_tools': '30+ Werkzeuge',
-        'stats_free': '100% kostenlos',
+        'stats_tools': '60+ Werkzeuge',
+        'stats_free': '100%',
         'stats_private': 'Privat & sicher',
         'search_placeholder': "Werkzeug suchen... (z.B. 'compress', 'rotate', 'watermark')",
         'footer_back': 'Zurück zu VeVit.fun',
@@ -504,8 +504,8 @@ const translations = {
         'subtitle': 'Потужний набір інструментів для ваших файлів. Безпечно обробляйте PDF, відео, зображення та аудіо прямо у вашому браузері.',
         'popular': 'Популярні інструменти',
         'all_tools': 'Всі категорії',
-        'stats_tools': '30+ інструментів',
-        'stats_free': '100% безкоштовно',
+        'stats_tools': '60+ інструментів',
+        'stats_free': '100%',
         'stats_private': 'Приватно & безпечно',
         'search_placeholder': "Пошук інструменту... (напр. 'compress', 'rotate', 'watermark')",
         'footer_back': 'Назад до VeVit.fun',
@@ -539,52 +539,179 @@ const categoryNames = {
     'media': { 'CS': 'Média', 'EN': 'Media', 'ES': 'Medios', 'DE': 'Medien', 'UK': 'Медіа' }
 };
 
+// Store original Czech content from HTML (saved on first language switch)
+let czechContentSaved = false;
+const originalCzechContent = {
+    title: null,
+    subtitle: null,
+    statsTools: null,
+    statsFree: null,
+    statsPrivate: null,
+    searchPlaceholder: null,
+    popularTitle: null,
+    allToolsTitle: null,
+    footerBack: null,
+    footerPrivacy: null
+};
+
+function getStatsPills() {
+    // More specific selector for stats pills - select direct children of the stats container
+    const statsContainer = document.querySelector('#home-view .flex.items-center.gap-3.flex-wrap.justify-center');
+    if (statsContainer) {
+        return statsContainer.querySelectorAll(':scope > .rounded-full');
+    }
+    return [];
+}
+
+function saveOriginalCzechContent() {
+    if (czechContentSaved) return; // Only save once
+
+    const titleEl = document.querySelector('#home-view h1');
+    if (titleEl) {
+        originalCzechContent.title = titleEl.innerHTML;
+    }
+
+    const subtitleEl = document.querySelector('#home-view p.max-w-xl');
+    if (subtitleEl) {
+        originalCzechContent.subtitle = subtitleEl.textContent;
+    }
+
+    const statsPills = getStatsPills();
+    if (statsPills.length >= 3) {
+        originalCzechContent.statsTools = statsPills[0].innerHTML;
+        originalCzechContent.statsFree = statsPills[1].innerHTML;
+        originalCzechContent.statsPrivate = statsPills[2].innerHTML;
+    }
+
+    const searchInput = document.getElementById('tool-search');
+    if (searchInput) {
+        originalCzechContent.searchPlaceholder = searchInput.placeholder;
+    }
+
+    const popularTitleEl = document.querySelector('#home-view > div:nth-child(2) > h2');
+    if (popularTitleEl) {
+        originalCzechContent.popularTitle = popularTitleEl.innerHTML;
+    }
+
+    const allToolsTitleEl = document.querySelector('#home-view > div:nth-child(3) > h2');
+    if (allToolsTitleEl) {
+        originalCzechContent.allToolsTitle = allToolsTitleEl.textContent;
+    }
+
+    const footerBack = document.querySelector('footer a');
+    if (footerBack) {
+        originalCzechContent.footerBack = footerBack.innerHTML;
+    }
+
+    const footerPrivacy = document.querySelector('footer .flex.items-center.gap-2.text-slate-500 span');
+    if (footerPrivacy) {
+        originalCzechContent.footerPrivacy = footerPrivacy.textContent;
+    }
+
+    czechContentSaved = true;
+}
+
 function setLang(lang) {
     document.getElementById('current-lang').innerText = lang;
 
-    const t = translations[lang];
-    if (t) {
-        // Hero section
+    // For Czech on first load, just save content and don't modify anything
+    if (lang === 'CS' && !czechContentSaved) {
+        // First time loading Czech - save original content and do nothing else
+        saveOriginalCzechContent();
+        lucide.createIcons();
+    } else if (lang === 'CS') {
+        // Switching back to Czech - restore original content
         const titleEl = document.querySelector('#home-view h1');
-        if (titleEl) titleEl.innerHTML = t.title;
-
-        const subtitleEl = document.querySelector('#home-view p.max-w-xl');
-        if (subtitleEl) subtitleEl.innerText = t.subtitle;
-
-        // Stats pills
-        const statsPills = document.querySelectorAll('#home-view .rounded-full');
-        if (statsPills.length >= 3) {
-            statsPills[0].innerHTML = `<div class="w-2 h-2 rounded-full bg-green-400"></div> ${t.stats_tools}`;
-            statsPills[1].innerHTML = `<div class="w-2 h-2 rounded-full bg-blue-400"></div> ${t.stats_free}`;
-            statsPills[2].innerHTML = `<div class="w-2 h-2 rounded-full bg-slate-400"></div> ${t.stats_private}`;
+        if (titleEl && originalCzechContent.title) {
+            titleEl.innerHTML = originalCzechContent.title;
         }
 
-        // Search placeholder
-        const searchInput = document.getElementById('tool-search');
-        if (searchInput) searchInput.placeholder = t.search_placeholder;
+        const subtitleEl = document.querySelector('#home-view p.max-w-xl');
+        if (subtitleEl && originalCzechContent.subtitle) {
+            subtitleEl.textContent = originalCzechContent.subtitle;
+        }
 
-        // Section titles
+        const statsPills = getStatsPills();
+        if (statsPills.length >= 3 && originalCzechContent.statsTools) {
+            statsPills[0].innerHTML = originalCzechContent.statsTools;
+            statsPills[1].innerHTML = originalCzechContent.statsFree;
+            statsPills[2].innerHTML = originalCzechContent.statsPrivate;
+        }
+
+        const searchInput = document.getElementById('tool-search');
+        if (searchInput && originalCzechContent.searchPlaceholder) {
+            searchInput.placeholder = originalCzechContent.searchPlaceholder;
+        }
+
         const popularTitleEl = document.querySelector('#home-view > div:nth-child(2) > h2');
-        if (popularTitleEl) popularTitleEl.innerHTML = `<i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i> ${t.popular}`;
+        if (popularTitleEl && originalCzechContent.popularTitle) {
+            popularTitleEl.innerHTML = originalCzechContent.popularTitle;
+        }
 
         const allToolsTitleEl = document.querySelector('#home-view > div:nth-child(3) > h2');
-        if (allToolsTitleEl) allToolsTitleEl.textContent = t.all_tools;
+        if (allToolsTitleEl && originalCzechContent.allToolsTitle) {
+            allToolsTitleEl.textContent = originalCzechContent.allToolsTitle;
+        }
 
-        // Footer
         const footerBack = document.querySelector('footer a');
-        if (footerBack) footerBack.innerHTML = `<i data-lucide="arrow-left" class="w-4 h-4"></i> ${t.footer_back}`;
+        if (footerBack && originalCzechContent.footerBack) {
+            footerBack.innerHTML = originalCzechContent.footerBack;
+        }
 
         const footerPrivacy = document.querySelector('footer .flex.items-center.gap-2.text-slate-500 span');
-        if (footerPrivacy) footerPrivacy.textContent = t.footer_privacy;
-
-        // Auth buttons
-        const loginBtn = document.querySelector('a[href="https://account.vevit.fun/login"]');
-        if (loginBtn) loginBtn.textContent = t.login;
-
-        const registerBtn = document.querySelector('a[href="https://account.vevit.fun/register"]');
-        if (registerBtn) registerBtn.textContent = t.register;
+        if (footerPrivacy && originalCzechContent.footerPrivacy) {
+            footerPrivacy.textContent = originalCzechContent.footerPrivacy;
+        }
 
         lucide.createIcons();
+    } else {
+        // For other languages, save original Czech content first (if not saved), then apply translations
+        saveOriginalCzechContent();
+
+        const t = translations[lang];
+        if (t) {
+            // Hero section
+            const titleEl = document.querySelector('#home-view h1');
+            if (titleEl) titleEl.innerHTML = t.title;
+
+            const subtitleEl = document.querySelector('#home-view p.max-w-xl');
+            if (subtitleEl) subtitleEl.innerText = t.subtitle;
+
+            // Stats pills
+            const statsPills = getStatsPills();
+            if (statsPills.length >= 3) {
+                statsPills[0].innerHTML = `<div class="w-2 h-2 rounded-full bg-green-400"></div> ${t.stats_tools}`;
+                statsPills[1].innerHTML = `<div class="w-2 h-2 rounded-full bg-blue-400"></div> ${t.stats_free}`;
+                statsPills[2].innerHTML = `<div class="w-2 h-2 rounded-full bg-slate-400"></div> ${t.stats_private}`;
+            }
+
+            // Search placeholder
+            const searchInput = document.getElementById('tool-search');
+            if (searchInput) searchInput.placeholder = t.search_placeholder;
+
+            // Section titles
+            const popularTitleEl = document.querySelector('#home-view > div:nth-child(2) > h2');
+            if (popularTitleEl) popularTitleEl.innerHTML = `<i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i> ${t.popular}`;
+
+            const allToolsTitleEl = document.querySelector('#home-view > div:nth-child(3) > h2');
+            if (allToolsTitleEl) allToolsTitleEl.textContent = t.all_tools;
+
+            // Footer
+            const footerBack = document.querySelector('footer a');
+            if (footerBack) footerBack.innerHTML = `<i data-lucide="arrow-left" class="w-4 h-4"></i> ${t.footer_back}`;
+
+            const footerPrivacy = document.querySelector('footer .flex.items-center.gap-2.text-slate-500 span');
+            if (footerPrivacy) footerPrivacy.textContent = t.footer_privacy;
+
+            // Auth buttons
+            const loginBtn = document.querySelector('a[href="https://account.vevit.fun/login"]');
+            if (loginBtn) loginBtn.textContent = t.login;
+
+            const registerBtn = document.querySelector('a[href="https://account.vevit.fun/register"]');
+            if (registerBtn) registerBtn.textContent = t.register;
+
+            lucide.createIcons();
+        }
     }
 
     // Re-render home to update category names
@@ -658,10 +785,10 @@ const CATEGORIES = [
       // ZABEZPEČENÍ
       { id: 'unlock-pdf', name: 'Unlock PDF', icon: 'lock-open',
         desc: 'Odstranit heslo z PDF.', color: 'bg-amber-500',
-        keywords: ['unlock', 'odemknout', 'heslo'], frontend: true },
+        keywords: ['unlock', 'odemknout', 'heslo'], frontend: true, unavailable: true },
       { id: 'protect-pdf', name: 'Protect PDF', icon: 'lock',
         desc: 'Chránit PDF heslem.', color: 'bg-rose-500',
-        keywords: ['protect', 'heslo', 'šifrování'], frontend: true },
+        keywords: ['protect', 'heslo', 'šifrování'], frontend: true, unavailable: true },
       { id: 'compare-pdf', name: 'Compare PDF', icon: 'diff',
         desc: 'Porovnat dvě verze PDF.', color: 'bg-fuchsia-500',
         keywords: ['compare', 'porovnat', 'diff'], frontend: true },
@@ -1054,13 +1181,16 @@ function renderHome() {
 
     // Helper to render tool card
     const renderToolCard = (tool) => `
-        <div onclick="openTool('${tool.id}')"
-             class="relative flex flex-col h-full rounded-2xl p-6 cursor-pointer transition-all duration-300 group overflow-hidden tool-card bg-card-base border border-card">
+        <div onclick="${tool.unavailable ? '' : `openTool('${tool.id}')`}"
+             class="relative flex flex-col h-full rounded-2xl p-6 ${tool.unavailable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} transition-all duration-300 group overflow-hidden tool-card bg-card-base border border-card ${tool.unavailable ? '' : 'hover:border-card-hover'}">
+
+            ${tool.unavailable ? `<span class="absolute top-3 left-3 text-[9px] font-bold bg-red-500/80 text-white px-1.5 py-0.5 rounded-full">NEDOSTUPNÉ</span>` : ''}
+            ${tool.isNew ? `<span class="absolute top-3 right-3 text-[9px] font-bold bg-green-500 text-white px-1.5 py-0.5 rounded-full">NEW</span>` : ''}
 
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
                  style="background: radial-gradient(ellipse at top left, rgba(99,102,241,0.08) 0%, transparent 60%);"></div>
 
-            <div class="relative w-14 h-14 rounded-2xl ${tool.color} flex items-center justify-center mb-5 shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+            <div class="relative w-14 h-14 rounded-2xl ${tool.color} flex items-center justify-center mb-5 shadow-lg ${tool.unavailable ? '' : 'transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3'}">
                 <i data-lucide="${tool.icon}" class="w-7 h-7 text-white keep-white"></i>
             </div>
 
@@ -1068,8 +1198,8 @@ function renderHome() {
             <p class="text-slate-400 text-sm flex-grow mb-6 leading-relaxed">${tool.desc || ''}</p>
 
             <div class="flex items-center gap-2 text-sm font-semibold" style="color: #818cf8;">
-                ${t.open_tool || 'Otevřít nástroj'}
-                <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                ${tool.unavailable ? 'Není k dispozici' : (t.open_tool || 'Otevřít nástroj')}
+                ${tool.unavailable ? '' : '<i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>'}
             </div>
         </div>
     `;
@@ -1143,13 +1273,16 @@ function initSearch() {
             `;
         } else {
             searchResults.innerHTML = results.slice(0, 10).map(tool => `
-                <div onclick="openTool('${tool.id}'); document.getElementById('tool-search').value = ''; document.getElementById('search-results').classList.add('hidden');"
-                     class="flex items-center gap-4 p-4 hover:bg-slate-700/50 cursor-pointer transition-colors border-b border-slate-700 last:border-b-0">
+                <div onclick="${tool.unavailable ? '' : `openTool('${tool.id}'); document.getElementById('tool-search').value = ''; document.getElementById('search-results').classList.add('hidden');`}"
+                     class="flex items-center gap-4 p-4 ${tool.unavailable ? 'opacity-50' : 'hover:bg-slate-700/50 cursor-pointer'} transition-colors border-b border-slate-700 last:border-b-0">
                     <div class="w-10 h-10 rounded-lg ${tool.color} flex items-center justify-center shrink-0">
                         <i data-lucide="${tool.icon}" class="w-5 h-5 text-white keep-white"></i>
                     </div>
                     <div class="flex-grow min-w-0">
-                        <h4 class="font-semibold text-white text-sm">${tool.name}</h4>
+                        <h4 class="font-semibold text-white text-sm flex items-center gap-2">
+                            ${tool.name}
+                            ${tool.unavailable ? '<span class="text-[9px] font-bold bg-red-500/80 text-white px-1.5 py-0.5 rounded-full">NEDOSTUPNÉ</span>' : ''}
+                        </h4>
                         <p class="text-slate-400 text-xs truncate">${tool.desc}</p>
                     </div>
                     <span class="text-[10px] font-semibold text-slate-500 px-2 py-0.5 bg-slate-700/50 rounded">${tool.categoryName}</span>
@@ -1235,10 +1368,11 @@ function _showCategory(categoryId) {
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             ${cat.tools.map(tool => `
-                <div onclick="openTool('${tool.id}')"
-                     class="relative rounded-xl p-5 cursor-pointer transition-all duration-200 flex flex-col items-center text-center group bg-card-base border border-card hover:border-card-hover hover:bg-card-hover-base">
+                <div onclick="${tool.unavailable ? '' : `openTool('${tool.id}')`}"
+                     class="relative rounded-xl p-5 transition-all duration-200 flex flex-col items-center text-center group bg-card-base border border-card ${tool.unavailable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-card-hover hover:bg-card-hover-base'}">
                     ${tool.isNew ? `<span class="absolute top-2 right-2 text-[9px] font-bold bg-green-500 text-white px-1.5 py-0.5 rounded-full">NEW</span>` : ''}
-                    <div class="w-12 h-12 rounded-2xl ${tool.color} flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-200">
+                    ${tool.unavailable ? `<span class="absolute top-2 left-2 text-[9px] font-bold bg-red-500/80 text-white px-1.5 py-0.5 rounded-full">NEDOSTUPNÉ</span>` : ''}
+                    <div class="w-12 h-12 rounded-2xl ${tool.color} flex items-center justify-center mb-3 shadow-lg ${tool.unavailable ? '' : 'group-hover:scale-110 transition-transform duration-200'}">
                         <i data-lucide="${tool.icon}" class="w-6 h-6 text-white keep-white"></i>
                     </div>
                     <h4 class="font-semibold text-white text-sm mb-1">${tool.name}</h4>
@@ -1264,6 +1398,29 @@ function _openTool(toolId) {
 
     const tool = getToolById(toolId);
     const toolName = tool?.name || toolId;
+
+    // Check if tool is unavailable
+    if (tool?.unavailable) {
+        renderBreadcrumb([
+            { label: 'Domů', path: '/' },
+            { label: toolName, path: URL_MAP[toolId] }
+        ]);
+        container.innerHTML = `
+            <div class="text-center py-20">
+                <div class="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="x-circle" class="w-10 h-10 text-red-500"></i>
+                </div>
+                <h2 class="text-3xl font-semibold text-white mb-4">Nástroj není dostupný</h2>
+                <p class="text-slate-400 mb-8">Tento nástroj je momentálně nedostupný. Zkuste to prosím později.</p>
+                <button onclick="showHome()" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition-colors">
+                    Zpět na hlavní stránku
+                </button>
+            </div>
+        `;
+        lucide.createIcons();
+        document.title = `${toolName} — VeVit Tools`;
+        return;
+    }
 
     if (tool) {
         renderBreadcrumb([
@@ -3970,7 +4127,7 @@ function initToolUI(toolId, container) {
                 try {
                     const lang = document.getElementById('current-lang').innerText || 'CS';
 
-                    const response = await fetch('./api/nvidia-vision.php', {
+                    const response = await fetch('./api/analyze-image.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -3978,9 +4135,7 @@ function initToolUI(toolId, container) {
                         body: JSON.stringify({
                             imageBase64: currentBase64,
                             mimeType: currentFile.type,
-                            prompt: lang === 'CS'
-                                ? 'Analyzuj tento obrázek detailně v češtině. Popiš co vidíš.'
-                                : 'Analyze this image in detail. Describe what you see.'
+                            lang: lang
                         })
                     });
                     
@@ -4086,20 +4241,14 @@ function initToolUI(toolId, container) {
                 try {
                     const lang = document.getElementById('current-lang').innerText || 'CS';
 
-                    const response = await fetch('./api/nvidia-proxy.php', {
+                    const response = await fetch('./api/ai-search.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            model: 'meta/llama-3.1-70b-instruct',
-                            messages: [
-                                {role: 'system', content: lang === 'CS'
-                                    ? 'Jsi AI asistent. Odpovídej česky, strukturovaně a užitečně.'
-                                    : 'You are a helpful AI assistant. Respond clearly and usefully.'},
-                                {role: 'user', content: query}
-                            ],
-                            max_tokens: 1024
+                            query: query,
+                            lang: lang
                         })
                     });
                     
@@ -5938,22 +6087,22 @@ function initToolUI(toolId, container) {
         let scale = 1;
 
         let cropSelection = {startX: 0, startY: 0, endX: 0, endY: 0, isDrawing: false};
-        const canvas = document.getElementById('crop-preview-canvas');
-        const ctx = canvas.getContext('2d');
+        const cropCanvas = document.getElementById('crop-preview-canvas');
+        const cropCtx = cropCanvas.getContext('2d');
         const selection = document.getElementById('crop-selection');
-        const container = document.getElementById('crop-canvas-container');
+        const cropCanvasContainer = document.getElementById('crop-canvas-container');
 
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
+        cropCanvas.addEventListener('mousedown', (e) => {
+            const rect = cropCanvas.getBoundingClientRect();
             cropSelection.startX = e.clientX - rect.left;
             cropSelection.startY = e.clientY - rect.top;
             cropSelection.isDrawing = true;
             selection.classList.remove('hidden');
         });
 
-        canvas.addEventListener('mousemove', (e) => {
+        cropCanvas.addEventListener('mousemove', (e) => {
             if (!cropSelection.isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
+            const rect = cropCanvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
@@ -5968,10 +6117,10 @@ function initToolUI(toolId, container) {
             selection.style.height = height + 'px';
         });
 
-        canvas.addEventListener('mouseup', (e) => {
+        cropCanvas.addEventListener('mouseup', (e) => {
             if (!cropSelection.isDrawing) return;
             cropSelection.isDrawing = false;
-            const rect = canvas.getBoundingClientRect();
+            const rect = cropCanvas.getBoundingClientRect();
             cropSelection.endX = e.clientX - rect.left;
             cropSelection.endY = e.clientY - rect.top;
 
@@ -5984,8 +6133,8 @@ function initToolUI(toolId, container) {
             // Update input fields (convert from display to PDF coordinates)
             document.getElementById('crop-left').value = Math.round(left / scale);
             document.getElementById('crop-top').value = Math.round(top / scale);
-            document.getElementById('crop-right').value = Math.round((canvas.width - right) / scale);
-            document.getElementById('crop-bottom').value = Math.round((canvas.height - bottom) / scale);
+            document.getElementById('crop-right').value = Math.round((cropCanvas.width - right) / scale);
+            document.getElementById('crop-bottom').value = Math.round((cropCanvas.height - bottom) / scale);
         });
 
         async function renderCropPage(pageNum) {
@@ -6000,10 +6149,10 @@ function initToolUI(toolId, container) {
             scale = maxWidth / pageWidth;
             const scaledViewport = page.getViewport({scale});
 
-            canvas.width = scaledViewport.width;
-            canvas.height = scaledViewport.height;
+            cropCanvas.width = scaledViewport.width;
+            cropCanvas.height = scaledViewport.height;
 
-            await page.render({canvasContext: ctx, viewport: scaledViewport}).promise;
+            await page.render({canvasContext: cropCtx, viewport: scaledViewport}).promise;
             document.getElementById('crop-page-info').textContent = `${pageNum} / ${totalPages}`;
         }
 
@@ -6062,26 +6211,83 @@ function initToolUI(toolId, container) {
         });
 
         document.getElementById('btn-crop').addEventListener('click', async () => {
-            if (!pdfDoc) return;
+            if (!pdfBytes) return;
             showLoading('btn-crop', 'Ořezávám...');
             try {
-                const top = parseInt(document.getElementById('crop-top').value) || 0;
-                const bottom = parseInt(document.getElementById('crop-bottom').value) || 0;
-                const left = parseInt(document.getElementById('crop-left').value) || 0;
-                const right = parseInt(document.getElementById('crop-right').value) || 0;
+                const topPx = parseInt(document.getElementById('crop-top').value) || 0;
+                const bottomPx = parseInt(document.getElementById('crop-bottom').value) || 0;
+                const leftPx = parseInt(document.getElementById('crop-left').value) || 0;
+                const rightPx = parseInt(document.getElementById('crop-right').value) || 0;
                 const allPages = document.getElementById('crop-all-pages').checked;
 
-                const pages = pdfDoc.getPages();
-                const pagesToCrop = allPages ? pages : [pages[currentPage - 1]];
+                // Load original PDF
+                const srcDoc = await PDFLib.PDFDocument.load(pdfBytes);
+                const outDoc = await PDFLib.PDFDocument.create();
+                const srcPages = srcDoc.getPages();
+                const totalPages = srcPages.length;
 
-                for (const page of pagesToCrop) {
-                    const {width, height} = page.getSize();
-                    page.setCropBox(left, bottom, width - left - right, height - top - bottom);
+                for (let i = 0; i < totalPages; i++) {
+                    // Skip pages not selected (when not applying to all)
+                    if (!allPages && i !== currentPage - 1) continue;
+
+                    const srcPage = srcPages[i];
+                    const {width, height} = srcPage.getSize();
+
+                    // Get page rotation
+                    const rotation = srcPage.getRotation().angle;
+
+                    // Calculate actual crop values considering rotation
+                    let cropLeft, cropRight, cropTop, cropBottom;
+                    let newWidth, newHeight;
+
+                    // Adjust crop dimensions based on rotation
+                    if (rotation === 90 || rotation === 270) {
+                        // Swap width/height for rotated pages
+                        cropLeft = leftPx;
+                        cropRight = rightPx;
+                        cropTop = topPx;
+                        cropBottom = bottomPx;
+                        newWidth = height - cropLeft - cropRight;
+                        newHeight = width - cropTop - cropBottom;
+                    } else {
+                        cropLeft = leftPx;
+                        cropRight = rightPx;
+                        cropTop = topPx;
+                        cropBottom = bottomPx;
+                        newWidth = width - cropLeft - cropRight;
+                        newHeight = height - cropTop - cropBottom;
+                    }
+
+                    // Ensure valid dimensions
+                    newWidth = Math.max(1, newWidth);
+                    newHeight = Math.max(1, newHeight);
+
+                    // Create new page with cropped dimensions
+                    const newPage = outDoc.addPage([newWidth, newHeight]);
+
+                    // Embed the source page as a form XObject
+                    const [embeddedPage] = await outDoc.embedPdf(srcDoc, [i]);
+
+                    // Calculate offset to position the cropped area correctly
+                    // In PDF coordinates, Y increases upward, origin is bottom-left
+                    const xOffset = -cropLeft;
+                    const yOffset = -cropBottom;
+
+                    // Draw the embedded page with offset
+                    newPage.drawPage(embeddedPage, {
+                        x: xOffset,
+                        y: yOffset,
+                        width: width,
+                        height: height
+                    });
                 }
 
-                const croppedPdf = await pdfDoc.save();
+                const croppedPdf = await outDoc.save();
                 downloadBlob(new Blob([croppedPdf], {type: 'application/pdf'}), 'cropped.pdf');
-            } catch (e) { alert('Chyba: ' + e.message); }
+            } catch (e) {
+                console.error('Crop error:', e);
+                alert('Chyba: ' + e.message);
+            }
             hideLoading('btn-crop');
         });
     }
@@ -7462,18 +7668,12 @@ function initToolUI(toolId, container) {
                     fullText += textContent.items.map(item => item.str).join(' ') + '\n';
                 }
                 const lang = document.getElementById('current-lang').innerText || 'CS';
-                const response = await fetch('./api/nvidia-proxy.php', {
+                const response = await fetch('./api/ai-summarize.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        model: 'meta/llama-3.1-8b-instruct',
-                        messages: [
-                            {role: 'system', content: lang === 'CS'
-                                ? 'Shrň následující text do přehledných bodů v češtině.'
-                                : 'Summarize the following text into clear bullet points.'},
-                            {role: 'user', content: fullText.substring(0, 8000)}
-                        ],
-                        max_tokens: 1024
+                        text: fullText.substring(0, 30000),
+                        lang: lang
                     })
                 });
                 const data = await response.json();
@@ -7551,16 +7751,13 @@ function initToolUI(toolId, container) {
                     fullText += textContent.items.map(item => item.str).join(' ') + '\n';
                 }
                 const targetLang = document.getElementById('trans-lang-input').value || 'English';
-                const response = await fetch('./api/nvidia-proxy.php', {
+                const response = await fetch('./api/ai-translate.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        model: 'meta/llama-3.1-8b-instruct',
-                        messages: [
-                            {role: 'system', content: `Translate the following text to ${targetLang}. Provide only the translated text.`},
-                            {role: 'user', content: fullText.substring(0, 8000)}
-                        ],
-                        max_tokens: 2048
+                        text: fullText.substring(0, 30000),
+                        targetLang: targetLang,
+                        lang: 'CS'
                     })
                 });
                 const data = await response.json();
@@ -8754,64 +8951,206 @@ Příklad:
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="flex flex-col gap-4">
                     ${createDropzone('collage-dz', 'image/*', 'Nahrajte více obrázků', 'upload', true)}
-                    <div class="flex gap-2">
-                        <button onclick="setCollageLayout('grid')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg">Mřížka</button>
-                        <button onclick="setCollageLayout('horizontal')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg">Vodorovně</button>
-                        <button onclick="setCollageLayout('vertical')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg">Svisle</button>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="setCollageLayout('grid')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors">Mřížka</button>
+                        <button onclick="setCollageLayout('horizontal')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors">Vodorovně</button>
+                        <button onclick="setCollageLayout('vertical')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors">Svisle</button>
                     </div>
+                    <div id="collage-images-list" class="flex flex-wrap gap-2"></div>
                 </div>
                 <div class="bg-card border border-border rounded-2xl p-6">
-                    <canvas id="collage-canvas" class="w-full rounded-lg bg-slate-900 mb-4" style="max-height:300px"></canvas>
-                    <button id="btn-collage" class="w-full bg-violet-500 hover:bg-violet-600 text-white font-bold py-3 rounded-xl disabled:opacity-50" disabled>Stáhnout collage</button>
+                    <canvas id="collage-canvas" class="w-full rounded-lg bg-slate-900 mb-4" style="max-height:400px"></canvas>
+                    <button id="btn-collage" class="w-full bg-violet-500 hover:bg-violet-600 text-white font-bold py-3 rounded-xl disabled:opacity-50 transition-colors" disabled>Stáhnout collage</button>
                 </div>
             </div>
         `;
-        let collageImages = [], collageLayout = 'grid';
-        window.setCollageLayout = l => { collageLayout = l; renderCollage(); };
+        let collageImages = [];
+        let collageLayout = 'grid';
 
-        initDropzone('collage-dz', files => {
+        window.setCollageLayout = (layout) => {
+            collageLayout = layout;
+            renderCollage();
+        };
+
+        initDropzone('collage-dz', (files) => {
             collageImages = [];
-            files.forEach(f => {
-                if (f.type.startsWith('image/')) {
-                    const img = new Image();
-                    img.src = URL.createObjectURL(f);
-                    img.onload = () => { collageImages.push(img); renderCollage(); };
-                }
+            loadedCount = 0;
+            document.getElementById('collage-images-list').innerHTML = '';
+            document.getElementById('btn-collage').disabled = true;
+
+            const imageFiles = files.filter(f => f.type.startsWith('image/'));
+            let loadedImages = 0;
+
+            imageFiles.forEach((f) => {
+                const img = new Image();
+                img.src = URL.createObjectURL(f);
+                img.onload = function() {
+                    collageImages.push(img);
+                    const imgIndex = collageImages.length - 1;
+
+                    // Add thumbnail to list
+                    const thumb = document.createElement('div');
+                    thumb.className = 'relative w-16 h-16 rounded-lg overflow-hidden bg-slate-800';
+                    const imgEl = document.createElement('img');
+                    imgEl.src = img.src;
+                    imgEl.className = 'w-full h-full object-cover';
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs flex items-center justify-center hover:bg-red-600';
+                    removeBtn.textContent = '×';
+                    removeBtn.onclick = function() {
+                        thumb.remove();
+                        removeCollageImage(imgIndex);
+                    };
+                    thumb.appendChild(imgEl);
+                    thumb.appendChild(removeBtn);
+                    document.getElementById('collage-images-list').appendChild(thumb);
+
+                    loadedImages++;
+                    if (loadedImages === imageFiles.length) {
+                        renderCollage();
+                    }
+                };
             });
         });
 
+        window.removeCollageImage = (index) => {
+            collageImages.splice(index, 1);
+            if (collageImages.length === 0) {
+                document.getElementById('btn-collage').disabled = true;
+                const canvas = document.getElementById('collage-canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            } else {
+                renderCollage();
+            }
+        };
+
         function renderCollage() {
             if (collageImages.length === 0) return;
+
             const canvas = document.getElementById('collage-canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = 400; canvas.height = 300;
-            ctx.fillStyle = '#1e293b';
-            ctx.fillRect(0, 0, 400, 300);
+            const maxWidth = 800;
+            const maxHeight = 600;
 
             if (collageLayout === 'horizontal' && collageImages.length) {
-                const w = canvas.width / collageImages.length;
-                collageImages.forEach((img, i) => ctx.drawImage(img, i * w, 0, w, canvas.height));
+                canvas.width = Math.min(maxWidth, collageImages.length * 300);
+                canvas.height = Math.min(maxHeight, 300);
             } else if (collageLayout === 'vertical' && collageImages.length) {
-                const h = canvas.height / collageImages.length;
-                collageImages.forEach((img, i) => ctx.drawImage(img, 0, i * h, canvas.width, h));
+                canvas.width = Math.min(maxWidth, 400);
+                canvas.height = Math.min(maxHeight, collageImages.length * 200);
             } else {
                 const cols = Math.ceil(Math.sqrt(collageImages.length));
                 const rows = Math.ceil(collageImages.length / cols);
-                const w = canvas.width / cols, h = canvas.height / rows;
-                collageImages.forEach((img, i) => {
-                    ctx.drawImage(img, (i % cols) * w, Math.floor(i / cols) * h, w, h);
-                });
+                canvas.width = Math.min(maxWidth, cols * 200);
+                canvas.height = Math.min(maxHeight, rows * 200);
             }
+
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawCollage(ctx, canvas.width, canvas.height);
             document.getElementById('btn-collage').disabled = false;
         }
 
+        function drawCollage(ctx, width, height) {
+            if (collageImages.length === 0) return;
+
+            if (collageLayout === 'horizontal') {
+                const w = width / collageImages.length;
+                collageImages.forEach((img, i) => {
+                    // Draw image with cover behavior
+                    const imgRatio = img.width / img.height;
+                    const cellRatio = w / height;
+                    let drawW, drawH, drawX, drawY;
+
+                    if (imgRatio > cellRatio) {
+                        drawH = height;
+                        drawW = height * imgRatio;
+                        drawX = i * w + (w - drawW) / 2;
+                        drawY = 0;
+                    } else {
+                        drawW = w;
+                        drawH = w / imgRatio;
+                        drawX = i * w;
+                        drawY = (height - drawH) / 2;
+                    }
+                    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                });
+            } else if (collageLayout === 'vertical') {
+                const h = height / collageImages.length;
+                collageImages.forEach((img, i) => {
+                    const imgRatio = img.width / img.height;
+                    const cellRatio = width / h;
+                    let drawW, drawH, drawX, drawY;
+
+                    if (imgRatio > cellRatio) {
+                        drawH = h;
+                        drawW = h * imgRatio;
+                        drawX = (width - drawW) / 2;
+                        drawY = i * h;
+                    } else {
+                        drawW = width;
+                        drawH = width / imgRatio;
+                        drawX = 0;
+                        drawY = i * h + (h - drawH) / 2;
+                    }
+                    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                });
+            } else {
+                // Grid layout
+                const cols = Math.ceil(Math.sqrt(collageImages.length));
+                const rows = Math.ceil(collageImages.length / cols);
+                const cellW = width / cols;
+                const cellH = height / rows;
+
+                collageImages.forEach((img, i) => {
+                    const col = i % cols;
+                    const row = Math.floor(i / cols);
+                    const imgRatio = img.width / img.height;
+                    const cellRatio = cellW / cellH;
+                    let drawW, drawH, drawX, drawY;
+
+                    if (imgRatio > cellRatio) {
+                        drawH = cellH;
+                        drawW = cellH * imgRatio;
+                        drawX = col * cellW + (cellW - drawW) / 2;
+                        drawY = row * cellH;
+                    } else {
+                        drawW = cellW;
+                        drawH = cellW / imgRatio;
+                        drawX = col * cellW;
+                        drawY = row * cellH + (cellH - drawH) / 2;
+                    }
+                    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                });
+            }
+        }
+
         document.getElementById('btn-collage').addEventListener('click', () => {
+            if (collageImages.length === 0) return;
+
             const canvas = document.createElement('canvas');
-            canvas.width = 1200; canvas.height = 900;
+            const scale = 3; // Higher resolution
+            const width = 1200;
+            const height = 900;
+
+            if (collageLayout === 'horizontal') {
+                canvas.width = width;
+                canvas.height = height;
+            } else if (collageLayout === 'vertical') {
+                canvas.width = width;
+                canvas.height = height;
+            } else {
+                canvas.width = width;
+                canvas.height = height;
+            }
+
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#1e293b';
-            ctx.fillRect(0, 0, 1200, 900);
-            // Render at higher resolution...
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            drawCollage(ctx, canvas.width, canvas.height);
+
             canvas.toBlob(blob => downloadBlob(blob, 'collage.png'), 'image/png');
         });
     }
@@ -10850,18 +11189,12 @@ ${image ? `<meta property="twitter:image" content="${image}">` : ''}`;
             document.getElementById('sum-empty').classList.add('hidden');
             try {
                 const lang = document.getElementById('current-lang').innerText || 'CS';
-                const res = await fetch('./api/nvidia-proxy.php', {
+                const res = await fetch('./api/ai-summarize.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'meta/llama-3.1-8b-instruct',
-                        messages: [
-                            {role: 'system', content: lang === 'CS'
-                                ? 'Shrň následující text do přehledných bodů v češtině.'
-                                : 'Summarize the following text into clear bullet points.'},
-                            {role: 'user', content: text.substring(0, 8000)}
-                        ],
-                        max_tokens: 1024
+                        text: text.substring(0, 30000),
+                        lang: lang
                     })
                 });
                 const data = await res.json();
@@ -10940,18 +11273,12 @@ ${image ? `<meta property="twitter:image" content="${image}">` : ''}`;
             document.getElementById('grammar-empty').classList.add('hidden');
             try {
                 const lang = document.getElementById('current-lang').innerText || 'CS';
-                const res = await fetch('./api/nvidia-proxy.php', {
+                const res = await fetch('./api/grammar-check.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'meta/llama-3.1-8b-instruct',
-                        messages: [
-                            {role: 'system', content: lang === 'CS'
-                                ? 'Zkontroluj následující text z hlediska gramatiky, pravopisu a stylu. Uveď nalezené chyby s vysvětlením a opravený text.'
-                                : 'Check the following text for grammar, spelling and style. List found errors with explanations and provide corrected text.'},
-                            {role: 'user', content: text.substring(0, 8000)}
-                        ],
-                        max_tokens: 2048
+                        text: text.substring(0, 10000),
+                        lang: lang
                     })
                 });
                 const data = await res.json();
@@ -11079,16 +11406,13 @@ ${image ? `<meta property="twitter:image" content="${image}">` : ''}`;
                     simple: lang === 'CS' ? 'Přeformuluj následující text jednoduše a srozumitelně:' : 'Paraphrase the following text in simple and clear language:',
                     creative: lang === 'CS' ? 'Přeformuluj následující text kreativně a zajímavě:' : 'Paraphrase the following text creatively and engagingly:'
                 };
-                const res = await fetch('./api/nvidia-proxy.php', {
+                const res = await fetch('./api/paraphrase.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'meta/llama-3.1-8b-instruct',
-                        messages: [
-                            {role: 'system', content: stylePrompts[style] || stylePrompts.standard},
-                            {role: 'user', content: text.substring(0, 8000)}
-                        ],
-                        max_tokens: 2048
+                        text: text.substring(0, 10000),
+                        style: style,
+                        lang: lang
                     })
                 });
                 const data = await res.json();
@@ -11238,13 +11562,13 @@ ${image ? `<meta property="twitter:image" content="${image}">` : ''}`;
                     tailwind: 'HTML with Tailwind CSS classes',
                     react: 'React JSX with inline styles or Tailwind'
                 };
-                const res = await fetch('./api/nvidia-vision.php', {
+                const res = await fetch('./api/screenshot-to-code.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         imageBase64: s2cBase64,
                         mimeType: s2cFile.type,
-                        prompt: `You are an expert frontend developer. Analyze this UI screenshot and generate clean, production-ready code using ${frameworkDesc[framework] || 'plain HTML and CSS'}.\n\nRequirements:\n- Recreate the UI as accurately as possible\n- Use semantic HTML\n- Include all visible text content\n- Make it responsive\n- Return ONLY the code, no explanations\n\nGenerate the complete code now:`
+                        framework: framework
                     })
                 });
                 const data = await res.json();
@@ -11628,3 +11952,118 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+/**
+ * Word Tools Bridge Implementation
+ * Handles the Load (DOCX -> HTML) -> Edit -> Export (HTML -> DOCX) flow
+ *
+ * Note: This file is being appended to. The existing logic should be preserved.
+ * Since the file is too large to read fully, we are adding these as new global functions.
+ */
+
+async function initWordEditor() {
+    // Initialize TinyMCE
+    if (typeof tinymce === 'undefined') {
+        console.error('TinyMCE is not loaded');
+        return;
+    }
+    tinymce.init({
+        selector: '#word-editor',
+        plugins: 'lists link image table code help wordcount',
+        toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright | bullist numlist | table image | code',
+        content_style: 'body { font-family: "Sora", sans-serif; font-size: 14px; line-height: 1.6; }',
+        setup: function(editor) {
+            editor.on('change', () => {
+                // Update some internal state if needed
+            });
+        }
+    });
+}
+
+async function loadWordDocument(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch('api/word-to-html.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error('Failed to parse DOCX to HTML');
+
+        const htmlContent = await response.text();
+
+        // Populate TinyMCE editor
+        if (tinymce.get('word-editor')) {
+            tinymce.get('word-editor').setContent(htmlContent);
+        }
+    } catch (error) {
+        console.error('Error loading document:', error);
+        alert('Error loading document: ' + error.message);
+    }
+}
+
+async function exportToWord() {
+    const editor = tinymce.get('word-editor');
+    if (!editor) {
+        alert('Editor not found');
+        return;
+    }
+    const htmlContent = editor.getContent();
+    const formData = new FormData();
+    formData.append('html', htmlContent);
+
+    try {
+        const response = await fetch('api/html-to-word.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Trigger download
+            const link = document.createElement('a');
+            link.href = result.download_url;
+            link.download = 'edited_document.docx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            throw new Error(result.error || 'Export failed');
+        }
+    } catch (error) {
+        console.error('Error exporting document:', error);
+        alert('Error exporting document: ' + error.message);
+    }
+}
+
+// This is a helper to inject the HTML for the editor into the tool-container
+function renderWordEditorUI() {
+    const container = document.getElementById('tool-container');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="flex flex-col h-full space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-semibold text-white">Lite Word Editor</h2>
+                <div class="flex gap-3">
+                    <label class="px-4 py-2 bg-slate-700 text-white rounded-lg cursor-pointer hover:bg-slate-600 transition-colors flex items-center gap-2">
+                        <i data-lucide="file-up" class="w-4 h-4"></i> Load .docx
+                        <input type="file" class="hidden" accept=".docx" onchange="loadWordDocument(this.files[0])">
+                    </label>
+                    <button onclick="exportToWord()" class="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i> Export .docx
+                    </button>
+                </div>
+            </div>
+            <div class="editor-canvas-container">
+                <div class="paper-canvas">
+                    <textarea id="word-editor"></textarea>
+                </div>
+            </div>
+        </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+    initWordEditor();
+}

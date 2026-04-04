@@ -19,6 +19,8 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <!-- Marked.js for Markdown -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <!-- TinyMCE for WYSIWYG Editor -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymceEmploy.min.js" referrerpolicy="origin"></script>
     <!-- MD5 for Hash Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
     <!-- jsQR for QR Reader -->
@@ -241,10 +243,57 @@
         .light-mode #breadcrumb-nav button:hover {
             color: #0f172a !important;
         }
+        /* Breadcrumb styles */
+        #breadcrumb-nav button:hover {
+            color: #f8fafc !important;
+        }
+        #breadcrumb-bar {
+            transition: opacity 0.2s ease;
+            margin-top: 0 !important;
+        }
+        #breadcrumb-bar.hidden {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute !important;
+        }
+        #breadcrumb-bar:not(.hidden) {
+            opacity: 1;
+        }
+        .light-mode #breadcrumb-bar {
+            background: #f8fafc;
+        }
+        .light-mode #breadcrumb-nav button {
+            color: #64748b;
+        }
+        .light-mode #breadcrumb-nav button:hover {
+            color: #0f172a !important;
+        }
         .light-mode #breadcrumb-nav span {
             color: #0f172a;
         }
+
+        /* Word Editor Canvas */
+        .editor-canvas-container {
+            background-color: #525659;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        .paper-canvas {
+            background-color: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            color: black;
+            box-sizing: border-box;
+        }
+        .light-mode .editor-canvas-container {
+            background-color: #e2e8f0;
+        }
     </style>
+
 </head>
 <body class="bg-dark text-slate-200 min-h-screen flex flex-col">
     <!-- Navbar -->
@@ -311,11 +360,11 @@
                 <div class="relative flex items-center gap-3 flex-wrap justify-center mb-10">
                     <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
                         <div class="w-2 h-2 rounded-full bg-green-400"></div>
-                        30+ nástrojů
+                        60+ nástrojů
                     </div>
                     <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
                         <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-                        100% zdarma
+                        100% 
                     </div>
                     <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
                         <div class="w-2 h-2 rounded-full bg-slate-400"></div>
