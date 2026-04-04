@@ -17,6 +17,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <!-- Tesseract.js for OCR -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <!-- Marked.js for Markdown -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <!-- MD5 for Hash Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+    <!-- jsQR for QR Reader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js"></script>
+    <!-- html2pdf.js for HTML to PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- QRCode.js for QR Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -28,7 +38,7 @@
                         card: 'var(--bg-card)',
                         cardHover: 'var(--bg-card-hover)',
                         border: 'var(--border-color)',
-                        pdf: '#6366F1',
+                        pdf: '#0ea5e9',
                         image: '#10B981',
                         video: '#F97316',
                         audio: '#EC4899',
@@ -62,7 +72,7 @@
         .nav-bg { background: rgba(11,15,25,0.9); }
         .light-mode .nav-bg { background: rgba(248,250,252,0.9); }
 
-        body { background-color: var(--bg-dark); color: #f8fafc; font-family: 'Sora', sans-serif; }
+        body { background-color: var(--bg-dark); color: #f8fafc; font-family: 'Sora', sans-serif; font-weight: 400; }
         .light-mode { color: #0f172a; }
 
         .hidden-section { display: none !important; }
@@ -71,7 +81,7 @@
         .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
         .custom-select { position: relative; display: flex; flex-direction: column; }
         .custom-select__trigger { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 500; color: #f8fafc; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; }
-        .custom-select__trigger:hover { border-color: #6366f1; }
+        .custom-select__trigger:hover { border-color: #10b981; }
         .custom-options { position: absolute; display: block; top: 100%; left: 0; right: 0; border: 1px solid var(--border-color); background: var(--bg-card); transition: all 0.2s; opacity: 0; visibility: hidden; pointer-events: none; z-index: 50; border-radius: 0.5rem; margin-top: 0.25rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); max-height: 200px; overflow-y: auto; }
         .custom-select.open .custom-options { opacity: 1; visibility: visible; pointer-events: all; }
         .custom-option { position: relative; display: block; padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 500; color: #94a3b8; cursor: pointer; transition: all 0.2s; }
@@ -84,7 +94,7 @@
         .light-mode .custom-option.selected { color: #0f172a; }
 
         /* Drag and drop zone */
-        .dz-active { border-color: #6366F1 !important; background-color: rgba(99, 102, 241, 0.1) !important; }
+        .dz-active { border-color: #10b981 !important; background-color: rgba(99, 102, 241, 0.1) !important; }
 
         /* Range Slider */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
@@ -112,29 +122,23 @@
         .border-card { border-color: #1E293B; }
         .light-mode .border-card { border-color: #e2e8f0; }
 
-        .border-card-hover { border-color: rgba(99,102,241,0.4); }
+        .border-card-hover { border-color: rgba(16,185,129,0.4); }
 
         /* Hero section */
-        .hero-glow { background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%); }
-        .light-mode .hero-glow { background: radial-gradient(ellipse, rgba(99,102,241,0.08) 0%, transparent 70%); }
+        .hero-glow { background: radial-gradient(ellipse, rgba(16,185,129,0.12) 0%, transparent 70%); }
+        .light-mode .hero-glow { background: radial-gradient(ellipse, rgba(16,185,129,0.08) 0%, transparent 70%); }
 
         /* Search input */
-        .search-input { background: rgba(19,24,38,0.9); border: 1.5px solid rgba(99,102,241,0.3); }
-        .light-mode .search-input { background: rgba(255,255,255,0.9); border-color: rgba(99,102,241,0.3); }
+        .search-input { background: rgba(19,24,38,0.9); border: 1.5px solid rgba(16,185,129,0.3); }
+        .light-mode .search-input { background: rgba(255,255,255,0.9); border-color: rgba(16,185,129,0.3); }
         .light-mode .search-input::placeholder { color: #64748b; }
 
-        /* Gradient text */
+        /* Gradient text - simplified per design system */
         .gradient-creative {
-            background: linear-gradient(135deg, #a855f7, #6366f1, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #10b981;
         }
         .gradient-developers {
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #0ea5e9;
         }
 
         /* Stats pills */
@@ -165,7 +169,7 @@
 
         /* Tool cards in light mode */
         .light-mode .tool-card-inner { background: #ffffff; border-color: #e2e8f0; }
-        .light-mode .tool-card-inner:hover { background: #f8fafc; border-color: rgba(99,102,241,0.4); }
+        .light-mode .tool-card-inner:hover { background: #f8fafc; border-color: rgba(16,185,129,0.4); }
 
         /* Dropzone hover */
         .light-mode .hover\:bg-slate-800\/30:hover { background: rgba(203, 213, 225, 0.3); }
@@ -174,15 +178,15 @@
         .light-mode .bg-slate-800\/50 { background: rgba(203, 213, 225, 0.5); }
 
         /* Input and form elements - focus and hover states */
-        .light-mode .hover\:border-indigo-500:hover { border-color: #6366f1; }
-        .light-mode .focus\:border-purple-500:focus { border-color: #a855f7; }
+        .light-mode .hover\:border-emerald-500:hover { border-color: #10b981; }
+        .light-mode .focus\:border-emerald-500:focus { border-color: #059669; }
         .light-mode .focus\:border-green-500:focus { border-color: #22c55e; }
         .light-mode .focus\:border-cyan-500:focus { border-color: #06b6d4; }
         .light-mode .focus\:border-emerald-500:focus { border-color: #10b981; }
         .light-mode .hover\:border-red-500:hover { border-color: #ef4444; }
         .light-mode .hover\:border-cyan-500:hover { border-color: #06b6d4; }
         .light-mode .hover\:border-green-500:hover { border-color: #22c55e; }
-        .light-mode .hover\:border-violet-500:hover { border-color: #8b5cf6; }
+        .light-mode .hover\:border-sky-500:hover { border-color: #0ea5e9; }
 
         /* Dropdown hover */
         .light-mode .hover\:bg-slate-800:hover { background-color: #f1f5f9; }
@@ -193,13 +197,13 @@
             min-height: 60px;
         }
         .drop-zone.active {
-            border-color: #6366f1;
+            border-color: #10b981;
             background: rgba(99, 102, 241, 0.1);
             color: #818cf8;
         }
         .drop-indicator {
             height: 4px;
-            background: linear-gradient(90deg, #6366f1, #818cf8);
+            background: linear-gradient(90deg, #10b981, #818cf8);
             border-radius: 2px;
             margin: 4px 0;
             box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
@@ -246,12 +250,12 @@
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 px-6 py-4 flex justify-between items-center backdrop-blur-md border-b nav-bg" style="border-color: var(--border-color);">
         <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('/')">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: #10b981;">
                 <i data-lucide="sparkles" class="text-white keep-white w-5 h-5"></i>
             </div>
-            <span class="text-xl font-bold text-white tracking-tight">VeVit tools</span>
+            <span class="text-xl font-semibold text-white tracking-tight">VeVit tools</span>
         </div>
-        <div class="flex items-center gap-6 text-sm font-medium text-slate-300">
+        <div class="flex items-center gap-6 text-sm text-slate-300">
             <div class="relative group">
                 <div class="flex items-center gap-1 cursor-pointer hover:text-white transition-colors">
                     <i data-lucide="globe" class="w-4 h-4"></i> <span id="current-lang">CS</span>
@@ -288,15 +292,15 @@
             <div class="relative text-center py-20 flex flex-col items-center overflow-hidden">
                 <!-- Ambient glow pozadí -->
                 <div class="absolute inset-0 pointer-events-none">
-                    <div style="position:absolute; top:-100px; left:50%; transform:translateX(-50%); width:600px; height:400px; background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%); filter: blur(40px);"></div>
+                    <div style="position:absolute; top:-100px; left:50%; transform:translateX(-50%); width:600px; height:400px; background: radial-gradient(ellipse, rgba(16,185,129,0.08) 0%, transparent 70%); filter: blur(40px);"></div>
                 </div>
 
                 <!-- Nadpis -->
-                <h1 class="relative text-6xl md:text-8xl font-extrabold mb-6 text-white tracking-tight leading-none">
+                <h1 class="relative text-6xl md:text-8xl font-semibold mb-6 text-white tracking-tight leading-none">
                     Nástroje pro<br/>
-                    <span style="background: linear-gradient(135deg, #a855f7, #6366f1, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Kreativce</span>
+                    <span class="text-emerald-400">Kreativce</span>
                     <span class="text-white"> & </span>
-                    <span style="background: linear-gradient(135deg, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Vývojáře.</span>
+                    <span class="text-sky-400">Vývojáře.</span>
                 </h1>
 
                 <p class="relative text-slate-400 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
@@ -314,7 +318,7 @@
                         100% zdarma
                     </div>
                     <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
-                        <div class="w-2 h-2 rounded-full bg-purple-400"></div>
+                        <div class="w-2 h-2 rounded-full bg-slate-400"></div>
                         Soukromé & bezpečné
                     </div>
                 </div>
@@ -327,21 +331,21 @@
                     <input type="text" id="tool-search" autocomplete="off"
                         placeholder="Hledat nástroj... (např. 'compress', 'rotate', 'watermark')"
                         class="w-full py-4 pl-14 pr-6 rounded-2xl text-white text-base placeholder-slate-500 outline-none transition-all duration-200 search-input"
-                        onfocus="this.style.borderColor='rgba(99,102,241,0.7)'; this.style.boxShadow='0 0 0 4px rgba(99,102,241,0.1)'"
-                        onblur="this.style.borderColor='rgba(99,102,241,0.3)'; this.style.boxShadow='0 0 0 0 rgba(99,102,241,0)'">
+                        onfocus="this.style.borderColor='rgba(16,185,129,0.7)'; this.style.boxShadow='0 0 0 4px rgba(16,185,129,0.1)'"
+                        onblur="this.style.borderColor='rgba(16,185,129,0.3)'; this.style.boxShadow='0 0 0 0 rgba(16,185,129,0)'">
                     <div id="search-results" class="search-results hidden absolute top-full left-0 right-0 mt-2 rounded-2xl border overflow-hidden shadow-2xl z-50 bg-card-base border-card"></div>
                 </div>
             </div>
 
             <div>
-                <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <h2 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                     <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i> Nejoblíbenější nástroje
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="popular-tools-grid"></div>
             </div>
 
             <div>
-                <h2 class="text-xl font-bold text-white mb-6">Všechny kategorie</h2>
+                <h2 class="text-xl font-semibold text-white mb-6">Všechny kategorie</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="categories-grid"></div>
             </div>
         </div>
@@ -349,7 +353,7 @@
         <!-- Category View (e.g. PDF Tools Grid) -->
         <div id="category-view" class="hidden-section space-y-8 pb-12">
             <div class="text-center py-8">
-                <h1 class="text-4xl font-bold text-white mb-4" id="category-title">PDF Nástroje</h1>
+                <h1 class="text-4xl font-semibold text-white mb-4" id="category-title">PDF Nástroje</h1>
                 <p class="text-slate-400" id="category-desc">Kompletní sada nástrojů pro práci s PDF soubory.</p>
             </div>
             <div id="category-tools-grid"></div>
@@ -378,7 +382,7 @@
     <!-- Scroll to top button -->
     <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
         class="fixed bottom-6 right-6 w-11 h-11 rounded-full flex items-center justify-center z-50 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none"
-        style="background: linear-gradient(135deg, #6366f1, #a855f7); box-shadow: 0 8px 25px -5px rgba(99,102,241,0.5);">
+        style="background: #10b981; box-shadow: 0 8px 25px -5px rgba(16,185,129,0.4);">
         <i data-lucide="arrow-up" class="w-5 h-5 text-white keep-white"></i>
     </button>
 
