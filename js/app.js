@@ -295,6 +295,81 @@ async function apiCall(url, options = {}) {
 }
 
 // ==========================================
+// OLLAMA AI PROXY HELPERS
+// ==========================================
+
+/**
+ * Call Ollama proxy with appropriate model selection.
+ * @param {string} toolSlug - e.g. 'ai-summarize'
+ * @param {string} prompt - user prompt
+ * @param {string} system - optional system prompt
+ * @param {object} extras - optional extra fields (images, etc.)
+ * @returns {Promise<{text:string}>}
+ */
+async function callOllama(toolSlug, prompt, system = '', extras = {}) {
+    const models = {
+        'ai-summarize': 'llama3.2',
+        'ai-translate': 'llama3.2',
+        'ai-search': 'llama3.2',
+        'grammar-checker': 'llama3.2',
+        'paraphraser': 'llama3.2',
+        'text-summarizer': 'llama3.2',
+        'ai-vision': 'llava',
+        'screenshot-to-code': 'llava',
+        'tts': 'llama3.2',
+        'ai-translate-pdf': 'llama3.2'
+    };
+
+    const model = extras.model || models[toolSlug] || 'llama3.2';
+
+    const body = {
+        prompt: prompt,
+        model: model,
+        tool_slug: toolSlug,
+        stream: false
+    };
+
+    if (system) body.system = system;
+    if (extras.images) body.images = extras.images;
+
+    const response = await fetch('/api/ollama-proxy.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || `AI služba vrátila chybu: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.message || data.error);
+
+    // Log usage asynchronously (fire-and-forget)
+    logUsage(toolSlug);
+
+    return { text: data.text || '' };
+}
+
+/**
+ * Log tool usage to the database.
+ * @param {string} toolSlug
+ */
+async function logUsage(toolSlug) {
+    try {
+        await fetch('/api/log_usage.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tool_slug: toolSlug })
+        });
+    } catch (e) {
+        // Silent fail - logging is not critical
+        console.warn('Usage logging failed:', e);
+    }
+}
+
+// ==========================================
 // TOOL USAGE TRACKING (COOKIES)
 // ==========================================
 function getToolUsage() {
@@ -822,10 +897,10 @@ const CATEGORIES = [
         keywords: ['compress', 'zmenšit', 'tinypng', 'jpg', 'png'], frontend: true, isNew: true, popular: true },
       { id: 'bg-remover', name: 'Background Remover', icon: 'eraser',
         desc: 'AI odstranění pozadí z fotky.', color: 'bg-purple-500',
-        keywords: ['background', 'pozadí', 'remove', 'ai'], frontend: false, isNew: true, popular: true },
+        keywords: ['background', 'pozadí', 'remove', 'ai'], frontend: true, isNew: true, popular: true },
       { id: 'img-upscaler', name: 'Image Upscaler', icon: 'zoom-in',
         desc: 'AI zvětšení obrázku 2x/4x.', color: 'bg-violet-600',
-        keywords: ['upscale', 'zvětšit', 'ai', '4k'], frontend: false, isNew: true },
+        keywords: ['upscale', 'zvětšit', 'ai', '4k'], frontend: false, isNew: true, unavailable: true },
       { id: 'color-extractor', name: 'Color Palette', icon: 'palette',
         desc: 'Extrahuje dominantní barvy z obrázku.', color: 'bg-purple-400',
         keywords: ['barvy', 'paleta', 'colors', 'extract'], frontend: true, isNew: true },
@@ -1039,13 +1114,13 @@ const CATEGORIES = [
         keywords: ['search', 'vyhledávač', 'ai', 'web'], frontend: false, popular: true },
       { id: 'tts', name: 'Text na řeč', icon: 'mic',
         desc: 'Převod textu na mluvené slovo.', color: 'bg-yellow-400',
-        keywords: ['tts', 'text', 'speech', 'hlas'], frontend: false },
+        keywords: ['tts', 'text', 'speech', 'hlas'], frontend: true },
       { id: 'bg-remover', name: 'Background Remover', icon: 'eraser',
         desc: 'AI odstranění pozadí.', color: 'bg-amber-400',
-        keywords: ['background', 'pozadí', 'remove', 'ai'], frontend: false, isNew: true },
+        keywords: ['background', 'pozadí', 'remove', 'ai'], frontend: true, isNew: true },
       { id: 'img-upscaler', name: 'Image Upscaler', icon: 'zoom-in',
         desc: 'AI zvětšení obrázku.', color: 'bg-yellow-600',
-        keywords: ['upscale', 'zvětšit', 'ai', '4k'], frontend: false, isNew: true },
+        keywords: ['upscale', 'zvětšit', 'ai', '4k'], frontend: false, isNew: true, unavailable: true },
       { id: 'screenshot-to-code', name: 'Screenshot to Code', icon: 'code-2',
         desc: 'AI převod screenshot na HTML.', color: 'bg-amber-500',
         keywords: ['screenshot', 'html', 'css', 'ai'], frontend: false, isNew: true },
@@ -1088,15 +1163,6 @@ function getAllTools() {
     });
   });
   return tools;
-}
-
-// Helper: získat nástroj podle ID
-function getToolById(id) {
-  for (const cat of CATEGORIES) {
-    const tool = cat.tools.find(t => t.id === id);
-    if (tool) return { ...tool, categoryId: cat.id, categoryName: cat.name };
-  }
-  return null;
 }
 
 // Helper: získat kategorii podle ID
@@ -1188,7 +1254,7 @@ function renderHome() {
             ${tool.isNew ? `<span class="absolute top-3 right-3 text-[9px] font-bold bg-green-500 text-white px-1.5 py-0.5 rounded-full">NEW</span>` : ''}
 
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
-                 style="background: radial-gradient(ellipse at top left, rgba(99,102,241,0.08) 0%, transparent 60%);"></div>
+                 style="background: radial-gradient(ellipse at top left, var(--vevit-accent-soft) 0%, transparent 60%);"></div>
 
             <div class="relative w-14 h-14 rounded-2xl ${tool.color} flex items-center justify-center mb-5 shadow-lg ${tool.unavailable ? '' : 'transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3'}">
                 <i data-lucide="${tool.icon}" class="w-7 h-7 text-white keep-white"></i>
@@ -1197,7 +1263,7 @@ function renderHome() {
             <h3 class="text-xl font-semibold text-white mb-2">${tool.name}</h3>
             <p class="text-slate-400 text-sm flex-grow mb-6 leading-relaxed">${tool.desc || ''}</p>
 
-            <div class="flex items-center gap-2 text-sm font-semibold" style="color: #818cf8;">
+            <div class="flex items-center gap-2 text-sm font-semibold" style="color: var(--vevit-accent);">
                 ${tool.unavailable ? 'Není k dispozici' : (t.open_tool || 'Otevřít nástroj')}
                 ${tool.unavailable ? '' : '<i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>'}
             </div>
@@ -1221,12 +1287,15 @@ function renderHome() {
                           `${toolsCount} інструментів`;
         return `
         <div onclick="showCategory('${cat.id}')"
-             class="relative rounded-2xl p-5 cursor-pointer transition-all duration-300 group overflow-hidden hover:scale-[1.02]"
-             style="background: linear-gradient(135deg, ${cat.color}dd, ${cat.color}88);">
-            <i data-lucide="${cat.icon}" class="w-8 h-8 text-white mb-3"></i>
-            <h3 class="text-white font-semibold text-lg">${catName}</h3>
-            <p class="text-white/70 text-xs mt-1">${toolsLabel}</p>
-            <p class="text-white/60 text-xs mt-1">${cat.desc}</p>
+             class="relative rounded-2xl p-5 cursor-pointer transition-all duration-300 group overflow-hidden hover:scale-[1.02] card-neo">
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
+                 style="background: radial-gradient(ellipse at top left, ${cat.color}20 0%, transparent 60%);"></div>
+            <div class="relative w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background: ${cat.color}20; color: ${cat.color};">
+                <i data-lucide="${cat.icon}" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-white font-semibold text-lg relative">${catName}</h3>
+            <p class="text-slate-400 text-xs mt-1 relative">${toolsLabel}</p>
+            <p class="text-slate-500 text-xs mt-1 relative">${cat.desc}</p>
         </div>
     `}).join('');
 
@@ -1354,15 +1423,14 @@ function _showCategory(categoryId) {
 
     // Render tools in grid
     grid.innerHTML = `
-        <div class="mb-6 p-6 rounded-2xl text-white"
-             style="background: linear-gradient(135deg, ${cat.color}dd, ${cat.color}88);">
+        <div class="mb-6 p-6 rounded-2xl card-neo">
             <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background: ${cat.color}20; color: ${cat.color};">
                     <i data-lucide="${cat.icon}" class="w-7 h-7"></i>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-semibold">${cat.name}</h2>
-                    <p class="text-white/80 text-sm">${cat.tools.length} nástrojů k dispozici</p>
+                    <h2 class="text-2xl font-semibold text-white">${cat.name}</h2>
+                    <p class="text-slate-400 text-sm">${cat.tools.length} nástrojů k dispozici</p>
                 </div>
             </div>
         </div>
@@ -4126,46 +4194,30 @@ function initToolUI(toolId, container) {
                 
                 try {
                     const lang = document.getElementById('current-lang').innerText || 'CS';
+                    const prompt = lang === 'CS'
+                        ? 'Analyzuj tento obrázek detailně v češtině. Popiš co vidíš.'
+                        : 'Analyze this image in detail. Describe what you see.';
 
-                    const response = await fetch('./api/analyze-image.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            imageBase64: currentBase64,
-                            mimeType: currentFile.type,
-                            lang: lang
-                        })
+                    const data = await callOllama('ai-vision', prompt, '', {
+                        images: [currentBase64]
                     });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Failed to analyze image');
-                    }
-                    
-                    const data = await response.json();
-                    
-                    loadingState.classList.add('hidden');
-                    loadingState.classList.remove('flex');
-                    
-                    let escapedResponse = escapeHTML(data.text);
-                    let formattedResponse = escapedResponse
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/\*(.*?)\*/g, '<em>$1</em>');
-                    
-                    resultContainer.innerHTML = formattedResponse;
+
+                    resultContainer.innerHTML = escapeHTML(data.text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                     resultContainer.classList.remove('hidden');
-                } catch (error) {
+                    btnAnalyze.disabled = false;
                     loadingState.classList.add('hidden');
                     loadingState.classList.remove('flex');
-                    emptyState.classList.remove('hidden');
-                    alert('Chyba při analýze: ' + error.message);
-                } finally {
-                    btnAnalyze.disabled = false;
+                    return;
+                } catch (e) {
+                    resultContainer.innerHTML = `<div class="text-red-400"><i data-lucide="alert-triangle" class="w-5 h-5 inline mr-2"></i>${escapeHTML(e.message)}</div>`;
+                    resultContainer.classList.remove('hidden');
+                    lucide.createIcons();
                 }
+                btnAnalyze.disabled = false;
+                loadingState.classList.add('hidden');
+                loadingState.classList.remove('flex');
             });
-            
+
             lucide.createIcons();
         }, 0);
     }
@@ -4241,23 +4293,11 @@ function initToolUI(toolId, container) {
                 try {
                     const lang = document.getElementById('current-lang').innerText || 'CS';
 
-                    const response = await fetch('./api/ai-search.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            query: query,
-                            lang: lang
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Failed to perform search');
-                    }
-                    
-                    const data = await response.json();
+                    const system = lang === 'CS'
+                        ? 'Jsi AI asistent. Odpovídej v češtině, strukturovaně a přesně. Upozorni, že nemáš přístup k aktuálním informacím z internetu.'
+                        : 'You are an AI assistant. Answer accurately and in a structured way. Note that you do not have access to live internet information.';
+
+                    const data = await callOllama('ai-search', query, system);
                     
                     loadingState.classList.add('hidden');
                     loadingState.classList.remove('flex');
@@ -7668,15 +7708,10 @@ function initToolUI(toolId, container) {
                     fullText += textContent.items.map(item => item.str).join(' ') + '\n';
                 }
                 const lang = document.getElementById('current-lang').innerText || 'CS';
-                const response = await fetch('./api/ai-summarize.php', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        text: fullText.substring(0, 30000),
-                        lang: lang
-                    })
-                });
-                const data = await response.json();
+                const prompt = lang === 'CS'
+                    ? "Shrň následující text do přehledných bodů v češtině:\n\n" + fullText.substring(0, 30000)
+                    : "Summarize the following text into clear bullet points:\n\n" + fullText.substring(0, 30000);
+                const data = await callOllama('ai-summarize', prompt);
                 let formatted = escapeHTML(data.text || 'Shrnutí selhalo.');
                 formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                 document.getElementById('ai-sum-result').innerHTML = formatted;
@@ -7751,16 +7786,8 @@ function initToolUI(toolId, container) {
                     fullText += textContent.items.map(item => item.str).join(' ') + '\n';
                 }
                 const targetLang = document.getElementById('trans-lang-input').value || 'English';
-                const response = await fetch('./api/ai-translate.php', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        text: fullText.substring(0, 30000),
-                        targetLang: targetLang,
-                        lang: 'CS'
-                    })
-                });
-                const data = await response.json();
+                const prompt = "Translate the following text to " + targetLang + ". Keep the formatting:\n\n" + fullText.substring(0, 30000);
+                const data = await callOllama('ai-translate-pdf', prompt);
                 document.getElementById('ai-trans-result').value = data.text || 'Překlad selhal.';
             } catch (e) {
                 let msg = e.message;
@@ -11189,16 +11216,11 @@ ${image ? `<meta property="twitter:image" content="${image}">` : ''}`;
             document.getElementById('sum-empty').classList.add('hidden');
             try {
                 const lang = document.getElementById('current-lang').innerText || 'CS';
-                const res = await fetch('./api/ai-summarize.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text: text.substring(0, 30000),
-                        lang: lang
-                    })
-                });
-                const data = await res.json();
-                if (data.error) throw new Error(data.error);
+                const prompt = lang === 'CS'
+                    ? "Shrň následující text do přehledných bodů v češtině:\n\n" + text.substring(0, 30000)
+                    : "Summarize the following text into clear bullet points:\n\n" + text.substring(0, 30000);
+                const data = await callOllama('text-summarizer', prompt);
+                if (!data.text) throw new Error('Shrnutí selhalo.');
                 let html = escapeHTML(data.text)
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                     .replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -11273,16 +11295,11 @@ ${image ? `<meta property="twitter:image" content="${image}">` : ''}`;
             document.getElementById('grammar-empty').classList.add('hidden');
             try {
                 const lang = document.getElementById('current-lang').innerText || 'CS';
-                const res = await fetch('./api/grammar-check.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text: text.substring(0, 10000),
-                        lang: lang
-                    })
-                });
-                const data = await res.json();
-                if (data.error) throw new Error(data.error);
+                const prompt = lang === 'CS'
+                    ? "Zkontroluj následující text z hlediska gramatiky, pravopisu a stylu. Uveď:\n1. Nalezené chyby s vysvětlením\n2. Opravený text\n3. Celkové hodnocení (1-10)\n\nText:\n" + text.substring(0, 10000)
+                    : "Check the following text for grammar, spelling and style. Provide:\n1. Found errors with explanations\n2. Corrected text\n3. Overall rating (1-10)\n\nText:\n" + text.substring(0, 10000);
+                const data = await callOllama('grammar-checker', prompt);
+                if (!data.text) throw new Error('Kontrola selhala.');
                 let html = escapeHTML(data.text)
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                     .replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -11406,17 +11423,15 @@ ${image ? `<meta property="twitter:image" content="${image}">` : ''}`;
                     simple: lang === 'CS' ? 'Přeformuluj následující text jednoduše a srozumitelně:' : 'Paraphrase the following text in simple and clear language:',
                     creative: lang === 'CS' ? 'Přeformuluj následující text kreativně a zajímavě:' : 'Paraphrase the following text creatively and engagingly:'
                 };
-                const res = await fetch('./api/paraphrase.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text: text.substring(0, 10000),
-                        style: style,
-                        lang: lang
-                    })
-                });
-                const data = await res.json();
-                if (data.error) throw new Error(data.error);
+                const styles = {
+                    standard: lang === 'CS' ? 'Přeformuluj následující text jiným způsobem, zachovej stejný jazyk a smysl:' : 'Paraphrase the following text differently, keeping the same language and meaning:',
+                    formal: lang === 'CS' ? 'Přeformuluj následující text formálním profesionálním stylem:' : 'Paraphrase the following text in a formal professional style:',
+                    simple: lang === 'CS' ? 'Přeformuluj následující text jednoduše a srozumitelně:' : 'Paraphrase the following text in simple and clear language:',
+                    creative: lang === 'CS' ? 'Přeformuluj následující text kreativně a zajímavě:' : 'Paraphrase the following text creatively and engagingly:'
+                };
+                const prompt = (styles[style] || styles.standard) + "\n\n" + text.substring(0, 10000);
+                const data = await callOllama('paraphraser', prompt);
+                if (!data.text) throw new Error('Přeformulování selhalo.');
                 document.getElementById('para-result').innerText = data.text;
                 document.getElementById('para-result').classList.remove('hidden');
                 document.getElementById('para-actions').classList.remove('hidden');
@@ -11562,17 +11577,11 @@ ${image ? `<meta property="twitter:image" content="${image}">` : ''}`;
                     tailwind: 'HTML with Tailwind CSS classes',
                     react: 'React JSX with inline styles or Tailwind'
                 };
-                const res = await fetch('./api/screenshot-to-code.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        imageBase64: s2cBase64,
-                        mimeType: s2cFile.type,
-                        framework: framework
-                    })
+                const prompt = "You are an expert frontend developer. Analyze this UI screenshot and generate clean, production-ready code using " + frameworkDesc[framework] + ".\n\nRequirements:\n- Recreate the UI as accurately as possible\n- Use semantic HTML\n- Include all visible text content\n- Make it responsive\n- Return ONLY the code, no explanations\n\nGenerate the complete code now:";
+                const data = await callOllama('screenshot-to-code', prompt, '', {
+                    images: [s2cBase64]
                 });
-                const data = await res.json();
-                if (data.error) throw new Error(data.error);
+                if (!data.text) throw new Error('Konverze selhala.');
                 // Vyčisti code fences pokud přítomny
                 let code = data.text.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/,'');
                 document.getElementById('s2c-code-output').value = code;

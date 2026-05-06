@@ -1,0 +1,15 @@
+{
+  "name": "vevit-tools",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5173 --open",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve-php": "php -S localhost:8000 -t ."
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

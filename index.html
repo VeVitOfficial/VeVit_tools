@@ -36,10 +36,10 @@
             theme: {
                 extend: {
                     colors: {
-                        dark: 'var(--bg-dark)',
-                        card: 'var(--bg-card)',
-                        cardHover: 'var(--bg-card-hover)',
-                        border: 'var(--border-color)',
+                        dark: 'var(--bg)',
+                        card: 'var(--bg-elevated)',
+                        cardHover: 'var(--bg-hover)',
+                        border: 'var(--border)',
                         pdf: '#0ea5e9',
                         image: '#10B981',
                         video: '#F97316',
@@ -57,24 +57,45 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="canonical" href="https://services.vevit.fun">
+    <link rel="canonical" href="https://tools.vevit.fun">
     <style>
         :root {
-            --bg-dark: #0B0F19;
-            --bg-card: #131826;
-            --bg-card-hover: #1A2035;
-            --border-color: #1E293B;
+            --bg: #0d0d0d;
+            --bg-elevated: #131316;
+            --bg-hover: #1a1a1d;
+            --bg-overlay: rgba(13,13,13,0.85);
+
+            --text: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --text-dim: #71717a;
+
+            --vevit-accent: #10b981;
+            --vevit-accent-hover: #34d399;
+            --vevit-accent-soft: rgba(16,185,129,0.12);
+
+            --c-tools: #38bdf8;
+
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.15);
+            --shadow-card: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.4);
+
+            --r-sm: 8px;
+            --r-md: 12px;
+            --r-lg: 16px;
+            --r-xl: 24px;
         }
         .light-mode {
-            --bg-dark: #f8fafc;
-            --bg-card: #ffffff;
-            --bg-card-hover: #f1f5f9;
-            --border-color: #e2e8f0;
+            --bg: #f8fafc;
+            --bg-elevated: #ffffff;
+            --bg-hover: #f1f5f9;
+            --bg-overlay: rgba(248,250,252,0.85);
+            --border: rgba(0,0,0,0.08);
+            --border-hover: rgba(0,0,0,0.15);
         }
-        .nav-bg { background: rgba(11,15,25,0.9); }
-        .light-mode .nav-bg { background: rgba(248,250,252,0.9); }
+        .nav-bg { background: var(--bg-overlay); backdrop-filter: blur(12px); }
+        .light-mode .nav-bg { background: var(--bg-overlay); }
 
-        body { background-color: var(--bg-dark); color: #f8fafc; font-family: 'Sora', sans-serif; font-weight: 400; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; font-weight: 400; }
         .light-mode { color: #0f172a; }
 
         .hidden-section { display: none !important; }
@@ -115,16 +136,28 @@
         .tool-card:hover { transform: translateY(-2px); }
 
         /* Card backgrounds */
-        .bg-card-base { background: #131826; }
+        .bg-card-base { background: var(--bg-elevated); }
         .light-mode .bg-card-base { background: #ffffff; }
 
-        .bg-card-hover-base { background: #1A2035; }
+        .bg-card-hover-base { background: var(--bg-hover); }
         .light-mode .bg-card-hover-base { background: #f1f5f9; }
 
-        .border-card { border-color: #1E293B; }
+        .border-card { border-color: var(--border); }
         .light-mode .border-card { border-color: #e2e8f0; }
 
-        .border-card-hover { border-color: rgba(16,185,129,0.4); }
+        .border-card-hover { border-color: var(--vevit-accent); }
+
+        /* Neomorphic card shadow */
+        .card-neo {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-card);
+            border-radius: var(--r-lg);
+        }
+        .card-neo:hover {
+            border-color: var(--border-hover);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.5);
+        }
 
         /* Hero section */
         .hero-glow { background: radial-gradient(ellipse, rgba(16,185,129,0.12) 0%, transparent 70%); }
@@ -295,14 +328,17 @@
     </style>
 
 </head>
-<body class="bg-dark text-slate-200 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col" style="background-color: var(--bg); color: var(--text);">
     <!-- Navbar -->
-    <nav class="sticky top-0 z-50 px-6 py-4 flex justify-between items-center backdrop-blur-md border-b nav-bg" style="border-color: var(--border-color);">
+    <nav class="sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-b nav-bg" style="border-color: var(--border);">
         <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('/')">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: #10b981;">
-                <i data-lucide="sparkles" class="text-white keep-white w-5 h-5"></i>
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--c-tools), #0ea5e9);">
+                <i data-lucide="box" class="text-white keep-white w-5 h-5"></i>
             </div>
-            <span class="text-xl font-semibold text-white tracking-tight">VeVit tools</span>
+            <div class="flex items-baseline gap-2">
+                <span class="text-xl font-bold text-white tracking-tight">VeVit</span>
+                <span class="text-sm font-medium px-2 py-0.5 rounded-md" style="background: rgba(56,189,248,0.15); color: var(--c-tools);">Tools</span>
+            </div>
         </div>
         <div class="flex items-center gap-6 text-sm text-slate-300">
             <div class="relative group">
@@ -341,7 +377,7 @@
             <div class="relative text-center py-20 flex flex-col items-center overflow-hidden">
                 <!-- Ambient glow pozadí -->
                 <div class="absolute inset-0 pointer-events-none">
-                    <div style="position:absolute; top:-100px; left:50%; transform:translateX(-50%); width:600px; height:400px; background: radial-gradient(ellipse, rgba(16,185,129,0.08) 0%, transparent 70%); filter: blur(40px);"></div>
+                    <div style="position:absolute; top:-100px; left:50%; transform:translateX(-50%); width:700px; height:500px; background: radial-gradient(ellipse, var(--vevit-accent-soft) 0%, transparent 70%); filter: blur(60px);"></div>
                 </div>
 
                 <!-- Nadpis -->
@@ -358,16 +394,16 @@
 
                 <!-- Stats pills -->
                 <div class="relative flex items-center gap-3 flex-wrap justify-center mb-10">
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
-                        <div class="w-2 h-2 rounded-full bg-green-400"></div>
-                        60+ nástrojů
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm" style="background: var(--bg-elevated); border-color: var(--border); color: var(--text-muted);">
+                        <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                        100+ nástrojů
                     </div>
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
-                        <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-                        100% 
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm" style="background: var(--bg-elevated); border-color: var(--border); color: var(--text-muted);">
+                        <div class="w-2 h-2 rounded-full bg-sky-400"></div>
+                        AI Powered
                     </div>
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-slate-300 text-sm" style="background: rgba(30,41,59,0.8); border-color: var(--border-color);">
-                        <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm" style="background: var(--bg-elevated); border-color: var(--border); color: var(--text-muted);">
+                        <div class="w-2 h-2 rounded-full bg-zinc-400"></div>
                         Soukromé & bezpečné
                     </div>
                 </div>
@@ -380,7 +416,7 @@
                     <input type="text" id="tool-search" autocomplete="off"
                         placeholder="Hledat nástroj... (např. 'compress', 'rotate', 'watermark')"
                         class="w-full py-4 pl-14 pr-6 rounded-2xl text-white text-base placeholder-slate-500 outline-none transition-all duration-200 search-input"
-                        onfocus="this.style.borderColor='rgba(16,185,129,0.7)'; this.style.boxShadow='0 0 0 4px rgba(16,185,129,0.1)'"
+                        onfocus="this.style.borderColor='var(--vevit-accent)'; this.style.boxShadow='0 0 0 4px var(--vevit-accent-soft)'"
                         onblur="this.style.borderColor='rgba(16,185,129,0.3)'; this.style.boxShadow='0 0 0 0 rgba(16,185,129,0)'">
                     <div id="search-results" class="search-results hidden absolute top-full left-0 right-0 mt-2 rounded-2xl border overflow-hidden shadow-2xl z-50 bg-card-base border-card"></div>
                 </div>
@@ -414,24 +450,24 @@
         </div>
     </main>
 
-    <footer class="border-t mt-auto py-8" style="border-color: var(--border-color);">
+    <footer class="border-t mt-auto py-8" style="border-color: var(--border);">
         <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-            <a href="https://vevit.fun" class="text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-2">
+            <a href="https://vevit.fun" class="transition-colors flex items-center gap-2" style="color: var(--text-dim);">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 Zpět na VeVit.fun
             </a>
-            <div class="flex items-center gap-2 text-slate-500">
-                <i data-lucide="shield-check" class="w-4 h-4" style="color:#22c55e;"></i>
+            <div class="flex items-center gap-2" style="color: var(--text-dim);">
+                <i data-lucide="shield-check" class="w-4 h-4" style="color: var(--vevit-accent);"></i>
                 <span>Vše zpracováno lokálně v prohlížeči</span>
             </div>
-            <p class="text-slate-600">© 2026 VeVit tools.</p>
+            <p style="color: var(--text-dim);">© 2026 VeVit Tools.</p>
         </div>
     </footer>
 
     <!-- Scroll to top button -->
     <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
         class="fixed bottom-6 right-6 w-11 h-11 rounded-full flex items-center justify-center z-50 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none"
-        style="background: #10b981; box-shadow: 0 8px 25px -5px rgba(16,185,129,0.4);">
+        style="background: var(--vevit-accent); box-shadow: 0 8px 25px -5px rgba(16,185,129,0.4);">
         <i data-lucide="arrow-up" class="w-5 h-5 text-white keep-white"></i>
     </button>
 
@@ -449,6 +485,6 @@
             }
         });
     </script>
-    <script src="./app.js"></script>
+    <script src="./js/app.js"></script>
 </body>
 </html>
