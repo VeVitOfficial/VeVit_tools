@@ -1,6 +1,25 @@
 <?php
-require_once __DIR__ . '/config_secret.php';
-require_once __DIR__ . '/../lib/tier-check.php';
+// Error handler: catch any PHP error/warning and return JSON instead of HTML
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'PHP Error',
+        'message' => $errstr . ' in ' . basename($errfile) . ':' . $errline,
+        'code' => $errno
+    ]);
+    exit;
+});
+
+set_exception_handler(function (Throwable $e) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'Internal Server Error',
+        'message' => $e->getMessage()
+    ]);
+    exit;
+});
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -17,6 +36,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['error' => 'Method not allowed']);
     exit;
 }
+
+if (!file_exists(__DIR__ . '/config_secret.php')) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Missing config_secret.php']);
+    exit;
+}
+require_once __DIR__ . '/config_secret.php';
+
+if (!file_exists(__DIR__ . '/../lib/tier-check.php')) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Missing tier-check.php']);
+    exit;
+}
+require_once __DIR__ . '/../lib/tier-check.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
 $prompt = $input['prompt'] ?? '';
