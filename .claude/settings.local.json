@@ -6,7 +6,8 @@
       "Bash(node:*)",
       "Bash(php -l \"P:\\\\web apps\\\\vevit-tools\\\\api\\\\grammar-check.php\")",
       "Bash(php -l \"P:\\\\web apps\\\\vevit-tools\\\\api\\\\paraphrase.php\")",
-      "Bash(php -l \"P:\\\\web apps\\\\vevit-tools\\\\api\\\\screenshot-to-code.php\")"
+      "Bash(php -l \"P:\\\\web apps\\\\vevit-tools\\\\api\\\\screenshot-to-code.php\")",
+      "Bash(git config *)"
     ]
   }
 }
