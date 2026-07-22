@@ -51,6 +51,8 @@ $implemented = [
   // Dávka 9 — security
   'steganography','certificate-info','password-strength','totp-generator',
   'password-breach-check','file-encryption','token-generator',
+  // Dávka 10 — média bez ffmpeg
+  'video-thumbnail','audio-waveform',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 

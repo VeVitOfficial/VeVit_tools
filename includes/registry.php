@@ -77,6 +77,8 @@ const TOOLS = [
     ['slug' => 'video-compress', 'name' => 'Komprese videa',   'desc' => 'Zmenší velikost videa s nastavitelnou kvalitou.',    'cat' => 'media',    'loc' => 'server', 'icon' => 'Shrink',    'new' => false],
     ['slug' => 'video-trim',     'name' => 'Ořez videa',       'desc' => 'Vyberte část videa a odstraňte zbytek.',            'cat' => 'media',    'loc' => 'server', 'icon' => 'Scissors',  'new' => false],
     ['slug' => 'audio-convert',  'name' => 'Konverze audia',   'desc' => 'Převeďte audio mezi MP3, WAV, FLAC, OGG...',        'cat' => 'media',    'loc' => 'server', 'icon' => 'Music',     'new' => false],
+    ['slug' => 'video-thumbnail','name' => 'Náhled videa',    'desc' => 'Vygeneruje náhled/snímek z videa (bez ffmpeg).',    'cat' => 'media',    'loc' => 'client', 'icon' => 'Camera',   'new' => true],
+    ['slug' => 'audio-waveform', 'name' => 'Křivka audia',    'desc' => 'Vykreslí křivku hlasitosti audia (Web Audio API).',  'cat' => 'media',    'loc' => 'client', 'icon' => 'Volume2',  'new' => true],
 
     ['slug' => 'translate',      'name' => 'Překlad textu',    'desc' => 'Přeložte text do více než 100 jazyků pomocí AI.',  'cat' => 'text',     'loc' => 'ai',     'icon' => 'Languages', 'new' => true],
     ['slug' => 'summarize-text', 'name' => 'Shrnutí textu',    'desc' => 'Vytvořte stručné shrnutí dlouhého textu.',          'cat' => 'text',     'loc' => 'ai',     'icon' => 'AlignLeft',  'new' => true],
