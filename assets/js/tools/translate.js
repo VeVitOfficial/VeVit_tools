@@ -23,7 +23,7 @@
     out.classList.remove('hidden'); md.textContent = 'Překládám…';
     setRunning(true);
     handle = AITool.run({
-      tool: 'text-translate', prompt: prompt,
+      tool: 'translate', prompt: prompt,
       onToken: function (piece, full) { AITool.renderMarkdown(md, full); },
       onDone: function (full) { setRunning(false); handle = null; if (!full) md.textContent = ''; },
       onError: function (m) { setRunning(false); handle = null; out.classList.add('hidden'); fail(m); }

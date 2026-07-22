@@ -59,8 +59,9 @@ $implemented = [
   'bg-remover',
   // Dávka 12 — AI nástroje (Ollama)
   'ai-vision','ai-seo','ai-sql-gen',
-  'text-translate','text-summarize','grammar-check','ai-email-writer','ai-text-qa',
+  'translate','summarize-text','grammar-check','ai-email-writer','ai-text-qa',
   'ai-commit-message','ai-regex-generator','ai-code-explainer',
+  'gif-maker',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 

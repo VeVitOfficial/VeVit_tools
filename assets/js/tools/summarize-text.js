@@ -20,7 +20,7 @@
     out.classList.remove('hidden'); md.textContent = 'Shrnuji…';
     setRunning(true);
     handle = AITool.run({
-      tool: 'text-summarize', prompt: prompt,
+      tool: 'summarize-text', prompt: prompt,
       onToken: function (piece, full) { AITool.renderMarkdown(md, full); },
       onDone: function (full) { setRunning(false); handle = null; if (!full) md.textContent = ''; },
       onError: function (m) { setRunning(false); handle = null; out.classList.add('hidden'); fail(m); }

@@ -59,7 +59,7 @@ const TOOLS = [
     ['slug' => 'img-compress',  'name' => 'Komprese obrázku',  'desc' => 'Zmenšete obrázek přes canvas (kvalita, JPEG/WebP).','cat' => 'image',    'loc' => 'client', 'icon' => 'Image',     'new' => false],
     ['slug' => 'bg-remover',    'name' => 'Odstranit pozadí',  'desc' => 'AI odstranění pozadí z fotografií (ONNX MODNet).',  'cat' => 'image',    'loc' => 'ai',      'icon' => 'Eraser',    'new' => true],
     ['slug' => 'img-upscaler',  'name' => 'Zvětšení kvality',  'desc' => 'Zvětší rozlišení obrázku (2×/3×/4×) přes canvas.',   'cat' => 'image',    'loc' => 'client', 'icon' => 'Maximize',  'new' => true],
-    ['slug' => 'gif-maker',     'name' => 'Tvůrce GIFu',       'desc' => 'Vytvořte GIF z obrázku nebo videa.',                'cat' => 'image',    'loc' => 'server', 'icon' => 'Film',      'new' => true],
+    ['slug' => 'gif-maker',     'name' => 'Tvůrce GIFu',       'desc' => 'Vytvořte animovaný GIF ze sekvence obrázků.',         'cat' => 'image',    'loc' => 'client', 'icon' => 'Film',      'new' => true],
     ['slug' => 'screenshot-tool','name'=> 'Screenshot URL',    'desc' => 'Pořiďte screenshot libovolné webové stránky.',      'cat' => 'image',    'loc' => 'server', 'icon' => 'Camera',    'new' => true, 'note' => 'Tento nástroj vyžaduje VPS / shell_exec (headless Chromium). Na sdíleném hostingu jej provozovat nelze.'],
     // ── Dávka 5 — obrázky přes canvas ─────────────────────────────
     ['slug' => 'image-convert',     'name' => 'Převod formátu',   'desc' => 'Převeďte PNG/JPG/WebP/BMP přes canvas.',           'cat' => 'image', 'loc' => 'client', 'icon' => 'Repeat',           'new' => true],
@@ -85,7 +85,7 @@ const TOOLS = [
     ['slug' => 'video-target-size','name'=>'Cílová velikost', 'desc' => 'Dopočítá bitrate pro cílovou velikost videa.',       'cat' => 'media',    'loc' => 'client', 'icon' => 'Scale',     'new' => true],
     ['slug' => 'audio-trim-normalize','name'=>'Ořez+normalizace audia','desc'=>'Ořízne a normalizuje hlasitost audia.','cat'=> 'media','loc' => 'client', 'icon' => 'SlidersHorizontal','new'=> true],
 
-    ['slug' => 'translate',      'name' => 'Překlad textu',    'desc' => 'Přeložte text do více než 100 jazyků pomocí AI.',  'cat' => 'text',     'loc' => 'ai',     'icon' => 'Languages', 'new' => true],
+    ['slug' => 'translate',      'name' => 'Překlad textu',    'desc' => 'Přeložte text mezi jazyky pomocí AI.',              'cat' => 'text',     'loc' => 'ai',     'icon' => 'Languages', 'new' => true],
     ['slug' => 'summarize-text', 'name' => 'Shrnutí textu',    'desc' => 'Vytvořte stručné shrnutí dlouhého textu.',          'cat' => 'text',     'loc' => 'ai',     'icon' => 'AlignLeft',  'new' => true],
     ['slug' => 'markdown-editor','name' => 'Markdown editor', 'desc' => 'Editujte a náhledněte Markdown v reálném čase.',    'cat' => 'text',     'loc' => 'client', 'icon' => 'FileCode',   'new' => false],
     ['slug' => 'mind-map',       'name' => 'Myšlenková mapa', 'desc' => 'Vizualizujte strukturu myšlenek jako radiální strom.','cat' => 'text',   'loc' => 'client', 'icon' => 'GitBranch',  'new' => true],
@@ -102,8 +102,6 @@ const TOOLS = [
     ['slug' => 'ai-seo',     'name' => 'SEO meta generátor',   'desc' => 'Generujte SEO titulky a popisky automaticky.',      'cat' => 'ai',  'loc' => 'ai',     'icon' => 'Search',       'new' => true],
     ['slug' => 'ai-image-gen','name'=> 'AI generátor obrázku','desc' => 'Vytvořte unikátní obrázky z textového popisu.',       'cat' => 'ai',  'loc' => 'ai',     'icon' => 'ImagePlus',    'new' => true, 'note' => 'Generování obrázků vyžaduje další infrastrukturu (Stable Diffusion / ComfyUI), kterou Ollama neposkytuje. Nástroj je v přípravě.'],
     ['slug' => 'ai-sql-gen',  'name' => 'AI generátor SQL',    'desc' => 'Převeďte přirozený jazyk na SQL dotazy.',           'cat' => 'ai',  'loc' => 'ai',     'icon' => 'Database',     'new' => true],
-    ['slug' => 'text-translate', 'name' => 'AI překladač',     'desc' => 'Přeložte text mezi jazyky pomocí AI.',              'cat' => 'text', 'loc' => 'ai',    'icon' => 'Languages',    'new' => true],
-    ['slug' => 'text-summarize', 'name' => 'AI shrnutí textu', 'desc' => 'Vytvořte stručné shrnutí delšího textu.',           'cat' => 'text', 'loc' => 'ai',    'icon' => 'AlignLeft',   'new' => true],
     ['slug' => 'grammar-check', 'name' => 'AI kontrola pravopisu','desc'=> 'Opravte pravopis a gramatiku českého textu.',       'cat' => 'text', 'loc' => 'ai',    'icon' => 'SpellCheck',   'new' => true],
     ['slug' => 'ai-email-writer','name'=> 'AI psaní e-mailu',  'desc' => 'Vytvořte e-mail podle zadání a zvoleného tónu.',    'cat' => 'text', 'loc' => 'ai',    'icon' => 'Mail',        'new' => true],
     ['slug' => 'ai-text-qa',   'name' => 'AI otázky nad textem','desc'=> 'Ptejte se na cokoliv k dodanému textu (kontext).',   'cat' => 'ai',  'loc' => 'ai',     'icon' => 'HelpCircle',   'new' => true],
