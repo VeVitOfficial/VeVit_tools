@@ -40,6 +40,9 @@ $implemented = [
   'text-to-speech','text-lines-tool','mind-map',
   // Dávka 5 — obrázky přes canvas
   'image-convert','image-crop','image-rotate-flip','image-filters',
+  // Dávka 6 — další obrázky + komprese/zvětšení
+  'img-compress','img-upscaler','image-watermark','image-exif',
+  'image-collage','favicon-generator','meme-generator',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 

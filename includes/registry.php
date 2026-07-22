@@ -48,9 +48,9 @@ const TOOLS = [
     ['slug' => 'html-to-pdf', 'name' => 'HTML → PDF',         'desc' => 'Převede HTML stránku na PDF.',                      'cat' => 'pdf',      'loc' => 'server', 'icon' => 'FileCode',  'new' => false],
     ['slug' => 'invoice-gen', 'name' => 'Faktura generátor',   'desc' => 'Generujte profesionální faktury s QR kódem.',        'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Receipt',   'new' => true],
 
-    ['slug' => 'img-compress',  'name' => 'Komprese obrázku',  'desc' => 'Zmenší velikost obrázku bez ztráty kvality.',       'cat' => 'image',    'loc' => 'server', 'icon' => 'Image',     'new' => false],
+    ['slug' => 'img-compress',  'name' => 'Komprese obrázku',  'desc' => 'Zmenšete obrázek přes canvas (kvalita, JPEG/WebP).','cat' => 'image',    'loc' => 'client', 'icon' => 'Image',     'new' => false],
     ['slug' => 'bg-remover',    'name' => 'Odstranit pozadí',  'desc' => 'AI odstranění pozadí z fotografií.',               'cat' => 'image',    'loc' => 'server', 'icon' => 'Eraser',    'new' => true],
-    ['slug' => 'img-upscaler',  'name' => 'Zvětšení kvality',  'desc' => 'Zvětší rozlišení obrázku pomocí Lanczos filtru.',   'cat' => 'image',    'loc' => 'server', 'icon' => 'Maximize',  'new' => true],
+    ['slug' => 'img-upscaler',  'name' => 'Zvětšení kvality',  'desc' => 'Zvětší rozlišení obrázku (2×/3×/4×) přes canvas.',   'cat' => 'image',    'loc' => 'client', 'icon' => 'Maximize',  'new' => true],
     ['slug' => 'gif-maker',     'name' => 'Tvůrce GIFu',       'desc' => 'Vytvořte GIF z obrázku nebo videa.',                'cat' => 'image',    'loc' => 'server', 'icon' => 'Film',      'new' => true],
     ['slug' => 'screenshot-tool','name'=> 'Screenshot URL',    'desc' => 'Pořiďte screenshot libovolné webové stránky.',      'cat' => 'image',    'loc' => 'server', 'icon' => 'Camera',    'new' => true],
     // ── Dávka 5 — obrázky přes canvas ─────────────────────────────
@@ -58,6 +58,12 @@ const TOOLS = [
     ['slug' => 'image-crop',        'name' => 'Oříznutí obrázku', 'desc' => 'Interaktivně ořízněte obrázek v canvasu.',         'cat' => 'image', 'loc' => 'client', 'icon' => 'Crop',             'new' => true],
     ['slug' => 'image-rotate-flip', 'name' => 'Otočení/Překlopení','desc'=> 'Otočte nebo překlopte obrázek (90/180/270/flip).',  'cat' => 'image', 'loc' => 'client', 'icon' => 'RotateCw',         'new' => true],
     ['slug' => 'image-filters',     'name' => 'Filtry obrázku',   'desc' => 'Grayscale, sepia, jas, kontrast, saturace.',        'cat' => 'image', 'loc' => 'client', 'icon' => 'SlidersHorizontal','new' => true],
+    // ── Dávka 6 — další obrázky + komprese/zvětšení ───────────────
+    ['slug' => 'image-watermark',   'name' => 'Vodoznak',          'desc' => 'Přidejte textový nebo obrázkový vodoznak.',         'cat' => 'image', 'loc' => 'client', 'icon' => 'Stamp',            'new' => true],
+    ['slug' => 'image-exif',        'name' => 'EXIF metadata',     'desc' => 'Prohlížejte a odstraňujte EXIF (vč. GPS).',         'cat' => 'image', 'loc' => 'client', 'icon' => 'ScanLine',        'new' => true],
+    ['slug' => 'image-collage',     'name' => 'Koláž obrázků',     'desc' => 'Spojte více obrázků do koláže (různá rozvržení).',   'cat' => 'image', 'loc' => 'client', 'icon' => 'Images',           'new' => true],
+    ['slug' => 'favicon-generator', 'name' => 'Favicon generátor',  'desc' => 'Vygeneruje favicony (PNG více velikostí + ICO).',   'cat' => 'image', 'loc' => 'client', 'icon' => 'Globe',            'new' => true],
+    ['slug' => 'meme-generator',    'name' => 'Meme generátor',     'desc' => 'Vytvořte meme s horním/dolním textem (Impact).',    'cat' => 'image', 'loc' => 'client', 'icon' => 'Laugh',            'new' => true],
 
     ['slug' => 'video-convert', 'name' => 'Konverze videa',    'desc' => 'Převeďte video mezi formáty MP4, WebM, AVI...',     'cat' => 'media',    'loc' => 'server', 'icon' => 'Video',     'new' => false],
     ['slug' => 'video-compress', 'name' => 'Komprese videa',   'desc' => 'Zmenší velikost videa s nastavitelnou kvalitou.',    'cat' => 'media',    'loc' => 'server', 'icon' => 'Shrink',    'new' => false],
