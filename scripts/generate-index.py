@@ -75,7 +75,7 @@ def e(s):
 # ── Nástroje ────────────────────────────────────────────────────────
 TOOLS = []
 for line in reg.splitlines():
-    m = re.search(r"\['slug'\s*=>\s*'([^']+)'.*'name'\s*=>\s*'([^']+)'.*'desc'\s*=>\s*'([^']*)'.*'cat'\s*=>\s*'([^']+)'.*'loc'\s*=>\s*'([^']+)'.*'icon'\s*=>\s*'([^']+)'.*'new'\s*=>\s*(true|false)\]", line)
+    m = re.search(r"\['slug'\s*=>\s*'([^']+)'.*'name'\s*=>\s*'([^']+)'.*'desc'\s*=>\s*'([^']*)'.*'cat'\s*=>\s*'([^']+)'.*'loc'\s*=>\s*'([^']+)'.*'icon'\s*=>\s*'([^']+)'.*'new'\s*=>\s*(true|false)[^\]]*\]", line)
     if m:
         TOOLS.append(dict(slug=m[1], name=m[2], desc=m[3], cat=m[4], loc=m[5],
                           icon=m[6], new=(m[7] == "true")))

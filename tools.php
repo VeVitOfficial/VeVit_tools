@@ -46,6 +46,8 @@ $implemented = [
   // Dávka 7 — PDF client-side
   'invoice-gen','pdf-to-images','images-to-pdf','pdf-rotate',
   'pdf-organize','pdf-watermark','pdf-page-numbers','pdf-extract-text',
+  // Dávka 8 — PDF client alternativy
+  'pdf-to-word','html-to-pdf',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 
@@ -78,9 +80,12 @@ require __DIR__ . '/includes/header.php';
         </div>
         <script src="/assets/js/tools/<?= $tool['slug'] ?>.js" defer></script>
       <?php else: ?>
-        <div class="tool-placeholder">
-          <p class="t">Nástroj „<?= e($tool['name']) ?>“</p>
-          <p style="font-size:0.875rem">Tento nástroj je zatím ve vývoji. Brzy bude dostupný.</p>
+        <div class=”tool-placeholder”>
+          <p class=”t”>Nástroj „<?= e($tool['name']) ?>”</p>
+          <p style=”font-size:0.875rem”>Tento nástroj je zatím ve vývoji. Brzy bude dostupný.</p>
+          <?php if (!empty($tool['note'])): ?>
+            <p class=”error-text” style=”margin-top:0.75rem;display:block”><?= e($tool['note']) ?></p>
+          <?php endif; ?>
         </div>
       <?php endif; ?>
     </div>

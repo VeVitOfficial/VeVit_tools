@@ -44,8 +44,8 @@ const TOOLS = [
     ['slug' => 'pdf-merge',  'name' => 'Sloučení PDF',        'desc' => 'Sloučí více PDF souborů do jednoho.',                'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Files',     'new' => false],
     ['slug' => 'pdf-split',  'name' => 'Rozdělení PDF',       'desc' => 'Rozdělí PDF na jednotlivé stránky.',                'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Scissors',  'new' => false],
     ['slug' => 'pdf-compress','name'=> 'Komprese PDF',        'desc' => 'Zmenší velikost PDF souboru.',                      'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Shrink',    'new' => false],
-    ['slug' => 'pdf-to-word', 'name' => 'PDF → Word',         'desc' => 'Převede PDF do formátu DOCX.',                      'cat' => 'pdf',      'loc' => 'server', 'icon' => 'FileText',  'new' => false],
-    ['slug' => 'html-to-pdf', 'name' => 'HTML → PDF',         'desc' => 'Převede HTML stránku na PDF.',                      'cat' => 'pdf',      'loc' => 'server', 'icon' => 'FileCode',  'new' => false],
+    ['slug' => 'pdf-to-word', 'name' => 'PDF → Word',         'desc' => 'Vytáhne text z PDF a sestaví .docx.',               'cat' => 'pdf',      'loc' => 'client', 'icon' => 'FileText',  'new' => false],
+    ['slug' => 'html-to-pdf', 'name' => 'HTML → PDF',         'desc' => 'Převede HTML kód na PDF (html2canvas+jsPDF).',     'cat' => 'pdf',      'loc' => 'client', 'icon' => 'FileCode',  'new' => false],
     ['slug' => 'invoice-gen', 'name' => 'Faktura generátor',   'desc' => 'Generujte profesionální faktury s QR kódem.',        'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Receipt',   'new' => true],
     ['slug' => 'pdf-to-images','name'=> 'PDF → obrázky',        'desc' => 'Převede stránky PDF na obrázky (PNG/JPEG ZIP).',    'cat' => 'pdf',      'loc' => 'client', 'icon' => 'ImagePlus', 'new' => true],
     ['slug' => 'images-to-pdf','name'=> 'Obrázky → PDF',        'desc' => 'Spojí více obrázků do jednoho PDF.',                'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Files',     'new' => true],
@@ -54,6 +54,7 @@ const TOOLS = [
     ['slug' => 'pdf-watermark','name'=> 'Vodoznak PDF',        'desc' => 'Přidá textový vodoznak do PDF.',                    'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Stamp',     'new' => true],
     ['slug' => 'pdf-page-numbers','name'=>'Číslování stránek',  'desc' => 'Přidá čísla stránek do PDF.',                       'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Hash',      'new' => true],
     ['slug' => 'pdf-extract-text','name'=>'Extrakce textu PDF','desc' => 'Vytáhne text z PDF (pdf.js).',                       'cat' => 'pdf',      'loc' => 'client', 'icon' => 'AlignLeft', 'new' => true],
+    ['slug' => 'pdf-password', 'name' => 'Ochrana PDF heslem', 'desc' => 'Nastaví nebo odstraní heslo PDF (qpdf).',            'cat' => 'pdf',      'loc' => 'server', 'icon' => 'FileKey',   'new' => false, 'note' => 'Tento nástroj vyžaduje VPS / shell_exec (nástroj qpdf). Na sdíleném hostingu jej provozovat nelze.'],
 
     ['slug' => 'img-compress',  'name' => 'Komprese obrázku',  'desc' => 'Zmenšete obrázek přes canvas (kvalita, JPEG/WebP).','cat' => 'image',    'loc' => 'client', 'icon' => 'Image',     'new' => false],
     ['slug' => 'bg-remover',    'name' => 'Odstranit pozadí',  'desc' => 'AI odstranění pozadí z fotografií.',               'cat' => 'image',    'loc' => 'server', 'icon' => 'Eraser',    'new' => true],
