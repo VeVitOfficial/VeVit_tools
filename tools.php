@@ -57,6 +57,10 @@ $implemented = [
   'video-convert','video-compress','video-trim','audio-convert',
   'video-extract-audio','video-to-gif','video-merge','video-target-size','audio-trim-normalize',
   'bg-remover',
+  // Dávka 12 — AI nástroje (Ollama)
+  'ai-vision','ai-seo','ai-sql-gen',
+  'text-translate','text-summarize','grammar-check','ai-email-writer','ai-text-qa',
+  'ai-commit-message','ai-regex-generator','ai-code-explainer',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 

@@ -22,6 +22,8 @@ require_once __DIR__ . '/../../includes/ai_prompts.php';
 const AI_MAX_PROMPT_CHARS = 20000;   // maximální délka uživatelského vstupu
 const AI_RATE_WINDOW      = 60;      // délka časového okna (sekundy)
 const AI_RATE_MAX         = 30;      // max. požadavků na IP v okně
+const AI_MAX_IMAGES       = 4;       // max. počet obrázků na požadavek (vision)
+const AI_MAX_IMAGE_BYTES  = 8 * 1024 * 1024; // max. 8 MB na obrázek (base64)
 
 // ── Pomocné: JSON odpověď s HTTP status kódem ──────────────────────────────
 function fail(int $code, string $msg): void {
@@ -74,7 +76,27 @@ $model  = (string)($body['model'] ?? ollama_model());
 $stream = isset($body['stream']) ? (bool)$body['stream'] : true;
 $tool   = trim((string)($body['tool'] ?? ''));
 
-if ($prompt === '') fail(400, 'Prázdný prompt.');
+// ── Volitelné obrázky (vision nástroje). Base64 bez data URL prefixu. ──────────
+$images = [];
+if (isset($body['images']) && is_array($body['images'])) {
+  // Jen vision nástroj smí posílat obrázky (jinak by se daly obcházet limity promptu).
+  if ($tool !== 'ai-vision') fail(400, 'Tento nástroj obrázky nepřijímá.');
+  if (count($body['images']) > AI_MAX_IMAGES) {
+    fail(413, 'Příliš mnoho obrázků (max. ' . AI_MAX_IMAGES . ').');
+  }
+  foreach ($body['images'] as $img) {
+    if (!is_string($img)) fail(400, 'Neplatný obrázek.');
+    // Odstraň případný data URL prefix, ať klient nemusí.
+    if (strpos($img, 'data:') === 0) {
+      $img = preg_replace('/^data:[^;]+;base64,/', '', $img);
+    }
+    if (!preg_match('#^[A-Za-z0-9+/=]+$#', $img)) fail(400, 'Neplatný obrázek (není base64).');
+    if (strlen($img) > AI_MAX_IMAGE_BYTES) fail(413, 'Obrázek je příliš velký (max. 8 MB).');
+    $images[] = $img;
+  }
+}
+
+if ($prompt === '' && !$images) fail(400, 'Prázdný prompt.');
 // Délkový limit (počet bajtů — pokrývá i vícebajtové UTF-8).
 if (strlen($prompt) > AI_MAX_PROMPT_CHARS) {
   fail(413, 'Vstup je příliš dlouhý (max. ' . AI_MAX_PROMPT_CHARS . ' znaků).');
@@ -102,6 +124,7 @@ $payload = [
 ];
 $sys = $tool !== '' ? ai_system_prompt($tool) : null;
 if ($sys !== null) $payload['system'] = $sys;
+if ($images) $payload['images'] = $images;
 $payloadJson = json_encode($payload);
 
 // ── Pošli požadavek na Ollamu přes cURL se streamovaným čtením odpovědi. ────
