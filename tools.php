@@ -48,6 +48,9 @@ $implemented = [
   'pdf-organize','pdf-watermark','pdf-page-numbers','pdf-extract-text',
   // Dávka 8 — PDF client alternativy
   'pdf-to-word','html-to-pdf',
+  // Dávka 9 — security
+  'steganography','certificate-info','password-strength','totp-generator',
+  'password-breach-check','file-encryption','token-generator',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 

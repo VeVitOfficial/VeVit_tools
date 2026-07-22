@@ -126,6 +126,11 @@ const TOOLS = [
     ['slug' => 'encrypt-decrypt', 'name' => 'Šifrování textu','desc' => 'Zašifrujte a dešifrujte text pomocí AES-256-GCM.',   'cat' => 'security', 'loc' => 'client', 'icon' => 'Shield',    'new' => false],
     ['slug' => 'steganography',   'name' => 'Steganografie',  'desc' => 'Skryjte text v obrázku pomocí LSB encoding.',        'cat' => 'security', 'loc' => 'client', 'icon' => 'EyeOff',    'new' => true],
     ['slug' => 'certificate-info', 'name'=> 'SSL certifikát info','desc'=>'Zkontrolujte platnost a detaily SSL certifikátu.','cat' => 'security', 'loc' => 'server', 'icon' => 'GlobeLock', 'new' => true],
+    ['slug' => 'password-strength', 'name'=> 'Síla hesla',       'desc' => 'Odhadněte entropii a dobu prolomení hesla.',          'cat' => 'security', 'loc' => 'client', 'icon' => 'ShieldCheck','new' => true],
+    ['slug' => 'totp-generator',   'name' => 'TOTP generátor',   'desc' => 'Vygenerujte 2FA TOTP kódy (RFC 6238) z tajemství.',   'cat' => 'security', 'loc' => 'client', 'icon' => 'Timer',      'new' => true],
+    ['slug' => 'password-breach-check','name'=>'Kontrola úniku hesla','desc'=>'Ověří, jestli heslo uniklo (HIBP k-anonymity).',   'cat' => 'security', 'loc' => 'client', 'icon' => 'Fingerprint','new' => true],
+    ['slug' => 'file-encryption',   'name' => 'Šifrování souborů','desc' => 'Zašifruje/dešifruje soubor AES-256-GCM (Web Crypto).','cat' => 'security', 'loc' => 'client', 'icon' => 'FileKey',    'new' => true],
+    ['slug' => 'token-generator',  'name' => 'Token generátor', 'desc' => 'Generuje náhodné tokeny (délka, znaková sada).',       'cat' => 'security', 'loc' => 'client', 'icon' => 'Zap',        'new' => true],
 
     ['slug' => 'percentage-calc',     'name' => 'Kalkulačka procent', 'desc' => 'Rychle spočítejte procenta, zvýšení a snížení.', 'cat' => 'calc', 'loc' => 'client', 'icon' => 'Percent',    'new' => false],
     ['slug' => 'loan-calc',           'name' => 'Kalkulačka půjčky',  'desc' => 'Vypočítejte splátky a amortizační tabulku.',       'cat' => 'calc', 'loc' => 'client', 'icon' => 'Calculator','new' => false],
