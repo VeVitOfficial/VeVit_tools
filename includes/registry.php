@@ -1,0 +1,143 @@
+<?php
+// Registr nástrojů — jeden zdroj pravdy pro PHP renderování (hub, karty, breadcrumb).
+// Interaktivní logika nástrojů žije v assets/js/tools/<slug>.js.
+
+const CATEGORY_COLORS = [
+    'pdf'      => '#f59e0b', // oranžová
+    'image'    => '#8b5cf6', // fialová
+    'media'    => '#ec4899', // růžová
+    'text'     => '#6b7280', // šedá
+    'ai'       => '#0ea5e9', // modrá
+    'dev'      => '#06b6d4', // tyrkysová
+    'security' => '#10b981', // zelená
+    'calc'     => '#ef4444', // červená
+];
+
+const CATEGORY_LABELS = [
+    'pdf'      => 'PDF',
+    'image'    => 'Obrázky',
+    'media'    => 'Média',
+    'text'     => 'Text',
+    'ai'       => 'AI',
+    'dev'      => 'Dev',
+    'security' => 'Bezpečnost',
+    'calc'     => 'Kalkulačky',
+];
+
+// Zobrazené pořadí kategorií napříč webem.
+const CATEGORY_ORDER = ['pdf', 'image', 'media', 'text', 'ai', 'dev', 'security', 'calc'];
+
+// category => popis sekce
+const CATEGORY_DESCRIPTIONS = [
+    'pdf'      => 'Slučování, dělení, komprese a převody PDF dokumentů.',
+    'image'    => 'Komprese, úpravy a vylepšení obrázků.',
+    'media'    => 'Práce s videem a zvukem — konverze, komprese, střih.',
+    'text'     => 'Překlad, shrnutí, Markdown a vizualizace myšlenek.',
+    'ai'       => 'Asistent, generování obsahu i obrázků pomocí AI.',
+    'dev'      => 'Regex, JSON, UUID, JWT a další pomůcky pro vývoj.',
+    'security' => 'Hashe, hesla, šifrování a kontrola certifikátů.',
+    'calc'     => 'Procenta, půjčky, převody jednotek a barev.',
+];
+
+// Pole nástrojů. loc = processingLocation (client|server|ai).
+const TOOLS = [
+    ['slug' => 'pdf-merge',  'name' => 'Sloučení PDF',        'desc' => 'Sloučí více PDF souborů do jednoho.',                'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Files',     'new' => false],
+    ['slug' => 'pdf-split',  'name' => 'Rozdělení PDF',       'desc' => 'Rozdělí PDF na jednotlivé stránky.',                'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Scissors',  'new' => false],
+    ['slug' => 'pdf-compress','name'=> 'Komprese PDF',        'desc' => 'Zmenší velikost PDF souboru.',                      'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Shrink',    'new' => false],
+    ['slug' => 'pdf-to-word', 'name' => 'PDF → Word',         'desc' => 'Převede PDF do formátu DOCX.',                      'cat' => 'pdf',      'loc' => 'server', 'icon' => 'FileText',  'new' => false],
+    ['slug' => 'html-to-pdf', 'name' => 'HTML → PDF',         'desc' => 'Převede HTML stránku na PDF.',                      'cat' => 'pdf',      'loc' => 'server', 'icon' => 'FileCode',  'new' => false],
+    ['slug' => 'invoice-gen', 'name' => 'Faktura generátor',   'desc' => 'Generujte profesionální faktury s QR kódem.',        'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Receipt',   'new' => true],
+
+    ['slug' => 'img-compress',  'name' => 'Komprese obrázku',  'desc' => 'Zmenší velikost obrázku bez ztráty kvality.',       'cat' => 'image',    'loc' => 'server', 'icon' => 'Image',     'new' => false],
+    ['slug' => 'bg-remover',    'name' => 'Odstranit pozadí',  'desc' => 'AI odstranění pozadí z fotografií.',               'cat' => 'image',    'loc' => 'server', 'icon' => 'Eraser',    'new' => true],
+    ['slug' => 'img-upscaler',  'name' => 'Zvětšení kvality',  'desc' => 'Zvětší rozlišení obrázku pomocí Lanczos filtru.',   'cat' => 'image',    'loc' => 'server', 'icon' => 'Maximize',  'new' => true],
+    ['slug' => 'gif-maker',     'name' => 'Tvůrce GIFu',       'desc' => 'Vytvořte GIF z obrázku nebo videa.',                'cat' => 'image',    'loc' => 'server', 'icon' => 'Film',      'new' => true],
+    ['slug' => 'screenshot-tool','name'=> 'Screenshot URL',    'desc' => 'Pořiďte screenshot libovolné webové stránky.',      'cat' => 'image',    'loc' => 'server', 'icon' => 'Camera',    'new' => true],
+
+    ['slug' => 'video-convert', 'name' => 'Konverze videa',    'desc' => 'Převeďte video mezi formáty MP4, WebM, AVI...',     'cat' => 'media',    'loc' => 'server', 'icon' => 'Video',     'new' => false],
+    ['slug' => 'video-compress', 'name' => 'Komprese videa',   'desc' => 'Zmenší velikost videa s nastavitelnou kvalitou.',    'cat' => 'media',    'loc' => 'server', 'icon' => 'Shrink',    'new' => false],
+    ['slug' => 'video-trim',     'name' => 'Ořez videa',       'desc' => 'Vyberte část videa a odstraňte zbytek.',            'cat' => 'media',    'loc' => 'server', 'icon' => 'Scissors',  'new' => false],
+    ['slug' => 'audio-convert',  'name' => 'Konverze audia',   'desc' => 'Převeďte audio mezi MP3, WAV, FLAC, OGG...',        'cat' => 'media',    'loc' => 'server', 'icon' => 'Music',     'new' => false],
+
+    ['slug' => 'translate',      'name' => 'Překlad textu',    'desc' => 'Přeložte text do více než 100 jazyků pomocí AI.',  'cat' => 'text',     'loc' => 'ai',     'icon' => 'Languages', 'new' => true],
+    ['slug' => 'summarize-text', 'name' => 'Shrnutí textu',    'desc' => 'Vytvořte stručné shrnutí dlouhého textu.',          'cat' => 'text',     'loc' => 'ai',     'icon' => 'AlignLeft',  'new' => true],
+    ['slug' => 'markdown-editor','name' => 'Markdown editor', 'desc' => 'Editujte a náhledněte Markdown v reálném čase.',    'cat' => 'text',     'loc' => 'client', 'icon' => 'FileCode',   'new' => false],
+    ['slug' => 'mind-map',       'name' => 'Myšlenková mapa', 'desc' => 'Vizualizujte strukturu myšlenek jako radiální strom.','cat' => 'text',   'loc' => 'client', 'icon' => 'GitBranch',  'new' => true],
+
+    ['slug' => 'ai-chat',     'name' => 'AI asistent',        'desc' => 'Chatujte s AI asistentem pro různé úkoly.',         'cat' => 'ai',  'loc' => 'ai',     'icon' => 'MessageSquare', 'new' => false],
+    ['slug' => 'ai-vision',   'name' => 'AI analýza obrázku',  'desc' => 'Popište a analyzujte obsah obrázku pomocí AI.',     'cat' => 'ai',  'loc' => 'ai',     'icon' => 'Eye',           'new' => false],
+    ['slug' => 'ai-seo',     'name' => 'SEO meta generátor',   'desc' => 'Generujte SEO titulky a popisky automaticky.',      'cat' => 'ai',  'loc' => 'ai',     'icon' => 'Search',       'new' => true],
+    ['slug' => 'ai-image-gen','name'=> 'AI generátor obrázku','desc' => 'Vytvořte unikátní obrázky z textového popisu.',       'cat' => 'ai',  'loc' => 'ai',     'icon' => 'ImagePlus',    'new' => true],
+    ['slug' => 'ai-sql-gen',  'name' => 'AI generátor SQL',    'desc' => 'Převeďte přirozený jazyk na SQL dotazy.',           'cat' => 'ai',  'loc' => 'ai',     'icon' => 'Database',     'new' => true],
+
+    ['slug' => 'regex-tester',   'name' => 'Regex tester',    'desc' => 'Testujte regulární výrazy v reálném čase.',          'cat' => 'dev',  'loc' => 'client', 'icon' => 'Regex',      'new' => false],
+    ['slug' => 'json-formatter', 'name' => 'JSON formátovač', 'desc' => 'Formátujte a validujte JSON strukturu.',              'cat' => 'dev',  'loc' => 'client', 'icon' => 'Braces',     'new' => false],
+    ['slug' => 'gradient-gen',   'name' => 'CSS Gradient Editor','desc'=> 'Vytvářejte a upravujte CSS gradienty interaktivně.', 'cat' => 'dev','loc' => 'client', 'icon' => 'Palette',    'new' => true],
+    ['slug' => 'uuid-gen',       'name' => 'UUID generátor',  'desc' => 'Generujte náhodné UUID v4 a v7.',                    'cat' => 'dev',  'loc' => 'client', 'icon' => 'Fingerprint','new' => true],
+    ['slug' => 'jwt-decoder',    'name' => 'JWT dekodér',     'desc' => 'Dekódujte a ověřte JWT tokeny.',                     'cat' => 'dev',  'loc' => 'client', 'icon' => 'KeyRound',   'new' => true],
+
+    ['slug' => 'hash-gen',        'name' => 'Hash generátor',  'desc' => 'Generujte MD5, SHA-256, SHA-512 hashe.',            'cat' => 'security', 'loc' => 'client', 'icon' => 'Hash',      'new' => false],
+    ['slug' => 'password-gen',    'name' => 'Generátor hesel', 'desc' => 'Vytvářejte bezpečná hesla na míru.',                 'cat' => 'security', 'loc' => 'client', 'icon' => 'Lock',      'new' => false],
+    ['slug' => 'encrypt-decrypt', 'name' => 'Šifrování textu','desc' => 'Zašifrujte a dešifrujte text pomocí AES-256-GCM.',   'cat' => 'security', 'loc' => 'client', 'icon' => 'Shield',    'new' => false],
+    ['slug' => 'steganography',   'name' => 'Steganografie',  'desc' => 'Skryjte text v obrázku pomocí LSB encoding.',        'cat' => 'security', 'loc' => 'client', 'icon' => 'EyeOff',    'new' => true],
+    ['slug' => 'certificate-info', 'name'=> 'SSL certifikát info','desc'=>'Zkontrolujte platnost a detaily SSL certifikátu.','cat' => 'security', 'loc' => 'server', 'icon' => 'GlobeLock', 'new' => true],
+
+    ['slug' => 'percentage-calc',     'name' => 'Kalkulačka procent', 'desc' => 'Rychle spočítejte procenta, zvýšení a snížení.', 'cat' => 'calc', 'loc' => 'client', 'icon' => 'Percent',    'new' => false],
+    ['slug' => 'loan-calc',           'name' => 'Kalkulačka půjčky',  'desc' => 'Vypočítejte splátky a amortizační tabulku.',       'cat' => 'calc', 'loc' => 'client', 'icon' => 'Calculator','new' => false],
+    ['slug' => 'unit-converter',      'name' => 'Převodník jednotek','desc' => 'Převádějte délku, hmotnost, teplotu, objem a další.','cat' => 'calc','loc' => 'client', 'icon' => 'Ruler',     'new' => false],
+    ['slug' => 'color-converter',     'name' => 'Převodník barev',   'desc' => 'Převádějte mezi HEX, RGB, HSL a CMYK.',            'cat' => 'calc', 'loc' => 'client', 'icon' => 'Palette',    'new' => false],
+    ['slug' => 'number-base-converter','name'=> 'Soustava čísel',   'desc' => 'Převádějte mezi decimální, binární, oktálovou a hexadecimální soustavou.', 'cat' => 'calc', 'loc' => 'client', 'icon' => 'Binary', 'new' => true],
+
+    // ── Dávka 1 — další kalkulačky ────────────────────────────────
+    ['slug' => 'bmi-calc',                'name' => 'BMI kalkulačka',       'desc' => 'Vypočítejte index tělesné hmotnosti a kategorii.', 'cat' => 'calc', 'loc' => 'client', 'icon' => 'Scale',          'new' => true],
+    ['slug' => 'discount-calc',           'name' => 'Kalkulačka slev',      'desc' => 'Spočítejte cenu po slevě, i vícenásobné slevy.',    'cat' => 'calc', 'loc' => 'client', 'icon' => 'Tag',            'new' => true],
+    ['slug' => 'vat-calc',                'name' => 'DPH kalkulačka',       'desc' => 'Převeďte částku mezi bez DPH a s DPH (CZ sazby).',  'cat' => 'calc', 'loc' => 'client', 'icon' => 'Landmark',       'new' => true],
+    ['slug' => 'net-salary-calc',          'name' => 'Kalkulačka čisté mzdy','desc' => 'Odhad čisté mzdy ze hrubé (CZ sazby).',           'cat' => 'calc', 'loc' => 'client', 'icon' => 'Wallet',         'new' => true],
+    ['slug' => 'date-diff-calc',           'name' => 'Rozdíl datumů',        'desc' => 'Vypočítejte rozdíl mezi dvěma daty v dnech.',       'cat' => 'calc', 'loc' => 'client', 'icon' => 'CalendarDays',   'new' => true],
+    ['slug' => 'compound-interest-calc',   'name' => 'Složené úročení',     'desc' => 'Spočítejte výnos složeného úročení.',               'cat' => 'calc', 'loc' => 'client', 'icon' => 'TrendingUp',     'new' => true],
+    ['slug' => 'grade-average-calc',       'name' => 'Průměr známek',       'desc' => 'Vypočítejte vážený průměr známek.',                 'cat' => 'calc', 'loc' => 'client', 'icon' => 'GraduationCap',  'new' => true],
+    ['slug' => 'fuel-consumption-calc',    'name' => 'Spotřeba paliva',    'desc' => 'Převod mezi l/100 km a mpg.',                       'cat' => 'calc', 'loc' => 'client', 'icon' => 'Fuel',          'new' => true],
+    ['slug' => 'bmr-calc',                 'name' => 'BMR a kalorie',        'desc' => 'Bazální metabolismus a denní příjem kalorií.',       'cat' => 'calc', 'loc' => 'client', 'icon' => 'Flame',         'new' => true],
+    ['slug' => 'time-calc',                'name' => 'Časová kalkulačka',   'desc' => 'Sčítání a odčítání časových údajů.',               'cat' => 'calc', 'loc' => 'client', 'icon' => 'Clock',         'new' => true],
+    ['slug' => 'iban-converter',           'name' => 'Převodník IBAN',      'desc' => 'Převede české číslo účtu na IBAN a zpět.',         'cat' => 'calc', 'loc' => 'client', 'icon' => 'Banknote',      'new' => true],
+    ['slug' => 'birth-number-validator',    'name' => 'Validátor rodného čísla','desc' => 'Ověří formát a kontrolní součet rodného čísla.',  'cat' => 'calc', 'loc' => 'client', 'icon' => 'BadgeCheck',    'new' => true],
+];
+
+// Pomocné funkce ────────────────────────────────────────────────
+
+function get_tool(string $slug): ?array {
+    foreach (TOOLS as $t) if ($t['slug'] === $slug) return $t;
+    return null;
+}
+
+function tools_by_category(): array {
+    $map = [];
+    foreach (CATEGORY_ORDER as $c) $map[$c] = [];
+    foreach (TOOLS as $t) $map[$t['cat']][] = $t;
+    return $map;
+}
+
+function new_tools(int $limit = 8): array {
+    $out = [];
+    foreach (TOOLS as $t) if ($t['new']) { $out[] = $t; if (count($out) >= $limit) break; }
+    return $out;
+}
+
+function client_count(): int {
+    $c = 0;
+    foreach (TOOLS as $t) if ($t['loc'] === 'client') $c++;
+    return $c;
+}
+
+// Text + ikona + tooltip pro badge místa zpracování.
+function location_meta(string $loc): array {
+    switch ($loc) {
+        case 'client': return ['label' => 'Lokálně',  'icon' => 'ShieldCheck', 'tone' => 'local',   'title' => 'Soubor se zpracovává ve vašem prohlížeči a neopustí tento počítač.'];
+        case 'server': return ['label' => 'Na serveru','icon' => 'Server',     'tone' => 'server',  'title' => 'Soubor se zpracuje na serveru a po dokonání se smaže.'];
+        default:       return ['label' => 'Přes AI',   'icon' => 'Sparkles',   'tone' => 'ai',      'title' => 'Zpracování probíhá přes AI model.'];
+    }
+}
+
+function e(string $s): string {
+    return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+}
