@@ -47,6 +47,13 @@ const TOOLS = [
     ['slug' => 'pdf-to-word', 'name' => 'PDF → Word',         'desc' => 'Převede PDF do formátu DOCX.',                      'cat' => 'pdf',      'loc' => 'server', 'icon' => 'FileText',  'new' => false],
     ['slug' => 'html-to-pdf', 'name' => 'HTML → PDF',         'desc' => 'Převede HTML stránku na PDF.',                      'cat' => 'pdf',      'loc' => 'server', 'icon' => 'FileCode',  'new' => false],
     ['slug' => 'invoice-gen', 'name' => 'Faktura generátor',   'desc' => 'Generujte profesionální faktury s QR kódem.',        'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Receipt',   'new' => true],
+    ['slug' => 'pdf-to-images','name'=> 'PDF → obrázky',        'desc' => 'Převede stránky PDF na obrázky (PNG/JPEG ZIP).',    'cat' => 'pdf',      'loc' => 'client', 'icon' => 'ImagePlus', 'new' => true],
+    ['slug' => 'images-to-pdf','name'=> 'Obrázky → PDF',        'desc' => 'Spojí více obrázků do jednoho PDF.',                'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Files',     'new' => true],
+    ['slug' => 'pdf-rotate',   'name' => 'Otočení PDF',         'desc' => 'Otočí nebo překlopí stránky PDF.',                  'cat' => 'pdf',      'loc' => 'client', 'icon' => 'RotateCw',  'new' => true],
+    ['slug' => 'pdf-organize', 'name' => 'Organizace PDF',      'desc' => 'Odstraňte nebo přerovnejte stránky PDF.',           'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Maximize',  'new' => true],
+    ['slug' => 'pdf-watermark','name'=> 'Vodoznak PDF',        'desc' => 'Přidá textový vodoznak do PDF.',                    'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Stamp',     'new' => true],
+    ['slug' => 'pdf-page-numbers','name'=>'Číslování stránek',  'desc' => 'Přidá čísla stránek do PDF.',                       'cat' => 'pdf',      'loc' => 'client', 'icon' => 'Hash',      'new' => true],
+    ['slug' => 'pdf-extract-text','name'=>'Extrakce textu PDF','desc' => 'Vytáhne text z PDF (pdf.js).',                       'cat' => 'pdf',      'loc' => 'client', 'icon' => 'AlignLeft', 'new' => true],
 
     ['slug' => 'img-compress',  'name' => 'Komprese obrázku',  'desc' => 'Zmenšete obrázek přes canvas (kvalita, JPEG/WebP).','cat' => 'image',    'loc' => 'client', 'icon' => 'Image',     'new' => false],
     ['slug' => 'bg-remover',    'name' => 'Odstranit pozadí',  'desc' => 'AI odstranění pozadí z fotografií.',               'cat' => 'image',    'loc' => 'server', 'icon' => 'Eraser',    'new' => true],

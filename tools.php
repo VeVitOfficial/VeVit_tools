@@ -43,6 +43,9 @@ $implemented = [
   // Dávka 6 — další obrázky + komprese/zvětšení
   'img-compress','img-upscaler','image-watermark','image-exif',
   'image-collage','favicon-generator','meme-generator',
+  // Dávka 7 — PDF client-side
+  'invoice-gen','pdf-to-images','images-to-pdf','pdf-rotate',
+  'pdf-organize','pdf-watermark','pdf-page-numbers','pdf-extract-text',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 
