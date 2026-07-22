@@ -53,6 +53,10 @@ $implemented = [
   'password-breach-check','file-encryption','token-generator',
   // Dávka 10 — média bez ffmpeg
   'video-thumbnail','audio-waveform',
+  // Dávka 11 — ffmpeg.wasm + ML obrázky
+  'video-convert','video-compress','video-trim','audio-convert',
+  'video-extract-audio','video-to-gif','video-merge','video-target-size','audio-trim-normalize',
+  'bg-remover',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 
