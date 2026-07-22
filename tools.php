@@ -35,6 +35,9 @@ $implemented = [
   // Dávka 3 — Dev nástroje
   'code-diff','css-js-html-formatter','contrast-checker','qr-generator',
   'og-meta-generator','gitignore-generator','fake-data-generator','color-palette-generator',
+  // Dávka 4 — textové nástroje
+  'text-counter','text-case-converter','lorem-ipsum','remove-diacritics',
+  'text-to-speech','text-lines-tool','mind-map',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 

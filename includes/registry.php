@@ -63,6 +63,13 @@ const TOOLS = [
     ['slug' => 'summarize-text', 'name' => 'Shrnutí textu',    'desc' => 'Vytvořte stručné shrnutí dlouhého textu.',          'cat' => 'text',     'loc' => 'ai',     'icon' => 'AlignLeft',  'new' => true],
     ['slug' => 'markdown-editor','name' => 'Markdown editor', 'desc' => 'Editujte a náhledněte Markdown v reálném čase.',    'cat' => 'text',     'loc' => 'client', 'icon' => 'FileCode',   'new' => false],
     ['slug' => 'mind-map',       'name' => 'Myšlenková mapa', 'desc' => 'Vizualizujte strukturu myšlenek jako radiální strom.','cat' => 'text',   'loc' => 'client', 'icon' => 'GitBranch',  'new' => true],
+    // ── Dávka 4 — další textové nástroje ──────────────────────────
+    ['slug' => 'text-counter',       'name' => 'Počítadlo textu',   'desc' => 'Spočítejte znaky, slova, věty a odhad doby čtení.', 'cat' => 'text', 'loc' => 'client', 'icon' => 'Type',          'new' => true],
+    ['slug' => 'text-case-converter', 'name' => 'Velikost písmen',   'desc' => 'Převod UPPER/lower/Title/camelCase/snake_case.',      'cat' => 'text', 'loc' => 'client', 'icon' => 'CaseSensitive',  'new' => true],
+    ['slug' => 'lorem-ipsum',        'name' => 'Lorem ipsum',        'desc' => 'Generujte zástupný text (věty/odstavce/slova).',     'cat' => 'text', 'loc' => 'client', 'icon' => 'Pilcrow',        'new' => true],
+    ['slug' => 'remove-diacritics',  'name' => 'Odstranění diakritiky','desc' => 'Převeďte text bez diakritiky (ASCII fold).',        'cat' => 'text', 'loc' => 'client', 'icon' => 'SpellCheck',     'new' => true],
+    ['slug' => 'text-to-speech',     'name' => 'Text na řeč (TTS)',  'desc' => 'Přečtěte text nahlas přes Web Speech API.',          'cat' => 'text', 'loc' => 'client', 'icon' => 'Volume2',       'new' => true],
+    ['slug' => 'text-lines-tool',    'name' => 'Práce s řádky',       'desc' => 'Duplicity, řazení, prázdné řádky, unique.',         'cat' => 'text', 'loc' => 'client', 'icon' => 'Rows3',         'new' => true],
 
     ['slug' => 'ai-chat',     'name' => 'AI asistent',        'desc' => 'Chatujte s AI asistentem pro různé úkoly.',         'cat' => 'ai',  'loc' => 'ai',     'icon' => 'MessageSquare', 'new' => false],
     ['slug' => 'ai-vision',   'name' => 'AI analýza obrázku',  'desc' => 'Popište a analyzujte obsah obrázku pomocí AI.',     'cat' => 'ai',  'loc' => 'ai',     'icon' => 'Eye',           'new' => false],
