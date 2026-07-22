@@ -38,6 +38,8 @@ $implemented = [
   // Dávka 4 — textové nástroje
   'text-counter','text-case-converter','lorem-ipsum','remove-diacritics',
   'text-to-speech','text-lines-tool','mind-map',
+  // Dávka 5 — obrázky přes canvas
+  'image-convert','image-crop','image-rotate-flip','image-filters',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 

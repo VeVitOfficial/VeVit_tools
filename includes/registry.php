@@ -53,6 +53,11 @@ const TOOLS = [
     ['slug' => 'img-upscaler',  'name' => 'Zvětšení kvality',  'desc' => 'Zvětší rozlišení obrázku pomocí Lanczos filtru.',   'cat' => 'image',    'loc' => 'server', 'icon' => 'Maximize',  'new' => true],
     ['slug' => 'gif-maker',     'name' => 'Tvůrce GIFu',       'desc' => 'Vytvořte GIF z obrázku nebo videa.',                'cat' => 'image',    'loc' => 'server', 'icon' => 'Film',      'new' => true],
     ['slug' => 'screenshot-tool','name'=> 'Screenshot URL',    'desc' => 'Pořiďte screenshot libovolné webové stránky.',      'cat' => 'image',    'loc' => 'server', 'icon' => 'Camera',    'new' => true],
+    // ── Dávka 5 — obrázky přes canvas ─────────────────────────────
+    ['slug' => 'image-convert',     'name' => 'Převod formátu',   'desc' => 'Převeďte PNG/JPG/WebP/BMP přes canvas.',           'cat' => 'image', 'loc' => 'client', 'icon' => 'Repeat',           'new' => true],
+    ['slug' => 'image-crop',        'name' => 'Oříznutí obrázku', 'desc' => 'Interaktivně ořízněte obrázek v canvasu.',         'cat' => 'image', 'loc' => 'client', 'icon' => 'Crop',             'new' => true],
+    ['slug' => 'image-rotate-flip', 'name' => 'Otočení/Překlopení','desc'=> 'Otočte nebo překlopte obrázek (90/180/270/flip).',  'cat' => 'image', 'loc' => 'client', 'icon' => 'RotateCw',         'new' => true],
+    ['slug' => 'image-filters',     'name' => 'Filtry obrázku',   'desc' => 'Grayscale, sepia, jas, kontrast, saturace.',        'cat' => 'image', 'loc' => 'client', 'icon' => 'SlidersHorizontal','new' => true],
 
     ['slug' => 'video-convert', 'name' => 'Konverze videa',    'desc' => 'Převeďte video mezi formáty MP4, WebM, AVI...',     'cat' => 'media',    'loc' => 'server', 'icon' => 'Video',     'new' => false],
     ['slug' => 'video-compress', 'name' => 'Komprese videa',   'desc' => 'Zmenší velikost videa s nastavitelnou kvalitou.',    'cat' => 'media',    'loc' => 'server', 'icon' => 'Shrink',    'new' => false],
