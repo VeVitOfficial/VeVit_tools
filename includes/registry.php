@@ -76,6 +76,15 @@ const TOOLS = [
     ['slug' => 'uuid-gen',       'name' => 'UUID generátor',  'desc' => 'Generujte náhodné UUID v4 a v7.',                    'cat' => 'dev',  'loc' => 'client', 'icon' => 'Fingerprint','new' => true],
     ['slug' => 'jwt-decoder',    'name' => 'JWT dekodér',     'desc' => 'Dekódujte a ověřte JWT tokeny.',                     'cat' => 'dev',  'loc' => 'client', 'icon' => 'KeyRound',   'new' => true],
 
+    // ── Dávka 2 — další Dev nástroje ─────────────────────────────
+    ['slug' => 'base64-tool',          'name' => 'Base64 kodér/dekodér', 'desc' => 'Kódujte a dekódujte Base64 (text i soubory).',  'cat' => 'dev', 'loc' => 'client', 'icon' => 'Code',            'new' => true],
+    ['slug' => 'url-encoder',          'name' => 'URL kodér/dekodér',    'desc' => 'Kódujte a dekódujte URL (percent encoding).',   'cat' => 'dev', 'loc' => 'client', 'icon' => 'Link2',           'new' => true],
+    ['slug' => 'jwt-generator',        'name' => 'JWT generátor',        'desc' => 'Vytvořte a podepište JWT token (HMAC).',         'cat' => 'dev', 'loc' => 'client', 'icon' => 'FileKey',         'new' => true],
+    ['slug' => 'yaml-json-converter',  'name' => 'YAML ↔ JSON',         'desc' => 'Převádějte mezi YAML a JSON obousměrně.',      'cat' => 'dev', 'loc' => 'client', 'icon' => 'FileCode',        'new' => true],
+    ['slug' => 'csv-json-converter',   'name' => 'CSV ↔ JSON',          'desc' => 'Převádějte mezi CSV a JSON obousměrně.',        'cat' => 'dev', 'loc' => 'client', 'icon' => 'FileSpreadsheet',  'new' => true],
+    ['slug' => 'cron-builder',         'name' => 'Cron výraz builder',  'desc' => 'Sestavte a vysvětlete cron výraz obousměrně.', 'cat' => 'dev', 'loc' => 'client', 'icon' => 'CalendarClock',  'new' => true],
+    ['slug' => 'timestamp-converter',  'name' => 'Unix timestamp',      'desc' => 'Převod mezi Unix timestampem a datem (i pásma).', 'cat' => 'dev', 'loc' => 'client', 'icon' => 'Timer',        'new' => true],
+
     ['slug' => 'hash-gen',        'name' => 'Hash generátor',  'desc' => 'Generujte MD5, SHA-256, SHA-512 hashe.',            'cat' => 'security', 'loc' => 'client', 'icon' => 'Hash',      'new' => false],
     ['slug' => 'password-gen',    'name' => 'Generátor hesel', 'desc' => 'Vytvářejte bezpečná hesla na míru.',                 'cat' => 'security', 'loc' => 'client', 'icon' => 'Lock',      'new' => false],
     ['slug' => 'encrypt-decrypt', 'name' => 'Šifrování textu','desc' => 'Zašifrujte a dešifrujte text pomocí AES-256-GCM.',   'cat' => 'security', 'loc' => 'client', 'icon' => 'Shield',    'new' => false],

@@ -29,6 +29,9 @@ $implemented = [
   // Dávka 1 — další kalkulačky
   'bmi-calc','discount-calc','vat-calc','net-salary-calc','date-diff-calc','compound-interest-calc',
   'grade-average-calc','fuel-consumption-calc','bmr-calc','time-calc','iban-converter','birth-number-validator',
+  // Dávka 2 — Dev nástroje
+  'gradient-gen','jwt-decoder','base64-tool','url-encoder','jwt-generator',
+  'yaml-json-converter','csv-json-converter','cron-builder','timestamp-converter',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 
