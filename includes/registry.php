@@ -85,6 +85,16 @@ const TOOLS = [
     ['slug' => 'cron-builder',         'name' => 'Cron výraz builder',  'desc' => 'Sestavte a vysvětlete cron výraz obousměrně.', 'cat' => 'dev', 'loc' => 'client', 'icon' => 'CalendarClock',  'new' => true],
     ['slug' => 'timestamp-converter',  'name' => 'Unix timestamp',      'desc' => 'Převod mezi Unix timestampem a datem (i pásma).', 'cat' => 'dev', 'loc' => 'client', 'icon' => 'Timer',        'new' => true],
 
+    // ── Dávka 3 — další Dev nástroje ─────────────────────────────
+    ['slug' => 'code-diff',            'name' => 'Code diff',            'desc' => 'Porovnejte dva texty/kód a zobrazte změny.',       'cat' => 'dev', 'loc' => 'client', 'icon' => 'GitCompare',     'new' => true],
+    ['slug' => 'css-js-html-formatter', 'name' => 'CSS/JS/HTML formátovač','desc' => 'Naformátujte nebo zminifikujte CSS, JS a HTML.', 'cat' => 'dev', 'loc' => 'client', 'icon' => 'SquareCode',     'new' => true],
+    ['slug' => 'contrast-checker',     'name' => 'Kontrast (WCAG)',      'desc' => 'Ověřte kontrast barev dle WCAG AA/AAA.',          'cat' => 'dev', 'loc' => 'client', 'icon' => 'Contrast',       'new' => true],
+    ['slug' => 'qr-generator',         'name' => 'QR generátor',         'desc' => 'Vytvořte QR kód (text, URL, Wi-Fi, vCard).',      'cat' => 'dev', 'loc' => 'client', 'icon' => 'QrCode',        'new' => true],
+    ['slug' => 'og-meta-generator',    'name' => 'OG meta generátor',    'desc' => 'Vygenerujte Open Graph meta tagy s náhledem.',   'cat' => 'dev', 'loc' => 'client', 'icon' => 'Share2',        'new' => true],
+    ['slug' => 'gitignore-generator',  'name' => '.gitignore generátor', 'desc' => 'Sestavte .gitignore podle jazyka/nástroje.',     'cat' => 'dev', 'loc' => 'client', 'icon' => 'FileX',         'new' => true],
+    ['slug' => 'fake-data-generator',  'name' => 'Fake data generátor',  'desc' => 'Generujte testovací data a exportujte CSV/JSON.', 'cat' => 'dev', 'loc' => 'client', 'icon' => 'Database',      'new' => true],
+    ['slug' => 'color-palette-generator','name' => 'Paleta barev',        'desc' => 'Vytvořte paletu (komplementární, analogická…).',  'cat' => 'dev', 'loc' => 'client', 'icon' => 'SwatchBook',    'new' => true],
+
     ['slug' => 'hash-gen',        'name' => 'Hash generátor',  'desc' => 'Generujte MD5, SHA-256, SHA-512 hashe.',            'cat' => 'security', 'loc' => 'client', 'icon' => 'Hash',      'new' => false],
     ['slug' => 'password-gen',    'name' => 'Generátor hesel', 'desc' => 'Vytvářejte bezpečná hesla na míru.',                 'cat' => 'security', 'loc' => 'client', 'icon' => 'Lock',      'new' => false],
     ['slug' => 'encrypt-decrypt', 'name' => 'Šifrování textu','desc' => 'Zašifrujte a dešifrujte text pomocí AES-256-GCM.',   'cat' => 'security', 'loc' => 'client', 'icon' => 'Shield',    'new' => false],

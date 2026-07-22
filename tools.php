@@ -32,6 +32,9 @@ $implemented = [
   // Dávka 2 — Dev nástroje
   'gradient-gen','jwt-decoder','base64-tool','url-encoder','jwt-generator',
   'yaml-json-converter','csv-json-converter','cron-builder','timestamp-converter',
+  // Dávka 3 — Dev nástroje
+  'code-diff','css-js-html-formatter','contrast-checker','qr-generator',
+  'og-meta-generator','gitignore-generator','fake-data-generator','color-palette-generator',
 ];
 $has_impl = in_array($tool['slug'], $implemented, true);
 
