@@ -234,30 +234,6 @@ page = """<!DOCTYPE html>
     </div>
   </section>
 
-  <section class="sections hidden" id="search-results">
-    <h2 class="muted" id="results-title" style="font-size:0.875rem;font-weight:500;margin:0 0 1.5rem"></h2>
-    <div class="grid" id="results-grid"></div>
-    <div class="empty-state hidden" id="results-empty">
-      __SEARCH40__
-      <p class="t">Žádný nástroj neodpovídá hledání.</p>
-      <p class="muted" style="font-size:0.875rem">Zkuste jiné klíčové slovo.</p>
-    </div>
-  </section>
-
-  <div id="sections-view">
-    <div class="sections" style="padding-top:0">
-      <nav class="cat-nav" id="cat-nav">
-        <div class="scroll">
-          __CHIPS__
-        </div>
-      </nav>
-    </div>
-
-    <div class="sections">
-      __SECTIONS__
-    </div>
-  </div>
-
   <section class="section beta-section" id="beta">
     <div class="beta-card glass">
       <div class="beta-head">
@@ -281,6 +257,30 @@ page = """<!DOCTYPE html>
       <p class="beta-small">Pro toho, kdo najde chybu, nahlásí ji a do zprávy připojí svůj e-mail, máme připravený <strong>rank beta-tester s výhodami</strong> — dřívější přístup k novým nástrojům, priorita hlášení a malé bonusy. E-mail do zprávy je čistě dobrovolný; bez něj hlášení normálně pošleme, jen se ozveme jen tehdy, když k tomu bude důvod.</p>
     </div>
   </section>
+
+  <section class="sections hidden" id="search-results">
+    <h2 class="muted" id="results-title" style="font-size:0.875rem;font-weight:500;margin:0 0 1.5rem"></h2>
+    <div class="grid" id="results-grid"></div>
+    <div class="empty-state hidden" id="results-empty">
+      __SEARCH40__
+      <p class="t">Žádný nástroj neodpovídá hledání.</p>
+      <p class="muted" style="font-size:0.875rem">Zkuste jiné klíčové slovo.</p>
+    </div>
+  </section>
+
+  <div id="sections-view">
+    <div class="sections" style="padding-top:0">
+      <nav class="cat-nav" id="cat-nav">
+        <div class="scroll">
+          __CHIPS__
+        </div>
+      </nav>
+    </div>
+
+    <div class="sections">
+      __SECTIONS__
+    </div>
+  </div>
 </main>
 
 <footer class="site-footer">
