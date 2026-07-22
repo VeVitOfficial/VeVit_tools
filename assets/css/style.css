@@ -505,3 +505,17 @@ details.accordion > .acc-body { padding: 0 1rem 1rem; font-size: 0.875rem; color
 .range-row { display: flex; align-items: center; gap: 0.75rem; }
 .range-row input[type="range"] { flex: 1; }
 .range-row .range-val { font-size: 0.8rem; color: var(--muted-foreground); font-variant-numeric: tabular-nums; min-width: 4rem; text-align: right; }
+/* ── Beta testing banner ─────────────────────────────────────────── */
+.beta-section { padding: 2.5rem 0 4rem; scroll-margin-top: 8rem; }
+.beta-card { max-width: 46rem; margin: 0 auto; padding: 1.75rem; border-radius: 1rem; }
+.beta-head { display: flex; align-items: center; gap: 0.5rem; color: #10b981; }
+.beta-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; color: #10b981; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); padding: 0.2rem 0.55rem; border-radius: 999px; }
+.beta-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin: 0.5rem 0 0.35rem; line-height: 1.1; }
+.beta-sub { font-size: 0.95rem; color: var(--muted-foreground); margin: 0 0 1.25rem; max-width: 38rem; }
+.beta-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.beta-form .textarea { min-height: 6rem; resize: vertical; }
+.beta-note { font-size: 0.9rem; color: #34d399; margin: 1rem 0 0; }
+.beta-note span { font-variant-numeric: tabular-nums; }
+.beta-small { font-size: 0.78rem; color: var(--muted-foreground); line-height: 1.5; margin: 1.25rem 0 0; max-width: 42rem; }
+.beta-small strong { color: #34d399; font-weight: 600; }
+@media (max-width: 560px) { .beta-title { font-size: 1.7rem; } .beta-card { padding: 1.25rem; } }
