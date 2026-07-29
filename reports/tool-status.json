@@ -1,0 +1,979 @@
+{
+    "schema_version": 1,
+    "total_registered_tools": 107,
+    "actually_tested_tools": 107,
+    "test_scope": "structural and route smoke only",
+    "status_counts": {
+        "working": 91,
+        "limited": 13,
+        "experimental": 0,
+        "coming_soon": 1,
+        "unavailable_on_wedos": 2,
+        "broken": 0
+    },
+    "tools": [
+        {
+            "slug": "ai-chat",
+            "category": "ai",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-code-explainer",
+            "category": "dev",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-commit-message",
+            "category": "dev",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-email-writer",
+            "category": "text",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-image-gen",
+            "category": "ai",
+            "status": "coming_soon",
+            "availability": "not_implemented",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": "Generování obrázků vyžaduje další infrastrukturu (Stable Diffusion / ComfyUI), kterou Ollama neposkytuje. Nástroj je v přípravě."
+        },
+        {
+            "slug": "ai-regex-generator",
+            "category": "dev",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-seo",
+            "category": "ai",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-sql-gen",
+            "category": "ai",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-text-qa",
+            "category": "ai",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-vision",
+            "category": "ai",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "audio-convert",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "audio-trim-normalize",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "audio-waveform",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "base64-tool",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "bg-remover",
+            "category": "image",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "birth-number-validator",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "bmi-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "bmr-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "certificate-info",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "code-diff",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "color-converter",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "color-palette-generator",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "compound-interest-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "contrast-checker",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "cron-builder",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "css-js-html-formatter",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "csv-json-converter",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "date-diff-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "discount-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "encrypt-decrypt",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "fake-data-generator",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "favicon-generator",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "file-encryption",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "fuel-consumption-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "gif-maker",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "gitignore-generator",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "grade-average-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "gradient-gen",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "grammar-check",
+            "category": "text",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "hash-gen",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "html-to-pdf",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "iban-converter",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-collage",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-convert",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-crop",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-exif",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-filters",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-rotate-flip",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-watermark",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "images-to-pdf",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "img-compress",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "img-upscaler",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "invoice-gen",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "json-formatter",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "jwt-decoder",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "jwt-generator",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "loan-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "lorem-ipsum",
+            "category": "text",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "markdown-editor",
+            "category": "text",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "meme-generator",
+            "category": "image",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "mind-map",
+            "category": "text",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "net-salary-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "number-base-converter",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "og-meta-generator",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "password-breach-check",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "password-gen",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "password-strength",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-compress",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-extract-text",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-merge",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-organize",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-page-numbers",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-password",
+            "category": "pdf",
+            "status": "unavailable_on_wedos",
+            "availability": "unavailable_on_wedos",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": "Tento nástroj vyžaduje VPS / shell_exec (nástroj qpdf). Na sdíleném hostingu jej provozovat nelze."
+        },
+        {
+            "slug": "pdf-rotate",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-split",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-to-images",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-to-word",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-watermark",
+            "category": "pdf",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "percentage-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "qr-generator",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "regex-tester",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "remove-diacritics",
+            "category": "text",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "screenshot-tool",
+            "category": "image",
+            "status": "unavailable_on_wedos",
+            "availability": "unavailable_on_wedos",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": "Tento nástroj vyžaduje VPS / shell_exec (headless Chromium). Na sdíleném hostingu jej provozovat nelze."
+        },
+        {
+            "slug": "steganography",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "summarize-text",
+            "category": "text",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "text-case-converter",
+            "category": "text",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "text-counter",
+            "category": "text",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "text-lines-tool",
+            "category": "text",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "text-to-speech",
+            "category": "text",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "time-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "timestamp-converter",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "token-generator",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "totp-generator",
+            "category": "security",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "translate",
+            "category": "text",
+            "status": "limited",
+            "availability": "requires_external_service",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "unit-converter",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "url-encoder",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "uuid-gen",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "vat-calc",
+            "category": "calc",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-compress",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-convert",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-extract-audio",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-merge",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-target-size",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-thumbnail",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-to-gif",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-trim",
+            "category": "media",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        },
+        {
+            "slug": "yaml-json-converter",
+            "category": "dev",
+            "status": "working",
+            "availability": "available",
+            "verified_test_level": "structural",
+            "declared_test_target": "structural",
+            "blocker_note": null
+        }
+    ]
+}
