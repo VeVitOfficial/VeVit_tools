@@ -1,3 +1,4 @@
+<script src="/assets/js/lib/html-pdf-sanitize.js"></script>
 <div class="stack" style="max-width:48rem;margin:0 auto">
   <div class="stack-sm">
     <label class="field-label" for="hp-html">HTML kód</label>
@@ -17,5 +18,5 @@
   <div class="progress-track hidden" id="hp-prog"><div class="progress-fill"></div></div>
   <p class="progress-label hidden" id="hp-prog-label"></p>
   <p class="error-text hidden" id="hp-error" role="alert"></p>
-  <p class="muted" style="font-size:0.8rem">Render přes html2canvas + jsPDF. Stránkování je přibližné (jako jeden dlouhý obrázek rozdělený na stránky) — pro složité layouty použijte jiný nástroj. Běží lokálně.</p>
+  <p class="muted" style="font-size:0.8rem">Render přes html2canvas + jsPDF. Aktivní HTML, formuláře a vzdálené zdroje se před exportem odstraní. Stránkování je přibližné (jako jeden dlouhý obrázek rozdělený na stránky). Běží lokálně.</p>
 </div>

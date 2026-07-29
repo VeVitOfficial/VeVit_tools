@@ -18,6 +18,8 @@ const FEEDBACK_MAX_CHARS = 5000;
 const FEEDBACK_RATE_WIN  = 600;   // 10 minut
 const FEEDBACK_RATE_MAX  = 5;     // max 5 hlášení / IP / okno
 
+require_once __DIR__ . '/../includes/request-rate-limit.php';
+
 function fb_fail(int $code, string $msg): void {
   http_response_code($code);
   header('Content-Type: application/json; charset=utf-8');
@@ -25,23 +27,7 @@ function fb_fail(int $code, string $msg): void {
   exit;
 }
 
-function fb_ip(): string { return (string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0'); }
-
-function fb_rate_ok(string $ip): bool {
-  $dir = sys_get_temp_dir();
-  if (!is_dir($dir) || !is_writable($dir)) return true; // vypni, neblokuj
-  $file = $dir . '/vevit-fb-rl-' . substr(sha1(__DIR__), 0, 8) . '-' . sha1($ip) . '.json';
-  $now = time();
-  $rec = ['start' => $now, 'count' => 0];
-  if (is_file($file)) {
-    $j = json_decode(@file_get_contents($file), true);
-    if (is_array($j) && isset($j['start'], $j['count']) && ($now - (int)$j['start'] < FEEDBACK_RATE_WIN)) $rec = $j;
-  }
-  if ((int)$rec['count'] >= FEEDBACK_RATE_MAX) return false;
-  $rec['count'] = (int)$rec['count'] + 1;
-  @file_put_contents($file, json_encode($rec), LOCK_EX);
-  return true;
-}
+function fb_ip(): string { return request_rate_limit_client_ip(); }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') fb_fail(405, 'Pouze POST.');
 
@@ -58,11 +44,16 @@ if (stripos($ct, 'application/json') !== false || ($raw && $raw[0] === '{')) {
 $message = trim($message);
 
 if ($message === '') fb_fail(400, 'Zpráva je prázdná. Napište, co se nepovedlo.');
-if (strlen($message) > FEEDBACK_MAX_CHARS) {
+if ((function_exists('mb_strlen') ? mb_strlen($message, 'UTF-8') : strlen($message)) > FEEDBACK_MAX_CHARS) {
   fb_fail(413, 'Zpráva je příliš dlouhá (max. ' . FEEDBACK_MAX_CHARS . ' znaků).');
 }
 
-if (!fb_rate_ok(fb_ip())) {
+// Feedback sends mail, therefore loss of limiter storage fails closed.
+$rate = request_rate_limit_consume('feedback', fb_ip(), FEEDBACK_RATE_WIN, FEEDBACK_RATE_MAX);
+if (!$rate['available']) {
+  fb_fail(503, 'Odeslání hlášení je dočasně nedostupné. Zkuste to prosím později.');
+}
+if (!$rate['allowed']) {
   fb_fail(429, 'Odeslali jste už příliš mnoho hlášení. Zkuste to za chvíli.');
 }
 

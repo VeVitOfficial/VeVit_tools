@@ -8,7 +8,7 @@
 
 # Env (lokální konfigurace Ollamy se nepotvrzuje do repa)
 .env
-.env.local
+.env.*
 
 # Případné dočasné logy
 *.log

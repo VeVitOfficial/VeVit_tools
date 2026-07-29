@@ -47,6 +47,10 @@ body {
   flex-direction: column;
 }
 
+body { overflow-x: hidden; }
+:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 svg { display: block; }
@@ -166,6 +170,17 @@ svg { display: block; }
 }
 .search-wrap input::placeholder { color: rgba(177,177,189,0.6); }
 .search-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16,185,129,0.2); }
+.search-clear { position:absolute; right:.65rem; top:50%; transform:translateY(-50%); width:2.25rem; height:2.25rem; border:0; border-radius:.5rem; background:transparent; color:var(--muted-foreground); font-size:1.4rem; line-height:1; }
+.search-clear:hover { background:var(--muted); color:var(--foreground); }
+.hub-controls { padding-top: .5rem; padding-bottom: 1rem; }
+.hub-control-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:.75rem; align-items:end; }
+.hub-control-grid label { display:grid; gap:.35rem; min-width:0; color:var(--muted-foreground); font-size:.8rem; }
+.hub-control-grid .hub-checkbox { display:flex; align-items:center; gap:.5rem; min-height:2.5rem; color:var(--foreground); }
+.hub-control-grid .btn { min-height:2.5rem; }
+.hub-state { margin:0 0 1rem; color:var(--muted-foreground); }
+.hub-card-badges { display:flex; gap:.25rem; flex-wrap:wrap; justify-content:flex-end; }
+.tool-card.is-active { border-color:var(--primary); box-shadow:0 0 0 2px rgba(16,185,129,.25); }
+.tool-card mark { color:inherit; background:rgba(16,185,129,.28); border-radius:.15rem; padding:0 .08em; }
 
 /* ── Sticky category chips ───────────────────────────────── */
 .cat-nav {
@@ -224,6 +239,8 @@ svg { display: block; }
 }
 .badge svg { width: 0.75rem; height: 0.75rem; }
 .badge-new { border-color: rgba(16,185,129,0.3); color: var(--primary); }
+.badge-status-coming_soon, .badge-status-unavailable_on_wedos, .badge-status-broken { border-color: rgba(239,68,68,.35); color: #fca5a5; background: rgba(239,68,68,.1); }
+.badge-status-limited, .badge-status-experimental { border-color: rgba(245,158,11,.35); color: #fcd34d; background: rgba(245,158,11,.1); }
 .badge-loc-local { background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2); }
 .badge-loc-other { background: rgba(26,26,29,0.5); color: var(--muted-foreground); }
 .badge-ai { background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2); }
@@ -251,6 +268,24 @@ svg { display: block; }
 .btn-icon-sm { width: 1.75rem; height: 1.75rem; padding: 0; border-radius: 0.5rem; }
 .btn-lg { height: 3.5rem; padding: 0 1rem; }
 .btn-block { width: 100%; }
+
+@media (max-width: 900px) { .hub-control-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width: 640px) {
+  .container, .sections { padding-left:1rem; padding-right:1rem; }
+  .hero { padding-left:1rem; padding-right:1rem; }
+  .hero h1 { font-size:2.35rem; overflow-wrap:anywhere; }
+  .hero .subtitle { font-size:1rem; }
+  .search-wrap { width:100%; }
+  .hub-control-grid { grid-template-columns:1fr 1fr; }
+  .hub-control-grid > * { min-width:0; }
+  .tool-card { min-width:0; }
+  .tool-card .name, .tool-card .desc { overflow-wrap:anywhere; }
+  .header-left { gap:.5rem; min-width:0; }
+  .cat-toggle { min-height:2.5rem; }
+  .login-btn { min-height:2.5rem; padding:.5rem .65rem; }
+}
+@media (max-width: 380px) { .hub-control-grid { grid-template-columns:1fr; } .brand-suffix, .cat-wrap { display:none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } }
 
 /* ── Form controls ──────────────────────────────────────── */
 .input, .textarea, .select {
@@ -296,6 +331,10 @@ svg { display: block; }
 .mx-auto { margin-left: auto; margin-right: auto; }
 .text-destructive { color: var(--destructive); }
 .error-text { font-size: 0.875rem; color: var(--destructive); }
+.certificate-status { color: var(--primary); font-weight: 700; }
+.certificate-status-expires_soon { color: #b45309; }
+.tool-status-coming_soon, .tool-status-unavailable_on_wedos, .tool-status-broken { border-color: rgba(239,68,68,.38); color: #fca5a5; background: rgba(239,68,68,.1); }
+.tool-status-limited, .tool-status-experimental { border-color: rgba(245,158,11,.38); color: #fcd34d; background: rgba(245,158,11,.1); }
 
 .two-col { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 768px) { .two-col { grid-template-columns: 1fr 1fr; } }

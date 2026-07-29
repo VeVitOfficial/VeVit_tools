@@ -2,7 +2,7 @@
   <div class="stack-sm">
     <label class="field-label" for="ci-domain">Doména</label>
     <div class="row" style="gap:0.5rem">
-      <input class="input" id="ci-domain" type="text" placeholder="example.com" value="example.com" style="flex:1">
+      <input class="input" id="ci-domain" type="text" placeholder="example.com" value="example.com" autocomplete="url" aria-describedby="ci-help ci-error" style="flex:1">
       <button class="btn btn-primary btn-touch" id="ci-run" type="button"><?= icon_svg('GlobeLock', 18) ?> Zkontrolovat</button>
     </div>
   </div>
@@ -10,7 +10,7 @@
   <p class="progress-label hidden" id="ci-prog-label"></p>
   <div class="hidden" id="ci-result">
     <div class="glass" style="border-radius:0.75rem;padding:0.5rem 1rem">
-      <p id="ci-status" style="font-size:1.05rem;margin:0.25rem 0"></p>
+      <p id="ci-status" class="certificate-status" style="font-size:1.05rem;margin:0.25rem 0" aria-live="polite"></p>
       <div class="kv"><span class="k">Vystavil</span><span class="v" id="ci-issuer">—</span></div>
       <div class="kv"><span class="k">Pro</span><span class="v" id="ci-subject">—</span></div>
       <div class="kv"><span class="k">Platný od</span><span class="v mono" id="ci-from">—</span></div>
@@ -19,9 +19,8 @@
       <div class="kv"><span class="k">Sériové číslo</span><span class="v mono" id="ci-serial">—</span></div>
       <div class="kv"><span class="k">Podpis</span><span class="v" id="ci-sig">—</span></div>
       <div class="kv"><span class="k">SAN (alternativní názvy)</span><span class="v" id="ci-san">—</span></div>
-      <div class="kv"><span class="k">Délka řetězu</span><span class="v mono" id="ci-chain">—</span></div>
     </div>
   </div>
   <p class="error-text hidden" id="ci-error" role="alert"></p>
-  <p class="muted" style="font-size:0.8rem">Zpracování probíhá na serveru (PHP openssl, bez shell_exec). Doména se použije jen pro jednorázové TLS spojení — nic se neukládá.</p>
+  <p class="muted" id="ci-help" style="font-size:0.8rem">Zpracování probíhá na serveru přes ověřené TLS spojení přímo s veřejnou IP adresou. Doména se použije jen pro jednorázovou kontrolu a nic se neukládá.</p>
 </div>

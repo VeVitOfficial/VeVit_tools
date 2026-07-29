@@ -2,8 +2,7 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # New store internals must never be exposed by Apache.
-  RewriteRule ^(?:app|config|storage)/ - [F,L]
+  # Obecná ochrana citlivé lokální konfigurace a dočasných souborů.
   RewriteRule ^(?:\.env(?:\..*)?|.*\.(?:log|sql|bak|backup))$ - [F,L,NC]
 
   # Pretty URL nástrojů: /tools/<slug> → tools.php?slug=<slug>
@@ -12,8 +11,6 @@
   # AI proxy: /api/ai/ollama → api/ai/ollama.php
   RewriteRule ^api/ai/ollama/?$ api/ai/ollama.php [L,QSA]
 
-  # Isolated store foundation health endpoint.
-  RewriteRule ^store/api/health/?$ store/api/health.php [L,QSA]
 </IfModule>
 
 Options -Indexes

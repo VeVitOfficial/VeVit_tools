@@ -17,6 +17,7 @@
 
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/ai_prompts.php';
+require_once __DIR__ . '/../../includes/request-rate-limit.php';
 
 // ── Limity ─────────────────────────────────────────────────────────────────
 const AI_MAX_PROMPT_CHARS = 20000;   // maximální délka uživatelského vstupu
@@ -35,34 +36,6 @@ function fail(int $code, string $msg): void {
 
 // ── IP klienta (neověřujeme XFF — na sdíleném hostingu stačí REMOTE_ADDR,
 //    a nechceme, aby si útočník padělaným XFF obešel rate-limit). ─────────────
-function client_ip(): string {
-  return (string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
-}
-
-// ── Naivní rate-limiting: souborový counter s časovým oknem. ───────────────
-// Vrací true = požadavek povolen (a započten), false = překročen limit.
-function rate_limit_allowed(string $ip): bool {
-  $dir = sys_get_temp_dir();
-  if (!is_dir($dir) || !is_writable($dir)) return true; // vypni, neblokuj funkčnost
-  // Prefix dle webu, ať se na sdíleném hostingu nepromíchají countery webů.
-  $prefix = 'vevit-ai-rl-' . substr(sha1(__DIR__), 0, 8) . '-';
-  $file = $dir . '/' . $prefix . sha1($ip) . '.json';
-
-  $now = time();
-  $rec = ['start' => $now, 'count' => 0];
-  if (is_file($file)) {
-    $raw = @file_get_contents($file);
-    $j = $raw ? json_decode($raw, true) : null;
-    if (is_array($j) && isset($j['start'], $j['count'])) {
-      if ($now - (int)$j['start'] < AI_RATE_WINDOW) $rec = $j;
-    }
-  }
-  if ((int)$rec['count'] >= AI_RATE_MAX) return false;
-  $rec['count'] = (int)$rec['count'] + 1;
-  @file_put_contents($file, json_encode($rec), LOCK_EX);
-  return true;
-}
-
 // ── Jen POST. ──────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') fail(405, 'Pouze POST.');
 
@@ -72,7 +45,7 @@ $body = json_decode($raw, true);
 if (!is_array($body)) fail(400, 'Neplatný JSON v těle požadavku.');
 
 $prompt = trim((string)($body['prompt'] ?? ''));
-$model  = (string)($body['model'] ?? ollama_model());
+if (array_key_exists('model', $body)) fail(400, 'Model vybírá server; klient jej nemůže měnit.');
 $stream = isset($body['stream']) ? (bool)$body['stream'] : true;
 $tool   = trim((string)($body['tool'] ?? ''));
 
@@ -109,7 +82,12 @@ if ($tool !== '' && !ai_tool_known($tool) && $tool !== 'ai-chat') {
 }
 
 // ── Rate-limiting dle IP. ──────────────────────────────────────────────────
-if (!rate_limit_allowed(client_ip())) {
+// AI has a direct operating cost. Storage failure must not remove its guard.
+$rate = request_rate_limit_consume('ai-ollama', request_rate_limit_client_ip(), AI_RATE_WINDOW, AI_RATE_MAX);
+if (!$rate['available']) {
+  fail(503, 'Vývojová AI služba je dočasně nedostupná.');
+}
+if (!$rate['allowed']) {
   fail(429, 'Příliš mnoho požadavků. Zkuste to za chvíli znovu.');
 }
 
@@ -118,7 +96,7 @@ $ollama = rtrim(ollama_url(), '/');
 $endpoint = $ollama . '/api/generate';
 
 $payload = [
-  'model'  => $model !== '' ? $model : ollama_model(),
+  'model'  => ollama_model(),
   'prompt' => $prompt,
   'stream' => $stream,
 ];
@@ -163,7 +141,7 @@ curl_setopt_array($ch, [
     }
     return strlen($data);
   },
-  CURLOPT_TIMEOUT => 300,
+  CURLOPT_TIMEOUT => 60,
   CURLOPT_CONNECTTIMEOUT => 10,
 ]);
 
@@ -173,13 +151,10 @@ $status = $respStatus ?: (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
 curl_close($ch);
 
 if ($ok === false) {
-  fail(502, 'Ollama není dostupná. Spusťte Ollamu na ' . $ollama . '. (' . $err . ')');
+  fail(502, 'Vývojová AI služba není dostupná. Tento endpoint vyžaduje samostatně provozovanou Ollamu a není určený pro sdílený WEDOS hosting.');
 }
 
 if ($status < 200 || $status >= 300) {
   $code = ($status >= 400 && $status < 600) ? $status : 502;
-  $msg = 'Ollama vrátila chybu HTTP ' . $status . '.';
-  $j = json_decode($errorBody, true);
-  if (is_array($j) && !empty($j['error'])) $msg = $j['error'];
-  fail($code, $msg);
+  fail($code, 'Vývojová AI služba požadavek nedokončila.');
 }
