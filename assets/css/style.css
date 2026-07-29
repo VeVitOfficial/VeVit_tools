@@ -296,6 +296,8 @@ svg { display: block; }
 .mx-auto { margin-left: auto; margin-right: auto; }
 .text-destructive { color: var(--destructive); }
 .error-text { font-size: 0.875rem; color: var(--destructive); }
+.certificate-status { color: var(--primary); font-weight: 700; }
+.certificate-status-expires_soon { color: #b45309; }
 
 .two-col { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 768px) { .two-col { grid-template-columns: 1fr 1fr; } }

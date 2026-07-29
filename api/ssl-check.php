@@ -1,89 +1,79 @@
 <?php
-// SSL certifikát info — server-side přes PHP openssl (žádný shell_exec).
-// Připojí se TLS ke `domain:443`, získá peer certifikát a rozparsuje openssl_x509_parse.
-// Funguje na sdíleném hostingu (stačí PHP openssl rozšíření).
+// TLS certificate inspection with DNS-rebinding-safe direct-IP transport.
+require_once __DIR__ . '/../includes/ssl-checker.php';
+require_once __DIR__ . '/../includes/request-rate-limit.php';
 
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store, private, max-age=0');
+header('X-Content-Type-Options: nosniff');
 
-function fail(int $code, string $msg): void {
-  http_response_code($code);
-  echo json_encode(['message' => $msg]);
-  exit;
+function ssl_api_reply(int $code, array $payload): void {
+    http_response_code($code);
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
 }
 
-$domain = isset($_GET['domain']) ? trim($_GET['domain']) : '';
-if ($domain === '') fail(400, 'Zadejte doménu.');
-// očistit: pouze hostname (případně :port)
-$domain = preg_replace('#^https?://#i', '', $domain);
-$host = parse_url('http://' . $domain, PHP_URL_HOST);
-if (!$host || !preg_match('/^(?=.{1,253}$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i', $host)) {
-  fail(400, 'Neplatná doména.');
-}
-$port = 443;
-
-// SNI + zachycení peer certifikátu
-$errNo = 0; $errStr = '';
-$ctx = stream_context_create(['ssl' => [
-  'capture_peer_cert' => true,
-  'capture_peer_cert_chain' => true,
-  'verify_peer' => false,
-  'verify_peer_name' => false,
-  'SNI_enabled' => true,
-  'peer_name' => $host,
-]]);
-$remote = @stream_socket_client('ssl://' . $host . ':' . $port, $errNo, $errStr, 15, STREAM_CLIENT_CONNECT, $ctx);
-if (!$remote) fail(502, 'Nepodařilo se připojit k ' . $host . ':443 (' . $errStr . ').');
-
-$params = stream_context_get_params($remote);
-$cert = $params['options']['ssl']['peer_certificate'] ?? null;
-$chain = $params['options']['ssl']['peer_certificate_chain'] ?? [];
-fclose($remote);
-if (!$cert) fail(502, 'Certifikát nebylo možné získat.');
-
-$parsed = openssl_x509_parse($cert);
-if (!$parsed) fail(502, 'Certifikát se nepodařilo rozparsovat.');
-
-function dt(?array $a, string $k): string {
-  if (!$a || !isset($a[$k])) return '—';
-  $v = $a[$k];
-  if (is_numeric($v)) {
-    $d = new DateTime('@' . $v);
-    return $d->format('j. n. Y H:i:s');
-  }
-  return (string)$v;
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
+    header('Allow: GET');
+    ssl_api_reply(405, ['status' => 'invalid_request', 'message' => 'Pouze GET.']);
 }
 
-$subject = $parsed['subject'] ?? [];
-$issuer = $parsed['issuer'] ?? [];
-$validTo = $parsed['validTo_time_t'] ?? 0;
-$now = time();
-$daysLeft = $validTo ? round(($validTo - $now) / 86400) : null;
+$rate = request_rate_limit_consume('ssl-check', request_rate_limit_client_ip(), 60, 10);
+if (!$rate['available']) {
+    ssl_api_reply(503, ['status' => 'verification_unavailable', 'message' => 'Kontrolu certifikátu se nyní nepodařilo bezpečně spustit.']);
+}
+if (!$rate['allowed']) {
+    ssl_api_reply(429, ['status' => 'rate_limited', 'message' => 'Příliš mnoho kontrol. Zkuste to prosím za chvíli.']);
+}
+
+$check = ssl_check_host((string)($_GET['domain'] ?? ''));
+$status = $check['status'];
+if (!in_array($status, ['verified', 'expires_soon'], true)) {
+    $messages = [
+        'invalid_hostname' => 'Zadejte platný název veřejné domény bez protokolu a portu.',
+        'dns_rejected' => 'Doména nevede výhradně na veřejně dostupný cíl.',
+        'hostname_mismatch' => 'Certifikát neodpovídá zadanému názvu domény.',
+        'untrusted_chain' => 'Certifikační řetězec se nepodařilo ověřit.',
+        'expired' => 'Certifikát již není platný.',
+        'unreachable' => 'K veřejnému TLS serveru se nyní nelze připojit.',
+        'verification_unavailable' => 'Ověření TLS není na tomto serveru dostupné.',
+    ];
+    $code = in_array($status, ['invalid_hostname', 'dns_rejected'], true) ? 400
+        : ($status === 'verification_unavailable' ? 503 : 502);
+    ssl_api_reply($code, ['status' => $status, 'message' => $messages[$status] ?? 'Kontrola certifikátu selhala.']);
+}
+
+$parsed = $check['certificate'] ?? null;
+if (!is_array($parsed)) {
+    ssl_api_reply(502, ['status' => 'unreachable', 'message' => 'Certifikát nebylo možné přečíst.']);
+}
+function ssl_api_date(array $certificate, string $key): string {
+    $value = $certificate[$key] ?? null;
+    return is_numeric($value) ? gmdate('Y-m-d H:i:s \\U\\T\\C', (int)$value) : '—';
+}
+function ssl_api_field(array $group, string $key): string {
+    return isset($group[$key]) && is_scalar($group[$key]) ? (string)$group[$key] : '—';
+}
 
 $san = [];
-if (!empty($parsed['extensions']['subjectAltName'])) {
-  preg_match_all('/DNS:([^,]+)/', $parsed['extensions']['subjectAltName'], $m);
-  $san = $m[1] ?? [];
+if (!empty($parsed['extensions']['subjectAltName']) && is_string($parsed['extensions']['subjectAltName'])) {
+    preg_match_all('/DNS:([^,]+)/', $parsed['extensions']['subjectAltName'], $matches);
+    $san = array_values(array_map('trim', $matches[1] ?? []));
 }
+$validTo = isset($parsed['validTo_time_t']) ? (int)$parsed['validTo_time_t'] : null;
+$daysLeft = $validTo === null ? null : (int)floor(($validTo - time()) / 86400);
+$subject = is_array($parsed['subject'] ?? null) ? $parsed['subject'] : [];
+$issuer = is_array($parsed['issuer'] ?? null) ? $parsed['issuer'] : [];
 
-echo json_encode([
-  'subject' => [
-    'CN' => $subject['CN'] ?? '—',
-    'O' => $subject['O'] ?? '—',
-    'OU' => $subject['OU'] ?? '—',
-    'C' => $subject['C'] ?? '—',
-  ],
-  'issuer' => [
-    'CN' => $issuer['CN'] ?? '—',
-    'O' => $issuer['O'] ?? '—',
-    'C' => $issuer['C'] ?? '—',
-  ],
-  'validFrom' => dt($parsed, 'validFrom_time_t'),
-  'validTo' => dt($parsed, 'validTo_time_t'),
-  'daysLeft' => $daysLeft,
-  'expired' => $validTo ? ($validTo < $now) : null,
-  'serialNumber' => $parsed['serialNumber'] ?? '—',
-  'version' => isset($parsed['version']) ? (intval($parsed['version']) + 1) : '—',
-  'signatureType' => $parsed['signatureTypeSN'] ?? ($parsed['signatureTypeLN'] ?? '—'),
-  'san' => $san,
-  'chainLength' => count($chain),
-], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+ssl_api_reply(200, [
+    'status' => $status,
+    'subject' => ['CN' => ssl_api_field($subject, 'CN'), 'O' => ssl_api_field($subject, 'O'), 'OU' => ssl_api_field($subject, 'OU'), 'C' => ssl_api_field($subject, 'C')],
+    'issuer' => ['CN' => ssl_api_field($issuer, 'CN'), 'O' => ssl_api_field($issuer, 'O'), 'C' => ssl_api_field($issuer, 'C')],
+    'validFrom' => ssl_api_date($parsed, 'validFrom_time_t'),
+    'validTo' => ssl_api_date($parsed, 'validTo_time_t'),
+    'daysLeft' => $daysLeft,
+    'serialNumber' => isset($parsed['serialNumber']) && is_scalar($parsed['serialNumber']) ? (string)$parsed['serialNumber'] : '—',
+    'version' => isset($parsed['version']) ? ((int)$parsed['version'] + 1) : '—',
+    'signatureType' => ssl_api_field($parsed, 'signatureTypeSN'),
+    'san' => $san,
+]);
