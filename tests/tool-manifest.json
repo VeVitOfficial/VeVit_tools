@@ -1,0 +1,2252 @@
+{
+    "schema_version": 1,
+    "tools": [
+        {
+            "slug": "ai-chat",
+            "category": "ai",
+            "route": "/tools/ai-chat",
+            "expected_php_template": "includes/tools/ai-chat.php",
+            "expected_javascript": "assets/js/tools/ai-chat.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-code-explainer",
+            "category": "dev",
+            "route": "/tools/ai-code-explainer",
+            "expected_php_template": "includes/tools/ai-code-explainer.php",
+            "expected_javascript": "assets/js/tools/ai-code-explainer.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-commit-message",
+            "category": "dev",
+            "route": "/tools/ai-commit-message",
+            "expected_php_template": "includes/tools/ai-commit-message.php",
+            "expected_javascript": "assets/js/tools/ai-commit-message.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-email-writer",
+            "category": "text",
+            "route": "/tools/ai-email-writer",
+            "expected_php_template": "includes/tools/ai-email-writer.php",
+            "expected_javascript": "assets/js/tools/ai-email-writer.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-image-gen",
+            "category": "ai",
+            "route": "/tools/ai-image-gen",
+            "expected_php_template": null,
+            "expected_javascript": null,
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders an unavailable or coming-soon state without a primary action.",
+            "hosting_compatibility": "not_implemented",
+            "final_status": "coming_soon",
+            "verified_test_level": "none",
+            "blocker_note": "Generování obrázků vyžaduje další infrastrukturu (Stable Diffusion / ComfyUI), kterou Ollama neposkytuje. Nástroj je v přípravě."
+        },
+        {
+            "slug": "ai-regex-generator",
+            "category": "dev",
+            "route": "/tools/ai-regex-generator",
+            "expected_php_template": "includes/tools/ai-regex-generator.php",
+            "expected_javascript": "assets/js/tools/ai-regex-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-seo",
+            "category": "ai",
+            "route": "/tools/ai-seo",
+            "expected_php_template": "includes/tools/ai-seo.php",
+            "expected_javascript": "assets/js/tools/ai-seo.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-sql-gen",
+            "category": "ai",
+            "route": "/tools/ai-sql-gen",
+            "expected_php_template": "includes/tools/ai-sql-gen.php",
+            "expected_javascript": "assets/js/tools/ai-sql-gen.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-text-qa",
+            "category": "ai",
+            "route": "/tools/ai-text-qa",
+            "expected_php_template": "includes/tools/ai-text-qa.php",
+            "expected_javascript": "assets/js/tools/ai-text-qa.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "ai-vision",
+            "category": "ai",
+            "route": "/tools/ai-vision",
+            "expected_php_template": "includes/tools/ai-vision.php",
+            "expected_javascript": "assets/js/tools/ai-vision.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "audio-convert",
+            "category": "media",
+            "route": "/tools/audio-convert",
+            "expected_php_template": "includes/tools/audio-convert.php",
+            "expected_javascript": "assets/js/tools/audio-convert.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "audio-trim-normalize",
+            "category": "media",
+            "route": "/tools/audio-trim-normalize",
+            "expected_php_template": "includes/tools/audio-trim-normalize.php",
+            "expected_javascript": "assets/js/tools/audio-trim-normalize.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "audio-waveform",
+            "category": "media",
+            "route": "/tools/audio-waveform",
+            "expected_php_template": "includes/tools/audio-waveform.php",
+            "expected_javascript": "assets/js/tools/audio-waveform.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "base64-tool",
+            "category": "dev",
+            "route": "/tools/base64-tool",
+            "expected_php_template": "includes/tools/base64-tool.php",
+            "expected_javascript": "assets/js/tools/base64-tool.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "bg-remover",
+            "category": "image",
+            "route": "/tools/bg-remover",
+            "expected_php_template": "includes/tools/bg-remover.php",
+            "expected_javascript": "assets/js/tools/bg-remover.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "birth-number-validator",
+            "category": "calc",
+            "route": "/tools/birth-number-validator",
+            "expected_php_template": "includes/tools/birth-number-validator.php",
+            "expected_javascript": "assets/js/tools/birth-number-validator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "bmi-calc",
+            "category": "calc",
+            "route": "/tools/bmi-calc",
+            "expected_php_template": "includes/tools/bmi-calc.php",
+            "expected_javascript": "assets/js/tools/bmi-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "bmr-calc",
+            "category": "calc",
+            "route": "/tools/bmr-calc",
+            "expected_php_template": "includes/tools/bmr-calc.php",
+            "expected_javascript": "assets/js/tools/bmr-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "certificate-info",
+            "category": "security",
+            "route": "/tools/certificate-info",
+            "expected_php_template": "includes/tools/certificate-info.php",
+            "expected_javascript": "assets/js/tools/certificate-info.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "code-diff",
+            "category": "dev",
+            "route": "/tools/code-diff",
+            "expected_php_template": "includes/tools/code-diff.php",
+            "expected_javascript": "assets/js/tools/code-diff.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "color-converter",
+            "category": "calc",
+            "route": "/tools/color-converter",
+            "expected_php_template": "includes/tools/color-converter.php",
+            "expected_javascript": "assets/js/tools/color-converter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "color-palette-generator",
+            "category": "dev",
+            "route": "/tools/color-palette-generator",
+            "expected_php_template": "includes/tools/color-palette-generator.php",
+            "expected_javascript": "assets/js/tools/color-palette-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "compound-interest-calc",
+            "category": "calc",
+            "route": "/tools/compound-interest-calc",
+            "expected_php_template": "includes/tools/compound-interest-calc.php",
+            "expected_javascript": "assets/js/tools/compound-interest-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "contrast-checker",
+            "category": "dev",
+            "route": "/tools/contrast-checker",
+            "expected_php_template": "includes/tools/contrast-checker.php",
+            "expected_javascript": "assets/js/tools/contrast-checker.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "cron-builder",
+            "category": "dev",
+            "route": "/tools/cron-builder",
+            "expected_php_template": "includes/tools/cron-builder.php",
+            "expected_javascript": "assets/js/tools/cron-builder.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "css-js-html-formatter",
+            "category": "dev",
+            "route": "/tools/css-js-html-formatter",
+            "expected_php_template": "includes/tools/css-js-html-formatter.php",
+            "expected_javascript": "assets/js/tools/css-js-html-formatter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "csv-json-converter",
+            "category": "dev",
+            "route": "/tools/csv-json-converter",
+            "expected_php_template": "includes/tools/csv-json-converter.php",
+            "expected_javascript": "assets/js/tools/csv-json-converter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "date-diff-calc",
+            "category": "calc",
+            "route": "/tools/date-diff-calc",
+            "expected_php_template": "includes/tools/date-diff-calc.php",
+            "expected_javascript": "assets/js/tools/date-diff-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "discount-calc",
+            "category": "calc",
+            "route": "/tools/discount-calc",
+            "expected_php_template": "includes/tools/discount-calc.php",
+            "expected_javascript": "assets/js/tools/discount-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "encrypt-decrypt",
+            "category": "security",
+            "route": "/tools/encrypt-decrypt",
+            "expected_php_template": "includes/tools/encrypt-decrypt.php",
+            "expected_javascript": "assets/js/tools/encrypt-decrypt.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "fake-data-generator",
+            "category": "dev",
+            "route": "/tools/fake-data-generator",
+            "expected_php_template": "includes/tools/fake-data-generator.php",
+            "expected_javascript": "assets/js/tools/fake-data-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "favicon-generator",
+            "category": "image",
+            "route": "/tools/favicon-generator",
+            "expected_php_template": "includes/tools/favicon-generator.php",
+            "expected_javascript": "assets/js/tools/favicon-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "file-encryption",
+            "category": "security",
+            "route": "/tools/file-encryption",
+            "expected_php_template": "includes/tools/file-encryption.php",
+            "expected_javascript": "assets/js/tools/file-encryption.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "fuel-consumption-calc",
+            "category": "calc",
+            "route": "/tools/fuel-consumption-calc",
+            "expected_php_template": "includes/tools/fuel-consumption-calc.php",
+            "expected_javascript": "assets/js/tools/fuel-consumption-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "gif-maker",
+            "category": "image",
+            "route": "/tools/gif-maker",
+            "expected_php_template": "includes/tools/gif-maker.php",
+            "expected_javascript": "assets/js/tools/gif-maker.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "gitignore-generator",
+            "category": "dev",
+            "route": "/tools/gitignore-generator",
+            "expected_php_template": "includes/tools/gitignore-generator.php",
+            "expected_javascript": "assets/js/tools/gitignore-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "grade-average-calc",
+            "category": "calc",
+            "route": "/tools/grade-average-calc",
+            "expected_php_template": "includes/tools/grade-average-calc.php",
+            "expected_javascript": "assets/js/tools/grade-average-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "gradient-gen",
+            "category": "dev",
+            "route": "/tools/gradient-gen",
+            "expected_php_template": "includes/tools/gradient-gen.php",
+            "expected_javascript": "assets/js/tools/gradient-gen.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "grammar-check",
+            "category": "text",
+            "route": "/tools/grammar-check",
+            "expected_php_template": "includes/tools/grammar-check.php",
+            "expected_javascript": "assets/js/tools/grammar-check.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "hash-gen",
+            "category": "security",
+            "route": "/tools/hash-gen",
+            "expected_php_template": "includes/tools/hash-gen.php",
+            "expected_javascript": "assets/js/tools/hash-gen.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "html-to-pdf",
+            "category": "pdf",
+            "route": "/tools/html-to-pdf",
+            "expected_php_template": "includes/tools/html-to-pdf.php",
+            "expected_javascript": "assets/js/tools/html-to-pdf.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "iban-converter",
+            "category": "calc",
+            "route": "/tools/iban-converter",
+            "expected_php_template": "includes/tools/iban-converter.php",
+            "expected_javascript": "assets/js/tools/iban-converter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-collage",
+            "category": "image",
+            "route": "/tools/image-collage",
+            "expected_php_template": "includes/tools/image-collage.php",
+            "expected_javascript": "assets/js/tools/image-collage.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-convert",
+            "category": "image",
+            "route": "/tools/image-convert",
+            "expected_php_template": "includes/tools/image-convert.php",
+            "expected_javascript": "assets/js/tools/image-convert.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-crop",
+            "category": "image",
+            "route": "/tools/image-crop",
+            "expected_php_template": "includes/tools/image-crop.php",
+            "expected_javascript": "assets/js/tools/image-crop.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-exif",
+            "category": "image",
+            "route": "/tools/image-exif",
+            "expected_php_template": "includes/tools/image-exif.php",
+            "expected_javascript": "assets/js/tools/image-exif.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-filters",
+            "category": "image",
+            "route": "/tools/image-filters",
+            "expected_php_template": "includes/tools/image-filters.php",
+            "expected_javascript": "assets/js/tools/image-filters.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-rotate-flip",
+            "category": "image",
+            "route": "/tools/image-rotate-flip",
+            "expected_php_template": "includes/tools/image-rotate-flip.php",
+            "expected_javascript": "assets/js/tools/image-rotate-flip.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "image-watermark",
+            "category": "image",
+            "route": "/tools/image-watermark",
+            "expected_php_template": "includes/tools/image-watermark.php",
+            "expected_javascript": "assets/js/tools/image-watermark.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "images-to-pdf",
+            "category": "pdf",
+            "route": "/tools/images-to-pdf",
+            "expected_php_template": "includes/tools/images-to-pdf.php",
+            "expected_javascript": "assets/js/tools/images-to-pdf.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "img-compress",
+            "category": "image",
+            "route": "/tools/img-compress",
+            "expected_php_template": "includes/tools/img-compress.php",
+            "expected_javascript": "assets/js/tools/img-compress.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "img-upscaler",
+            "category": "image",
+            "route": "/tools/img-upscaler",
+            "expected_php_template": "includes/tools/img-upscaler.php",
+            "expected_javascript": "assets/js/tools/img-upscaler.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "invoice-gen",
+            "category": "pdf",
+            "route": "/tools/invoice-gen",
+            "expected_php_template": "includes/tools/invoice-gen.php",
+            "expected_javascript": "assets/js/tools/invoice-gen.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "json-formatter",
+            "category": "dev",
+            "route": "/tools/json-formatter",
+            "expected_php_template": "includes/tools/json-formatter.php",
+            "expected_javascript": "assets/js/tools/json-formatter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "jwt-decoder",
+            "category": "dev",
+            "route": "/tools/jwt-decoder",
+            "expected_php_template": "includes/tools/jwt-decoder.php",
+            "expected_javascript": "assets/js/tools/jwt-decoder.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "jwt-generator",
+            "category": "dev",
+            "route": "/tools/jwt-generator",
+            "expected_php_template": "includes/tools/jwt-generator.php",
+            "expected_javascript": "assets/js/tools/jwt-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "loan-calc",
+            "category": "calc",
+            "route": "/tools/loan-calc",
+            "expected_php_template": "includes/tools/loan-calc.php",
+            "expected_javascript": "assets/js/tools/loan-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "lorem-ipsum",
+            "category": "text",
+            "route": "/tools/lorem-ipsum",
+            "expected_php_template": "includes/tools/lorem-ipsum.php",
+            "expected_javascript": "assets/js/tools/lorem-ipsum.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "markdown-editor",
+            "category": "text",
+            "route": "/tools/markdown-editor",
+            "expected_php_template": "includes/tools/markdown-editor.php",
+            "expected_javascript": "assets/js/tools/markdown-editor.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "meme-generator",
+            "category": "image",
+            "route": "/tools/meme-generator",
+            "expected_php_template": "includes/tools/meme-generator.php",
+            "expected_javascript": "assets/js/tools/meme-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "mind-map",
+            "category": "text",
+            "route": "/tools/mind-map",
+            "expected_php_template": "includes/tools/mind-map.php",
+            "expected_javascript": "assets/js/tools/mind-map.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "net-salary-calc",
+            "category": "calc",
+            "route": "/tools/net-salary-calc",
+            "expected_php_template": "includes/tools/net-salary-calc.php",
+            "expected_javascript": "assets/js/tools/net-salary-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "number-base-converter",
+            "category": "calc",
+            "route": "/tools/number-base-converter",
+            "expected_php_template": "includes/tools/number-base-converter.php",
+            "expected_javascript": "assets/js/tools/number-base-converter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "og-meta-generator",
+            "category": "dev",
+            "route": "/tools/og-meta-generator",
+            "expected_php_template": "includes/tools/og-meta-generator.php",
+            "expected_javascript": "assets/js/tools/og-meta-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "password-breach-check",
+            "category": "security",
+            "route": "/tools/password-breach-check",
+            "expected_php_template": "includes/tools/password-breach-check.php",
+            "expected_javascript": "assets/js/tools/password-breach-check.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "password-gen",
+            "category": "security",
+            "route": "/tools/password-gen",
+            "expected_php_template": "includes/tools/password-gen.php",
+            "expected_javascript": "assets/js/tools/password-gen.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "password-strength",
+            "category": "security",
+            "route": "/tools/password-strength",
+            "expected_php_template": "includes/tools/password-strength.php",
+            "expected_javascript": "assets/js/tools/password-strength.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-compress",
+            "category": "pdf",
+            "route": "/tools/pdf-compress",
+            "expected_php_template": "includes/tools/pdf-compress.php",
+            "expected_javascript": "assets/js/tools/pdf-compress.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-extract-text",
+            "category": "pdf",
+            "route": "/tools/pdf-extract-text",
+            "expected_php_template": "includes/tools/pdf-extract-text.php",
+            "expected_javascript": "assets/js/tools/pdf-extract-text.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-merge",
+            "category": "pdf",
+            "route": "/tools/pdf-merge",
+            "expected_php_template": "includes/tools/pdf-merge.php",
+            "expected_javascript": "assets/js/tools/pdf-merge.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-organize",
+            "category": "pdf",
+            "route": "/tools/pdf-organize",
+            "expected_php_template": "includes/tools/pdf-organize.php",
+            "expected_javascript": "assets/js/tools/pdf-organize.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-page-numbers",
+            "category": "pdf",
+            "route": "/tools/pdf-page-numbers",
+            "expected_php_template": "includes/tools/pdf-page-numbers.php",
+            "expected_javascript": "assets/js/tools/pdf-page-numbers.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-password",
+            "category": "pdf",
+            "route": "/tools/pdf-password",
+            "expected_php_template": null,
+            "expected_javascript": null,
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders an unavailable or coming-soon state without a primary action.",
+            "hosting_compatibility": "unavailable_on_wedos",
+            "final_status": "unavailable_on_wedos",
+            "verified_test_level": "none",
+            "blocker_note": "Tento nástroj vyžaduje VPS / shell_exec (nástroj qpdf). Na sdíleném hostingu jej provozovat nelze."
+        },
+        {
+            "slug": "pdf-rotate",
+            "category": "pdf",
+            "route": "/tools/pdf-rotate",
+            "expected_php_template": "includes/tools/pdf-rotate.php",
+            "expected_javascript": "assets/js/tools/pdf-rotate.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-split",
+            "category": "pdf",
+            "route": "/tools/pdf-split",
+            "expected_php_template": "includes/tools/pdf-split.php",
+            "expected_javascript": "assets/js/tools/pdf-split.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-to-images",
+            "category": "pdf",
+            "route": "/tools/pdf-to-images",
+            "expected_php_template": "includes/tools/pdf-to-images.php",
+            "expected_javascript": "assets/js/tools/pdf-to-images.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-to-word",
+            "category": "pdf",
+            "route": "/tools/pdf-to-word",
+            "expected_php_template": "includes/tools/pdf-to-word.php",
+            "expected_javascript": "assets/js/tools/pdf-to-word.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "pdf-watermark",
+            "category": "pdf",
+            "route": "/tools/pdf-watermark",
+            "expected_php_template": "includes/tools/pdf-watermark.php",
+            "expected_javascript": "assets/js/tools/pdf-watermark.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "percentage-calc",
+            "category": "calc",
+            "route": "/tools/percentage-calc",
+            "expected_php_template": "includes/tools/percentage-calc.php",
+            "expected_javascript": "assets/js/tools/percentage-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "qr-generator",
+            "category": "dev",
+            "route": "/tools/qr-generator",
+            "expected_php_template": "includes/tools/qr-generator.php",
+            "expected_javascript": "assets/js/tools/qr-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "regex-tester",
+            "category": "dev",
+            "route": "/tools/regex-tester",
+            "expected_php_template": "includes/tools/regex-tester.php",
+            "expected_javascript": "assets/js/tools/regex-tester.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "remove-diacritics",
+            "category": "text",
+            "route": "/tools/remove-diacritics",
+            "expected_php_template": "includes/tools/remove-diacritics.php",
+            "expected_javascript": "assets/js/tools/remove-diacritics.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "screenshot-tool",
+            "category": "image",
+            "route": "/tools/screenshot-tool",
+            "expected_php_template": null,
+            "expected_javascript": null,
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders an unavailable or coming-soon state without a primary action.",
+            "hosting_compatibility": "unavailable_on_wedos",
+            "final_status": "unavailable_on_wedos",
+            "verified_test_level": "none",
+            "blocker_note": "Tento nástroj vyžaduje VPS / shell_exec (headless Chromium). Na sdíleném hostingu jej provozovat nelze."
+        },
+        {
+            "slug": "steganography",
+            "category": "security",
+            "route": "/tools/steganography",
+            "expected_php_template": "includes/tools/steganography.php",
+            "expected_javascript": "assets/js/tools/steganography.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "summarize-text",
+            "category": "text",
+            "route": "/tools/summarize-text",
+            "expected_php_template": "includes/tools/summarize-text.php",
+            "expected_javascript": "assets/js/tools/summarize-text.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "text-case-converter",
+            "category": "text",
+            "route": "/tools/text-case-converter",
+            "expected_php_template": "includes/tools/text-case-converter.php",
+            "expected_javascript": "assets/js/tools/text-case-converter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "text-counter",
+            "category": "text",
+            "route": "/tools/text-counter",
+            "expected_php_template": "includes/tools/text-counter.php",
+            "expected_javascript": "assets/js/tools/text-counter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "text-lines-tool",
+            "category": "text",
+            "route": "/tools/text-lines-tool",
+            "expected_php_template": "includes/tools/text-lines-tool.php",
+            "expected_javascript": "assets/js/tools/text-lines-tool.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "text-to-speech",
+            "category": "text",
+            "route": "/tools/text-to-speech",
+            "expected_php_template": "includes/tools/text-to-speech.php",
+            "expected_javascript": "assets/js/tools/text-to-speech.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "time-calc",
+            "category": "calc",
+            "route": "/tools/time-calc",
+            "expected_php_template": "includes/tools/time-calc.php",
+            "expected_javascript": "assets/js/tools/time-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "timestamp-converter",
+            "category": "dev",
+            "route": "/tools/timestamp-converter",
+            "expected_php_template": "includes/tools/timestamp-converter.php",
+            "expected_javascript": "assets/js/tools/timestamp-converter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "token-generator",
+            "category": "security",
+            "route": "/tools/token-generator",
+            "expected_php_template": "includes/tools/token-generator.php",
+            "expected_javascript": "assets/js/tools/token-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "totp-generator",
+            "category": "security",
+            "route": "/tools/totp-generator",
+            "expected_php_template": "includes/tools/totp-generator.php",
+            "expected_javascript": "assets/js/tools/totp-generator.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "translate",
+            "category": "text",
+            "route": "/tools/translate",
+            "expected_php_template": "includes/tools/translate.php",
+            "expected_javascript": "assets/js/tools/translate.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "requires_external_service",
+            "final_status": "limited",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "unit-converter",
+            "category": "calc",
+            "route": "/tools/unit-converter",
+            "expected_php_template": "includes/tools/unit-converter.php",
+            "expected_javascript": "assets/js/tools/unit-converter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "url-encoder",
+            "category": "dev",
+            "route": "/tools/url-encoder",
+            "expected_php_template": "includes/tools/url-encoder.php",
+            "expected_javascript": "assets/js/tools/url-encoder.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "uuid-gen",
+            "category": "dev",
+            "route": "/tools/uuid-gen",
+            "expected_php_template": "includes/tools/uuid-gen.php",
+            "expected_javascript": "assets/js/tools/uuid-gen.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "vat-calc",
+            "category": "calc",
+            "route": "/tools/vat-calc",
+            "expected_php_template": "includes/tools/vat-calc.php",
+            "expected_javascript": "assets/js/tools/vat-calc.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-compress",
+            "category": "media",
+            "route": "/tools/video-compress",
+            "expected_php_template": "includes/tools/video-compress.php",
+            "expected_javascript": "assets/js/tools/video-compress.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-convert",
+            "category": "media",
+            "route": "/tools/video-convert",
+            "expected_php_template": "includes/tools/video-convert.php",
+            "expected_javascript": "assets/js/tools/video-convert.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-extract-audio",
+            "category": "media",
+            "route": "/tools/video-extract-audio",
+            "expected_php_template": "includes/tools/video-extract-audio.php",
+            "expected_javascript": "assets/js/tools/video-extract-audio.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-merge",
+            "category": "media",
+            "route": "/tools/video-merge",
+            "expected_php_template": "includes/tools/video-merge.php",
+            "expected_javascript": "assets/js/tools/video-merge.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-target-size",
+            "category": "media",
+            "route": "/tools/video-target-size",
+            "expected_php_template": "includes/tools/video-target-size.php",
+            "expected_javascript": "assets/js/tools/video-target-size.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-thumbnail",
+            "category": "media",
+            "route": "/tools/video-thumbnail",
+            "expected_php_template": "includes/tools/video-thumbnail.php",
+            "expected_javascript": "assets/js/tools/video-thumbnail.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-to-gif",
+            "category": "media",
+            "route": "/tools/video-to-gif",
+            "expected_php_template": "includes/tools/video-to-gif.php",
+            "expected_javascript": "assets/js/tools/video-to-gif.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "video-trim",
+            "category": "media",
+            "route": "/tools/video-trim",
+            "expected_php_template": "includes/tools/video-trim.php",
+            "expected_javascript": "assets/js/tools/video-trim.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        },
+        {
+            "slug": "yaml-json-converter",
+            "category": "dev",
+            "route": "/tools/yaml-json-converter",
+            "expected_php_template": "includes/tools/yaml-json-converter.php",
+            "expected_javascript": "assets/js/tools/yaml-json-converter.js",
+            "required_libraries": [
+                "assets/js/lib/tool-ui.js"
+            ],
+            "fixture": null,
+            "basic_test_steps": [
+                "Open route",
+                "Verify title and primary workspace or truthful unavailable state",
+                "Perform no destructive input during smoke test"
+            ],
+            "expected_result": "Route renders the tool workspace without a fatal PHP error.",
+            "hosting_compatibility": "available",
+            "final_status": "working",
+            "verified_test_level": "none",
+            "blocker_note": null
+        }
+    ]
+}
