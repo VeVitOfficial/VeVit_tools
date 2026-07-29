@@ -8,54 +8,26 @@ aby Wedos mohl serve-ovat `/` bez PHP. Spusť znovu po změně registrů:
     python3 scripts/generate-index.py
 """
 import html
+import json
 import os
-import re
+import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def load(name):
-    with open(os.path.join(ROOT, name), encoding="utf-8") as f:
-        return f.read()
-
-
-# ── Parsovací pomocníci ────────────────────────────────────────────
-def parse_const_dict(src, name):
-    """Vrátí dict z `const NAME = [ 'k' => 'v', ... ];`."""
-    m = re.search(r"const\s+%s\s*=\s*\[(.*?)\];" % re.escape(name), src, re.S)
-    if not m:
-        raise RuntimeError("Nenalezeno: " + name)
-    body = m.group(1)
-    out = {}
-    for key, val in re.findall(r"'([^']*)'\s*=>\s*'([^']*)'", body):
-        out[key] = val
-    return out
-
-
-def parse_const_list(src, name):
-    """Vrátí list z `const NAME = ['a','b',...];`."""
-    m = re.search(r"const\s+%s\s*=\s*\[(.*?)\];" % re.escape(name), src, re.S)
-    return re.findall(r"'([^']+)'", m.group(1))
-
-
-# ── Načti data ─────────────────────────────────────────────────────
-reg = load("includes/registry.php")
-ico = load("includes/icons.php")
-
-CATEGORY_COLORS = parse_const_dict(reg, "CATEGORY_COLORS")
-CATEGORY_LABELS = parse_const_dict(reg, "CATEGORY_LABELS")
-CATEGORY_DESCRIPTIONS = parse_const_dict(reg, "CATEGORY_DESCRIPTIONS")
-CATEGORY_ORDER = parse_const_list(reg, "CATEGORY_ORDER")
-
-# Ikony: mapování Jméno -> vnitřní SVG (obsah mezi <svg> a </svg>).
-ICON_MAP = dict(re.findall(r"'([A-Za-z0-9]+)'\s*=>\s*'(<[^']*)',", ico))
+# ── Načti kanonický export přes PHP; žádné regexové parsování PHP. ──────────
+raw = subprocess.check_output(["php", os.path.join(ROOT, "scripts", "export-tools.php"), "--generator"], text=True)
+dataset = json.loads(raw)
+CATEGORY_ORDER = [category["id"] for category in dataset["categories"]]
+CATEGORY_COLORS = {category["id"]: category["color"] for category in dataset["categories"]}
+CATEGORY_LABELS = {category["id"]: category["name"] for category in dataset["categories"]}
+CATEGORY_DESCRIPTIONS = {category["id"]: category["description"] for category in dataset["categories"]}
+ICON_MAP = dataset["icons"]
 
 
 def icon_svg(name, size=24):
-    inner = ICON_MAP.get(name, "")
-    return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" '
-            'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
-            'stroke-linecap="round" stroke-linejoin="round">%s</svg>') % (size, size, inner)
+    svg = ICON_MAP.get(name, "")
+    return svg.replace('width="24" height="24"', 'width="%d" height="%d"' % (size, size), 1)
 
 
 LOC_META = {
@@ -73,12 +45,11 @@ def e(s):
 
 
 # ── Nástroje ────────────────────────────────────────────────────────
-TOOLS = []
-for line in reg.splitlines():
-    m = re.search(r"\['slug'\s*=>\s*'([^']+)'.*'name'\s*=>\s*'([^']+)'.*'desc'\s*=>\s*'([^']*)'.*'cat'\s*=>\s*'([^']+)'.*'loc'\s*=>\s*'([^']+)'.*'icon'\s*=>\s*'([^']+)'.*'new'\s*=>\s*(true|false)[^\]]*\]", line)
-    if m:
-        TOOLS.append(dict(slug=m[1], name=m[2], desc=m[3], cat=m[4], loc=m[5],
-                          icon=m[6], new=(m[7] == "true")))
+TOOLS = [{
+    "slug": tool["slug"], "name": tool["name"], "desc": tool["description"],
+    "cat": tool["category"], "loc": {"client": "client", "vevit_server": "server", "external_ai": "ai"}[tool["processing_location"]],
+    "icon": tool["icon"], "new": tool["new"], "status": tool["status"], "availability": tool["availability"]
+} for tool in dataset["tools"]]
 
 by_cat = {c: [] for c in CATEGORY_ORDER}
 for t in TOOLS:
@@ -96,12 +67,17 @@ def render_tool_card(t):
     icon = icon_svg(t["icon"], 20)
     li = icon_svg(loc_icon, 12)
     new_badge = '<span class="badge badge-new">NOVÉ</span>' if t["new"] else ""
+    status_labels = {
+        "working": "Dostupný", "limited": "Omezeně dostupný", "experimental": "Experimentální",
+        "coming_soon": "Připravujeme", "unavailable_on_wedos": "Nedostupné na WEDOS", "broken": "Nefunkční",
+    }
+    status_badge = '' if t["status"] == "working" else '<span class="badge badge-status-%s">%s</span>' % (e(t["status"]), e(status_labels[t["status"]]))
     loc_class = "badge-loc-local" if tone == "local" else "badge-loc-other"
     return ('<a class="tool-card" href="/tools/%s" data-name="%s" data-desc="%s" data-slug="%s">'
             '<span class="accent" style="background:%s"></span>'
             '<div class="top">'
             '<span class="icon-box" style="background:%s">%s</span>'
-            '%s'
+            '%s%s'
             '</div>'
             '<h3 class="name">%s</h3>'
             '<p class="desc">%s</p>'
@@ -111,7 +87,7 @@ def render_tool_card(t):
             '</div>'
             '</a>') % (
         e(t["slug"]), e(t["name"].lower()), e(t["desc"].lower()), e(t["slug"]),
-        color, color + "15", icon, new_badge,
+        color, color + "15", icon, new_badge, status_badge,
         e(t["name"]), e(t["desc"]),
         loc_class, e(title), li, e(label))
 

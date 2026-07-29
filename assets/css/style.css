@@ -224,6 +224,8 @@ svg { display: block; }
 }
 .badge svg { width: 0.75rem; height: 0.75rem; }
 .badge-new { border-color: rgba(16,185,129,0.3); color: var(--primary); }
+.badge-status-coming_soon, .badge-status-unavailable_on_wedos, .badge-status-broken { border-color: rgba(239,68,68,.35); color: #fca5a5; background: rgba(239,68,68,.1); }
+.badge-status-limited, .badge-status-experimental { border-color: rgba(245,158,11,.35); color: #fcd34d; background: rgba(245,158,11,.1); }
 .badge-loc-local { background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2); }
 .badge-loc-other { background: rgba(26,26,29,0.5); color: var(--muted-foreground); }
 .badge-ai { background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2); }
@@ -298,6 +300,8 @@ svg { display: block; }
 .error-text { font-size: 0.875rem; color: var(--destructive); }
 .certificate-status { color: var(--primary); font-weight: 700; }
 .certificate-status-expires_soon { color: #b45309; }
+.tool-status-coming_soon, .tool-status-unavailable_on_wedos, .tool-status-broken { border-color: rgba(239,68,68,.38); color: #fca5a5; background: rgba(239,68,68,.1); }
+.tool-status-limited, .tool-status-experimental { border-color: rgba(245,158,11,.38); color: #fcd34d; background: rgba(245,158,11,.1); }
 
 .two-col { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 768px) { .two-col { grid-template-columns: 1fr 1fr; } }

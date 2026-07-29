@@ -166,29 +166,100 @@ const TOOLS = [
     ['slug' => 'birth-number-validator',    'name' => 'Validátor rodného čísla','desc' => 'Ověří formát a kontrolní součet rodného čísla.',  'cat' => 'calc', 'loc' => 'client', 'icon' => 'BadgeCheck',    'new' => true],
 ];
 
+// Canonical metadata policy.  TOOLS stays deliberately compact for human
+// maintenance; all consumers use all_tools(), which fills the documented
+// schema in one place before rendering or exporting it.
+const TOOL_STATUSES = ['working', 'limited', 'experimental', 'coming_soon', 'unavailable_on_wedos', 'broken'];
+const TOOL_AVAILABILITY = ['available', 'requires_external_service', 'not_implemented', 'unavailable_on_wedos'];
+const TOOL_TEST_TARGETS = ['structural', 'browser_smoke', 'happy_path'];
+
+function tool_policy_overrides(string $slug): array {
+    $overrides = [
+        'pdf-password' => [
+            'status' => 'unavailable_on_wedos', 'availability' => 'unavailable_on_wedos',
+            'requirements' => ['browser_features' => [], 'local_assets' => [], 'php_extensions' => [], 'external_services' => [], 'hosting_constraints' => ['qpdf and shell_exec; unavailable on shared WEDOS'], 'verification' => 'verified'],
+            'privacy_note' => 'Nástroj je na sdíleném WEDOS deaktivovaný; soubor se nikam neodesílá.',
+        ],
+        'screenshot-tool' => [
+            'status' => 'unavailable_on_wedos', 'availability' => 'unavailable_on_wedos',
+            'requirements' => ['browser_features' => [], 'local_assets' => [], 'php_extensions' => [], 'external_services' => [], 'hosting_constraints' => ['headless Chromium and controlled network isolation; unavailable on shared WEDOS'], 'verification' => 'verified'],
+            'privacy_note' => 'Nástroj je na sdíleném WEDOS deaktivovaný; URL se nekontroluje.',
+        ],
+        'ai-image-gen' => [
+            'status' => 'coming_soon', 'availability' => 'not_implemented',
+            'requirements' => ['browser_features' => [], 'local_assets' => [], 'php_extensions' => [], 'external_services' => ['image-generation provider (not configured)'], 'hosting_constraints' => ['requires external provider or separate infrastructure'], 'verification' => 'verified'],
+            'privacy_note' => 'Nástroj zatím nevykonává žádné zpracování ani neodesílá zadání.',
+        ],
+        'certificate-info' => [
+            'requirements' => ['browser_features' => [], 'local_assets' => [], 'php_extensions' => ['openssl'], 'external_services' => ['public DNS and TLS endpoint'], 'hosting_constraints' => ['outbound TCP/443 required'], 'verification' => 'verified'],
+            'privacy_note' => 'Na server se posílá pouze doménové jméno pro jednorázové TLS ověření.',
+        ],
+    ];
+    return $overrides[$slug] ?? [];
+}
+
+function canonical_tool(array $tool): array {
+    $slugWords = preg_split('/-+/', $tool['slug']) ?: [];
+    $base = [
+        'slug' => $tool['slug'],
+        'name' => $tool['name'],
+        'description' => $tool['desc'],
+        'category' => $tool['cat'],
+        'processing_location' => $tool['loc'] === 'server' ? 'vevit_server' : ($tool['loc'] === 'ai' ? 'external_ai' : 'client'),
+        'icon' => $tool['icon'],
+        'new' => (bool)$tool['new'],
+        'keywords' => array_values(array_unique(array_filter(array_merge($slugWords, [$tool['slug']])))),
+        'aliases' => [],
+        'status' => $tool['loc'] === 'ai' ? 'limited' : 'working',
+        'availability' => $tool['loc'] === 'ai' ? 'requires_external_service' : 'available',
+        'requirements' => ['browser_features' => [], 'local_assets' => [], 'php_extensions' => [], 'external_services' => [], 'hosting_constraints' => [], 'verification' => 'unverified'],
+        'privacy_note' => $tool['loc'] === 'client' ? 'Zpracování probíhá lokálně v prohlížeči.' : 'Před použitím ověřte podmínky zpracování uvedené u nástroje.',
+        'declared_test_target' => 'structural',
+        // This field is deliberately not maintained in the registry. The test
+        // runner/report owns it and the public exporter starts at none.
+        'verified_test_level' => 'none',
+        // Compatibility for current PHP templates; do not export these aliases.
+        'desc' => $tool['desc'], 'cat' => $tool['cat'], 'loc' => $tool['loc'],
+    ];
+    $canonical = array_replace_recursive($base, tool_policy_overrides($tool['slug']), $tool);
+    return $canonical;
+}
+
+function all_tools(): array {
+    static $tools = null;
+    if ($tools === null) $tools = array_map('canonical_tool', TOOLS);
+    return $tools;
+}
+
+function public_tool_metadata(array $tool): array {
+    $public = $tool;
+    unset($public['desc'], $public['cat'], $public['loc'], $public['note']);
+    return $public;
+}
+
 // Pomocné funkce ────────────────────────────────────────────────
 
 function get_tool(string $slug): ?array {
-    foreach (TOOLS as $t) if ($t['slug'] === $slug) return $t;
+    foreach (all_tools() as $t) if ($t['slug'] === $slug) return $t;
     return null;
 }
 
 function tools_by_category(): array {
     $map = [];
     foreach (CATEGORY_ORDER as $c) $map[$c] = [];
-    foreach (TOOLS as $t) $map[$t['cat']][] = $t;
+    foreach (all_tools() as $t) $map[$t['cat']][] = $t;
     return $map;
 }
 
 function new_tools(int $limit = 8): array {
     $out = [];
-    foreach (TOOLS as $t) if ($t['new']) { $out[] = $t; if (count($out) >= $limit) break; }
+    foreach (all_tools() as $t) if ($t['new']) { $out[] = $t; if (count($out) >= $limit) break; }
     return $out;
 }
 
 function client_count(): int {
     $c = 0;
-    foreach (TOOLS as $t) if ($t['loc'] === 'client') $c++;
+    foreach (all_tools() as $t) if ($t['loc'] === 'client') $c++;
     return $c;
 }
 
