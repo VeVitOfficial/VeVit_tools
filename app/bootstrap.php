@@ -7,7 +7,7 @@ use VeVit\App\Http\Request;
 use VeVit\App\Session\Session;
 use VeVit\App\Support\Logger;
 
-foreach (['config/Config.php', 'http/JsonResponse.php', 'http/Request.php', 'http/Redirect.php', 'session/Session.php', 'security/Csrf.php', 'support/Logger.php'] as $file) require_once __DIR__ . '/' . $file;
+foreach (['config/Config.php', 'http/JsonResponse.php', 'http/Request.php', 'http/Redirect.php', 'session/Session.php', 'security/Csrf.php', 'support/Logger.php', 'auth/AuthProviderInterface.php', 'auth/AnonymousAuthProvider.php', 'auth/VeVitSsoProvider.php'] as $file) require_once __DIR__ . '/' . $file;
 
 function vevit_store_bootstrap(): array {
     $config = Config::fromEnvironment();

@@ -7,6 +7,9 @@
 
   # AI proxy: /api/ai/ollama → api/ai/ollama.php
   RewriteRule ^api/ai/ollama/?$ api/ai/ollama.php [L,QSA]
+
+  # Isolated store foundation health endpoint.
+  RewriteRule ^store/api/health/?$ store/api/health.php [L,QSA]
 </IfModule>
 
 # Bezpečnost: zakaž přístup k konfiguraci a includům.

@@ -36,7 +36,13 @@ if (preg_match('#^/api/ai/ollama/?$#', $uri)) {
     return true;
 }
 
-// 5) favicon.
+// 5) Isolated store foundation: no existing tools route is changed.
+if ($uri === '/store/api/health' || $uri === '/store/api/health/') {
+    require $root . '/store/api/health.php';
+    return true;
+}
+
+// 6) favicon.
 if ($uri === '/favicon.ico') {
     $f = $root . '/assets/favicon.ico';
     if (file_exists($f)) {
@@ -46,12 +52,12 @@ if ($uri === '/favicon.ico') {
     }
 }
 
-// 6) Ostatní existující soubory (např. /robots.txt) — nech server.
+// 7) Ostatní existující soubory (např. /robots.txt) — nech server.
 if ($uri !== '/' && file_exists($root . $uri) && is_file($root . $uri)) {
     return false;
 }
 
-// 7) 404.
+// 8) 404.
 http_response_code(404);
 echo '404 — stránka nebyla nalezena.';
 return true;
