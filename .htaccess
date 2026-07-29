@@ -1,0 +1,38 @@
+# Hezké URL pro VeVit Tools (Apache). Pro `php -S` používejte router.php.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # New store internals must never be exposed by Apache.
+  RewriteRule ^(?:app|config|storage)/ - [F,L]
+  RewriteRule ^(?:\.env(?:\..*)?|.*\.(?:log|sql|bak|backup))$ - [F,L,NC]
+
+  # Pretty URL nástrojů: /tools/<slug> → tools.php?slug=<slug>
+  RewriteRule ^tools/([a-z0-9-]+)/?$ tools.php?slug=$1 [L,QSA]
+
+  # AI proxy: /api/ai/ollama → api/ai/ollama.php
+  RewriteRule ^api/ai/ollama/?$ api/ai/ollama.php [L,QSA]
+
+  # Isolated store foundation health endpoint.
+  RewriteRule ^store/api/health/?$ store/api/health.php [L,QSA]
+</IfModule>
+
+Options -Indexes
+
+# Bezpečnost: zakaž přístup k konfiguraci a includům.
+<IfModule mod_authz_core.c>
+  <FilesMatch "\.(php)$">
+    Require all granted
+  </FilesMatch>
+</IfModule>
+<FilesMatch "^(config|registry|icons|header|footer)\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Výchozí stránka — statický index.html (landing), /tools/* a /api/* běží v PHP.
+DirectoryIndex index.html
