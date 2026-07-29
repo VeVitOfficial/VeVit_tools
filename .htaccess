@@ -2,6 +2,9 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # New store internals must never be exposed by Apache.
+  RewriteRule ^(?:app|config|storage)/ - [F,L]
+
   # Pretty URL nástrojů: /tools/<slug> → tools.php?slug=<slug>
   RewriteRule ^tools/([a-z0-9-]+)/?$ tools.php?slug=$1 [L,QSA]
 
